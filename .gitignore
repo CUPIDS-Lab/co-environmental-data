@@ -1,1 +1,48 @@
+# Data — raw is immutable and lives outside version control; keep directory structure via .gitkeep
+data/raw/*
+data/interim/*
+data/processed/*
+data/external/*
+!data/**/.gitkeep
+# Exception: the hand-curated source catalog IS the project's tracked source-of-record (small, versioned).
+!data/raw/colorado_environmental_data_sources.json
+
+# Large / binary artifacts (use object storage or Git LFS instead)
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.pkl
+*.joblib
+*.sqlite
+*.db
+
+# Secrets and credentials — never commit
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+credentials.json
+secrets.yaml
+
+# Notebook cruft — clear outputs before committing
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+env/
+.conda/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# OS / editor
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
