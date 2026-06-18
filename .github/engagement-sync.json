@@ -18,5 +18,20 @@
   "liberate-co-water-data": {
     "issue": 7,
     "hash": "cd6b524f833d5d428e33c6b6b62cbf89a1aeaef5f4a1e1155445f78345268314"
+  },
+  "water-reservoir-storage": {
+    "issue": 9,
+    "hash": "f700fd5f4bbfcb81aca4c442e49319b86bb1ee7a587569e646cbafff7728810d",
+    "parent": 7
+  },
+  "water-streamflow": {
+    "issue": 10,
+    "hash": "7d2e047c4e98875762cccf05f6374d873a7e2cef5ac09d03455cb0704e64880c",
+    "parent": 7
+  },
+  "water-snowpack-swe": {
+    "issue": 11,
+    "hash": "0829f9e6221864598d6b5536fe42b4c077fbd8ee4629d1bb9fc8bb3df53e3bcd",
+    "parent": 7
   }
 }
