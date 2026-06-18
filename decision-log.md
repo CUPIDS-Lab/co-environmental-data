@@ -2,6 +2,13 @@
 
 A running, dated record of design and data decisions and *why* they were made — the provenance of the project's choices, legible to people who join later. Add an entry whenever you make a non-obvious choice (a filtering rule, a definition, a tool, a tradeoff). Newest first.
 
+## 2026-06-18 — Project-manage the roadmap on GitHub (Track mode)
+
+- **Context:** with the L1 scaffold merged, the next need was a shared, assignable work record so the undergraduate team can pick up tasks. Asked to add issues, a Project board, and a wiki.
+- **Decision:** ran the `data-project` tracker in **Track mode** — projected the *actionable-now* slice of the roadmap (catalog hardening + L2 pipeline) onto GitHub as 4 issues (#2–#5) under one milestone, with the full label taxonomy; seeded the wiki; and prepared the Project board (pending a one-time `project` scope grant). Kept the `ROADMAP.md` checklist as the source of truth and GitHub as an idempotent projection (`.github/seed-github.sh` + `engagement-sync.json`).
+- **Why:** the team needs assignable, trackable work, but the repo is still L1 — so this is Track mode, *not* an L3 climb. The real collaboration docs (`CONTRIBUTING`, `GOVERNANCE`, `ROLES`) remain deferred in the roadmap. Tracking only the actionable slice (not all 11 deferred items) keeps the board honest about what can be worked now. The two data-quality good-first-issues are left unassigned for incoming students.
+- **Consequences:** editing the roadmap and re-running the seed script reconciles issues without duplicating. The Project board and the wiki push each need one human action (grant `project` scope; create the wiki's first page). Adding the PM layer does not by itself raise the maturity level.
+
 ## 2026-06-17 — Treat the source catalog as immutable raw, tracked in `data/raw/`
 
 - **Context:** the curated catalog (`colorado_environmental_data_sources.json`) is small (~64 KB) and hand-compiled — more a curated source-of-record than a re-downloadable bulk file.
