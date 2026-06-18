@@ -15,6 +15,7 @@ details are confirmed on the first live run.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlencode
 
@@ -35,13 +36,14 @@ def station_list_url(slug: str, cfg: dict | None = None) -> str:
             q["apiKey"] = config.CDSS_API_KEY
         return f"{base}/telemetrystations/telemetrystation/?{urlencode(q)}"
     if slug == "reclamation_rise":
-        base = cfg["reclamation_rise"]["base_url"].rstrip("/")
-        # RISE catalog items for the reservoir-storage parameter, Colorado. ⚠️ VERIFY filters.
-        q = {"page[size]": 100, "itemStructureId": 1}
-        return f"{base}/catalog-item?{urlencode(q)}"
+        # RISE enumeration is two-step per reservoir: rise_location_search_url(name)
+        # -> pick the Lake/Reservoir match -> rise_location_items_url(id) ->
+        # parse_rise_location_items(). This is the search entry point.
+        return rise_location_search_url("Reservoir", cfg["reclamation_rise"]["base_url"])
     if slug == "northern_water":
-        return cfg["northern_water"]["feature_service_url"].rstrip("/") + \
-            "/query?where=1%3D1&outFields=*&returnGeometry=false&f=json"
+        # No storage service exists (hub = boundaries only) -> nothing to enumerate.
+        svc = (cfg["northern_water"].get("feature_service_url") or "").rstrip("/")
+        return f"{svc}/query?where=1%3D1&outFields=*&returnGeometry=false&f=json" if svc else ""
     raise ValueError(f"no enumeration url for source {slug!r}")
 
 
@@ -66,6 +68,46 @@ def parse_dwr_stations(path: Path) -> pd.DataFrame:
             "notes": "auto-enumerated (CDSS telemetrystation, STORAGE)",
         })
     return pd.DataFrame(rows, columns=SEED_COLUMNS)
+
+
+# ── RISE enumeration (confirmed live) ────────────────────────────────────────
+# RISE filtering by locationId/search is unreliable; the reliable path is the
+# JSON:API relationship traversal: location (type Lake/Reservoir) ->
+# catalogRecords -> catalogItems, fetched in one call with ?include=. Each item's
+# parameterName maps to a canonical variable; the item id goes in rise_item_ids.
+RISE_PARAM_MAP = {
+    "Lake/Reservoir Storage": "storage_af",
+    "Lake/Reservoir Elevation": "elevation_ft",
+    "Lake/Reservoir Release - Total": "release_cfs",
+}
+RISE_API = "https://data.usbr.gov/rise/api"
+
+
+def rise_location_search_url(name: str, base: str | None = None) -> str:
+    """Text-search RISE locations. Caller picks the result whose
+    ``locationTypeName`` is 'Lake/Reservoir' and whose name contains the keyword."""
+    from urllib.parse import quote
+    return f"{(base or RISE_API).rstrip('/')}/location?search={quote(name)}&itemsPerPage=25"
+
+
+def rise_location_items_url(location_id: str | int, base: str | None = None) -> str:
+    """One call returns the whole catalog tree (records -> items) for a location."""
+    return f"{(base or RISE_API).rstrip('/')}/location/{location_id}?include=catalogRecords.catalogItems"
+
+
+def parse_rise_location_items(payload: dict) -> dict:
+    """From a ``location/<id>?include=catalogRecords.catalogItems`` response, return
+    ``{canonical_variable: item_id}`` for storage/elevation/release. These ids go in
+    ``reservoirs.csv:rise_item_ids`` and drive ``ReclamationRise.discover``."""
+    out: dict[str, int] = {}
+    for x in payload.get("included", []) or []:
+        if "catalog-item" not in (x.get("id") or ""):
+            continue
+        var = RISE_PARAM_MAP.get(x.get("attributes", {}).get("parameterName") or "")
+        m = re.search(r"/catalog-item/(\d+)", x.get("id", ""))
+        if var and m and var not in out:
+            out[var] = int(m.group(1))
+    return out
 
 
 def merge_into_seed(new_rows: pd.DataFrame, seed_path: Path | None = None,

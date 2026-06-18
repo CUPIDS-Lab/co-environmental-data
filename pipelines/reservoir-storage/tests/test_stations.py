@@ -3,12 +3,13 @@ from reservoir import stations
 
 
 def test_station_list_urls_build():
-    for slug in ("dwr_cdss", "reclamation_rise", "northern_water"):
-        url = stations.station_list_url(slug)
-        assert url.startswith("http")
+    # DWR + RISE are the enumerable storage sources
+    assert stations.station_list_url("dwr_cdss").startswith("http")
     assert "telemetrystation" in stations.station_list_url("dwr_cdss")
-    assert "catalog-item" in stations.station_list_url("reclamation_rise")
-    assert "/query" in stations.station_list_url("northern_water")
+    assert stations.station_list_url("reclamation_rise").startswith("http")
+    assert "/location?search=" in stations.station_list_url("reclamation_rise")
+    # Northern has no storage service -> empty enumeration URL (boundaries-only hub)
+    assert stations.station_list_url("northern_water") == ""
 
 
 def test_parse_dwr_stations(fixtures_dir):
@@ -18,6 +19,20 @@ def test_parse_dwr_stations(fixtures_dir):
     assert list(df.columns) == stations.SEED_COLUMNS
     assert set(df["reservoir_id"]) == {"GRERESCO", "DILRESCO"}
     assert df["source"].unique().tolist() == ["dwr_cdss"]
+
+
+def test_parse_rise_location_items(fixtures_dir):
+    import json
+    payload = json.loads((fixtures_dir / "rise_location_items_sample.json").read_text())
+    ids = stations.parse_rise_location_items(payload)
+    # Precipitation + catalog-record ignored; storage/elevation/release mapped
+    assert ids == {"storage_af": 76, "elevation_ft": 78, "release_cfs": 4310}
+
+
+def test_rise_enumeration_urls_build():
+    assert "/location?search=" in stations.rise_location_search_url("Blue Mesa")
+    assert stations.rise_location_items_url(1533).endswith(
+        "/location/1533?include=catalogRecords.catalogItems")
 
 
 def test_merge_into_seed_dedupes(fixtures_dir, tmp_path):

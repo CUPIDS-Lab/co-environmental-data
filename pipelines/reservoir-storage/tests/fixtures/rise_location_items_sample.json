@@ -1,0 +1,13 @@
+{
+  "data": {
+    "id": "/rise/api/location/1533",
+    "attributes": {"locationName": "Blue Mesa Reservoir Dam and Powerplant", "locationTypeName": "Lake/Reservoir"}
+  },
+  "included": [
+    {"id": "/rise/api/catalog-item/76", "attributes": {"parameterName": "Lake/Reservoir Storage", "itemTitle": "Blue Mesa Reservoir Daily Lake/Reservoir Storage-af Time Series Data"}},
+    {"id": "/rise/api/catalog-item/78", "attributes": {"parameterName": "Lake/Reservoir Elevation", "itemTitle": "Blue Mesa Reservoir Daily Lake/Reservoir Elevation-ft Time Series Data"}},
+    {"id": "/rise/api/catalog-item/4310", "attributes": {"parameterName": "Lake/Reservoir Release - Total", "itemTitle": "Blue Mesa Reservoir Daily Lake/Reservoir Release - Total-cfs Time Series Data"}},
+    {"id": "/rise/api/catalog-item/10790", "attributes": {"parameterName": "Precipitation", "itemTitle": "Blue Mesa Reservoir Daily Precipitation-inches Time Series Data"}},
+    {"id": "/rise/api/catalog-record/123", "attributes": {}}
+  ]
+}

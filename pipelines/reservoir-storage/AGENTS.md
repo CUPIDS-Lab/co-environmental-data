@@ -6,8 +6,12 @@ this and add a source without re-reading every Python file.
 ## What this project is
 
 A data-liberation pipeline that pulls **Colorado reservoir storage** (volume,
-elevation, release) from three public APIs — CO DWR/CDSS, USBR Reclamation RISE,
-Northern Water — into one tidy long-format CSV. It implements issue
+elevation, release) from public APIs — **CO DWR/CDSS** (state telemetry) and
+**USBR Reclamation RISE** (federal + the C-BT reservoirs) — into one tidy
+long-format CSV. (Northern Water, the third source originally scoped, turned out
+to publish only spatial boundaries via its ArcGIS hub — no storage time series —
+so its C-BT reservoirs are sourced from RISE instead; see *Known limitations*.)
+It implements issue
 [#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9) of the Colorado
 Environmental Data Hub. Follows the PUDL/BoulderPublicData convention: immutable
 originals, per-source parsers, a harmonized canonical schema, reconciliation
@@ -70,20 +74,21 @@ schema + composite-key uniqueness, and the enumeration helpers
 
 ## Known limitations
 
-- **DWR/CDSS is confirmed live** (endpoint, params, abbrevs, `measValue`, the
-  404=zero-records convention) and returns data. The remaining `⚠️ VERIFY` points
-  are **RISE** catalog **item ids** and **Northern Water** FeatureServer **service
-  URL** + field names — both skip safely until filled. See `docs/survey-notes.md`.
-- `data/lookups/reservoirs.csv` now holds the **full live DWR enumeration — all
-  140 CDSS STORAGE telemetry stations** (pulled via `reservoir.stations` from the
-  telemetrystation endpoint; the 7 majors keep curated names, the rest carry CDSS
-  names), plus 12 RISE + 10 Northern rows. It is a dated **snapshot**; refresh it
-  by re-running `stations.parse_dwr_stations(...) → stations.merge_into_seed(...)`.
-  The 140 STORAGE stations include small ponds/tanks as well as major reservoirs —
-  subset by name if you want only the majors. RISE/Northern enumeration URLs build;
-  their station parsers land once those VERIFY endpoints are confirmed.
-- A full live run now fans out to **280 DWR requests** (140 reservoirs × STORAGE+ELEV);
-  the resilient `fetch` handles the per-station 404s (no-data) without crashing.
+- **DWR/CDSS and RISE are both confirmed live** and return data; the pipeline's two
+  storage sources are now DWR (state) + RISE (federal + C-BT). **Northern Water is
+  NOT a storage source** — its ArcGIS hub publishes only 4 spatial-boundary datasets,
+  so its discover() yields nothing and its C-BT reservoirs were moved to RISE.
+- `data/lookups/reservoirs.csv` holds **140 DWR** STORAGE telemetry stations (full
+  live enumeration via `reservoir.stations`) + **20 RISE** reservoirs, **17 with
+  confirmed item ids** (the 3 TODO — crystal/powell/taylor-park — need search-term
+  tuning; their rows carry null `rise_item_ids` and are skipped). It is a dated
+  **snapshot**; refresh DWR via `stations.parse_dwr_stations → merge_into_seed`, and
+  RISE via `stations.{rise_location_search_url, rise_location_items_url,
+  parse_rise_location_items}`. The 140 DWR STORAGE stations include small ponds/tanks
+  as well as major reservoirs — subset by name for just the majors.
+- A full live run fans out to **~280 DWR + ~51 RISE requests**; the resilient `fetch`
+  handles per-station 404s (no-data) without crashing. **RISE full-history pulls are
+  large** (records back to the 1930s–50s) — window with `start_date` for speed.
 - RISE `discover()` skips reservoirs whose `rise_item_ids` are still null
   placeholders, so a live run is safe before every id is filled.
 - `reconcile()` has no expected totals filled yet.
