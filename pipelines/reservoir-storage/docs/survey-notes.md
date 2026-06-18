@@ -68,12 +68,11 @@ The request machinery is correct; these specifics are the first-run confirmation
       (via `/catalog-item` or the RISE catalog UI); fill `reservoirs.csv:rise_item_ids`.
 - [ ] **Northern Water:** confirm the FeatureServer **service URL** and the ArcGIS
       **field names** (`field_map` in `sources.yaml`).
-- [ ] Enumerate the **full** Colorado reservoir list per source. The seed in
-      `reservoirs.csv` is a curated ~37-reservoir starter; `reservoir.stations`
-      automates the full pull — call `stations.station_list_url(slug)`, fetch it,
-      then `stations.parse_dwr_stations(...)` → `stations.merge_into_seed(...)`.
-      DWR station parsing is implemented + tested; add the RISE/Northern station
-      parsers here once their catalog/FeatureServer responses are confirmed.
+- [x] Enumerate the **full** Colorado reservoir list per source. **DWR done** —
+      `reservoirs.csv` now holds all **140 live CDSS STORAGE telemetry stations**
+      (via `stations.parse_dwr_stations` → `stations.merge_into_seed`); refresh by
+      re-running those. **RISE/Northern still TODO**: add their station parsers
+      once the catalog/FeatureServer responses are confirmed.
 - [ ] Fill `reconcile()` expected totals from each agency's current-conditions page.
 
 ## Enumeration (how the seed gets to "full")
