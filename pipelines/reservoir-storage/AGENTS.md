@@ -25,6 +25,16 @@ uv run pytest
 # then run notebooks/reservoir-pipeline.ipynb top to bottom
 ```
 
+**Notebooks are committed output-free.** A repo-root `.gitattributes` runs the
+`nbstripout` git filter on `*.ipynb`, so cell outputs/exec-counts are stripped on
+`git add`. Activate it once per clone (it's a dev dependency):
+
+```bash
+uv run nbstripout --install        # or: pip install nbstripout && nbstripout --install
+```
+
+Clones without it just skip stripping (the filter is non-required — no errors).
+
 ## Layout
 
 | Path | Responsibility |

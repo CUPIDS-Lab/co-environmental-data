@@ -17,3 +17,8 @@
 # Uncomment and run `git lfs install` + `git lfs track "..."` if you adopt LFS.
 # *.csv filter=lfs diff=lfs merge=lfs -text
 # data/processed/** filter=lfs diff=lfs merge=lfs -text
+
+# Strip Jupyter notebook outputs/exec-counts on add+commit so notebooks stay
+# diff-clean. Run `nbstripout --install` once per clone to activate the filter
+# (it's a dev dependency); clones without it simply skip stripping (no error).
+*.ipynb filter=nbstripout diff=ipynb
