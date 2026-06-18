@@ -96,5 +96,9 @@ def normalize_long(df: pd.DataFrame) -> pd.DataFrame:
         if optional not in out.columns:
             out[optional] = pd.NA
     out = out[LONG_COLUMNS]
-    out["datetime"] = pd.to_datetime(out["datetime"], utc=True).dt.tz_localize(None)
+    # Day resolution is the grain: floor to midnight so heterogeneous source
+    # timestamps (DWR midnight vs RISE 07:00Z) serialize uniformly and re-parse
+    # cleanly. UTC date is preserved (e.g. 1966-01-31T07:00Z -> 1966-01-31).
+    out["datetime"] = (pd.to_datetime(out["datetime"], utc=True)
+                       .dt.tz_localize(None).dt.normalize())
     return validate(out)

@@ -85,6 +85,37 @@ def audit_processed(csv: Path | None = None) -> str:
     return report
 
 
+def coverage_report(csv: Path | None = None) -> pd.DataFrame:
+    """Per-reservoir period of record — makes 'different sites, different coverage'
+    explicit. Each site is pulled for its *full* history (auto-clamped to its own
+    record), so spans vary widely. Writes ``data/audit/coverage-<ts>.md``."""
+    csv = csv or config.CANONICAL_CSV
+    df = pd.read_csv(csv)
+    df["datetime"] = pd.to_datetime(df["datetime"], errors="coerce")
+    g = (df.groupby(["source", "reservoir_id", "reservoir_name"], dropna=False)
+           .agg(first=("datetime", "min"), last=("datetime", "max"),
+                rows=("value", "size")).reset_index())
+    g["years"] = ((g["last"] - g["first"]).dt.days / 365.25).round(1)
+    g = g.sort_values("first").reset_index(drop=True)
+
+    def _d(x):  # NaT-safe date format
+        return f"{x:%Y-%m-%d}" if pd.notna(x) else "—"
+
+    span_lo, span_hi = g["first"].min(), g["last"].max()
+    med = g["years"].median()
+    L = [f"# Coverage per reservoir — {_ts()}", "",
+         f"{len(g)} reservoirs · spanning {_d(span_lo)} → {_d(span_hi)} · "
+         f"median record {med:.0f} yr" if pd.notna(med) else f"{len(g)} reservoirs", "",
+         "| source | reservoir | first | last | years | rows |", "|---|---|---|---|--:|--:|"]
+    for _, r in g.iterrows():
+        L.append(f"| {r['source']} | {r['reservoir_name'] or r['reservoir_id']} | "
+                 f"{_d(r['first'])} | {_d(r['last'])} | {r['years']} | {int(r['rows'])} |")
+    out = config.AUDIT / f"coverage-{_ts()}.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(L) + "\n")
+    return g
+
+
 def variables_report(csv: Path | None = None) -> pd.DataFrame:
     """Auto-generated per-column profile → ``docs/variables.csv`` (dict sanity check)."""
     csv = csv or config.CANONICAL_CSV

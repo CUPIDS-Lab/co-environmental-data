@@ -20,6 +20,7 @@ the operator's first-run confirmation (tracked in ``docs/survey-notes.md``).
 """
 from __future__ import annotations
 
+import datetime as _dt
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -29,6 +30,10 @@ from urllib.parse import urlencode
 import pandas as pd
 
 from reservoir import config
+
+
+def _today_mmddyyyy() -> str:
+    return _dt.date.today().strftime("%m/%d/%Y")
 
 
 @dataclass
@@ -83,11 +88,13 @@ class DwrCdss(Source):
         base = cfg["base_url"].rstrip("/")
         endpoint = cfg["timeseries_endpoint"]           # telemetrystations/telemetrytimeseriesday/
         params_for = cfg["parameters"]                  # {"storage_af": "STORAGE", "elevation_ft": "ELEV"}
-        # No startDate by default: CDSS returns zero records (HTTP 404) when
-        # startDate predates a station's record, and a large pageSize returns the
-        # full available history regardless. Set start_date in sources.yaml
-        # (format MM/DD/YYYY) only to window a query.
-        start = cfg.get("start_date") or ""
+        # FULL HISTORY per site. CDSS confirmed behavior: no date params -> only the
+        # last ~365 days; startDate alone -> HTTP 404 (zero records); startDate AND
+        # endDate -> the full record, auto-clamped to each station's period of record
+        # (different sites have different coverage). So we send an early startDate +
+        # endDate=today and let CDSS clamp. Override either in sources.yaml (MM/DD/YYYY).
+        start = cfg.get("start_date") or "01/01/1900"
+        end = cfg.get("end_date") or _today_mmddyyyy()
         for _, row in self._stations().iterrows():
             for _var, abbrev_param in params_for.items():
                 q = {
@@ -95,9 +102,9 @@ class DwrCdss(Source):
                     "abbrev": row["reservoir_id"],     # CDSS station abbreviation (e.g. GRERESCO)
                     "parameter": abbrev_param,         # STORAGE | ELEV (confirmed live)
                     "pageSize": 50000,
+                    "startDate": start,                # both bounds REQUIRED for full history
+                    "endDate": end,
                 }
-                if start:
-                    q["startDate"] = start
                 if config.CDSS_API_KEY:
                     q["apiKey"] = config.CDSS_API_KEY
                 url = f"{base}/{endpoint}?{urlencode(q)}"
@@ -132,12 +139,15 @@ class ReclamationRise(Source):
             for _var, item_id in item_ids.items():
                 if not item_id:
                     continue  # placeholder not yet filled — skip until the item id is confirmed
-                q = {"itemId": item_id, "dateTime[after]": start, "page[size]": 10000}
+                # itemsPerPage (not page[size]) is RISE's page param; 10000 is the cap,
+                # so full history (e.g. ~22k rows) is paginated by the fetcher via links.next.
+                q = {"itemId": item_id, "dateTime[after]": start, "itemsPerPage": 10000}
                 url = f"{base}/result?{urlencode(q)}"
                 local = config.ORIGINAL / self.name / "current" / f"item_{item_id}.json"
                 yield Artifact(self.name, "current", url, local,
                                {"reservoir_id": row["reservoir_id"],
-                                "reservoir_name": row["reservoir_name"], "variable": _var})
+                                "reservoir_name": row["reservoir_name"], "variable": _var,
+                                "paginate": "jsonapi"})
 
     def ingest(self, artifact: Artifact) -> pd.DataFrame:
         from reservoir.parsers import reclamation_rise

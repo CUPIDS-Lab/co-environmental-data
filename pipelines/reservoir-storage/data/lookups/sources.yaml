@@ -9,17 +9,18 @@
 dwr_cdss:
   base_url: "https://dwr.state.co.us/Rest/GET/api/v2"
   timeseries_endpoint: "telemetrystations/telemetrytimeseriesday/"   # ✅ confirmed live
-  start_date: ""         # empty = full history. ✅ a too-early startDate -> 404/zero records
+  start_date: "01/01/1900"   # early bound for FULL history; CDSS clamps to each site's POR
+  end_date: ""               # empty = today (both bounds REQUIRED for full history)
   parameters:            # canonical variable -> CDSS parameter code  # ✅ confirmed live
     storage_af: "STORAGE"
     elevation_ft: "ELEV"
   notes: >
-    ✅ CONFIRMED against the live API (2026-06): the value is `measValue` (not
-    `value`); the date is `measDate`; abbrevs are codes (GREEN MOUNTAIN RESERVOIR
-    -> GRERESCO, DILLON -> DILRESCO, …). CDSS returns HTTP 404 with body "returns
-    zero records from CDSS" for any empty query — handled as no-data, not an
-    error. Omit startDate for full history (descending); if set, format MM/DD/YYYY.
-    apiKey raises rate limits.
+    ✅ CONFIRMED live (2026-06): value=`measValue`, date=`measDate`; abbrevs are codes
+    (GREEN MOUNTAIN RESERVOIR -> GRERESCO …). FULL HISTORY needs BOTH startDate AND
+    endDate (MM/DD/YYYY): no date params returns only the last ~365 days; startDate
+    alone -> HTTP 404; start+end returns the full record auto-clamped to each
+    station's period of record (stationPorStart/End in the telemetrystation record).
+    404 "zero records" is handled as no-data. apiKey raises rate limits.
 
 reclamation_rise:
   base_url: "https://data.usbr.gov/rise/api"      # ✅ API host (portal is rise.reclamation.gov)

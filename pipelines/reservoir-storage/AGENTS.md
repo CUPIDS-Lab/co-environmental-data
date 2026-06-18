@@ -36,7 +36,7 @@ uv run pytest
 | `src/reservoir/fetch.py` | Idempotent downloader (requests-cache + tenacity); writes `data/original/`. |
 | `src/reservoir/parsers/*.py` | Per-source response → tidy long (`dwr_cdss`, `reclamation_rise`, `northern_water`). |
 | `src/reservoir/clean.py` | Orchestrator: ingest all → concat → validate → write CSV + provenance. |
-| `src/reservoir/audit.py` | `profile_raw`, `audit_processed`, `variables_report`, `reconcile`. |
+| `src/reservoir/audit.py` | `profile_raw`, `audit_processed`, `coverage_report` (per-site period of record), `variables_report`, `reconcile`. |
 | `src/reservoir/stations.py` | Reservoir enumeration: build each source's catalog/station-list URL + parse it into the seed (`merge_into_seed`). |
 | `src/reservoir/provenance.py` | Per-extract `provenance.csv` writer + sha256. |
 | `data/{original,processed,audit,lookups}/` | Immutable raw · deliverable CSV · reports · crosswalks/config. |
@@ -44,6 +44,16 @@ uv run pytest
 
 ## Design decisions
 
+- **Full history per site, different coverage per site.** Each site is pulled for
+  its entire record, auto-clamped to that site's coverage (Green Mountain → 1986,
+  the Walker pond → 2022; Blue Mesa → 1966). The retrieval gotchas this required:
+  **DWR needs BOTH `startDate`+`endDate`** (no dates → last ~365 days only;
+  startDate alone → 404), and **RISE must paginate** (`links.next`; its page cap is
+  10k rows, well under a full series). `audit.coverage_report` documents each site's
+  span. **RISE full-history pulls are large/slow** — window via `start_date` to speed up.
+- **Day resolution is the grain.** `normalize_long` floors timestamps to the date
+  (DWR reports midnight, RISE 07:00Z) so the CSV serializes uniformly and re-parses
+  cleanly; the UTC date is preserved.
 - **Tidy long, not wide.** One row per `(source, reservoir_id, datetime, variable)`.
   A new reservoir/variable is more rows, not a schema change; cross-source compare
   is a `groupby`. Wide views are recipes (`docs/filter-pivot-recipes.md`).
