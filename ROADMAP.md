@@ -16,6 +16,8 @@ The actionable-now slice of the roadmap: harden the catalog, then stand up the p
 
 **Tracking:** this checklist is the source of truth for the current work. It is mirrored as GitHub Issues #2–#5 and #7 on the **Colorado Environmental Data Hub** [Project board](https://github.com/orgs/CUPIDS-Lab/projects/1) — see `PROJECT-MANAGEMENT.md`. Edit this checklist and re-run `.github/seed-github.sh` (or `data-project track`) to create-or-update the issues idempotently; the checklist stays canonical. The two `good-first-issue` rows are left unassigned for incoming undergraduate contributors.
 
+> **Epic #7 breaks into per-domain sub-issues:** [#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9) reservoir storage · [#10](https://github.com/CUPIDS-Lab/co-environmental-data/issues/10) stream/river flow · [#11](https://github.com/CUPIDS-Lab/co-environmental-data/issues/11) snowpack (SWE) — each a retrieve → tidy → document → audit → publish slice, linked as native GitHub sub-issues of #7.
+
 ## Deferred items
 
 Concerns that are real but above the current tracked work — added when you climb. The design for most already exists in `context/`.
