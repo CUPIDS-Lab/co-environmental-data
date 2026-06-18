@@ -1,30 +1,163 @@
 source,reservoir_id,reservoir_name,basin,rise_item_ids,notes
-dwr_cdss,GRERESCO,Green Mountain Reservoir,Colorado,,confirmed CDSS abbrev (telemetry STORAGE)
-dwr_cdss,DILRESCO,Dillon Reservoir,Blue,,confirmed CDSS abbrev
+dwr_cdss,0203358B,WALKER RESERVOIR,2,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,0603392B,"STROMQUIST POND 1, SOUTH",6,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,0803405C,MAIN RESERVOIR,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,0803406B,EAST RESERVOIR,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,0803407B,SMITH RESERVOIR,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,1403593A,STONEWALL SPRINGS SOUTH RESERVOIR,14,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,1704820C,ARF HEADGATE 27: FARM 60 RECHARGE FACILITY POND 1,17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,1704820D,ARF HEADGATE 27: FARM 60 RECHARGE FACILITY POND 2,17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,1704820E,ARF HEADGATE 27: FARM 60 RECHARGE FACILITY POND 3,17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,1704820F,ARF HEADGATE 27: FARM 60 RECHARGE FACILITY POND 4,17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,2003539A,FUCHS RES,20,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,4003399B,OVERLAND RESERVOIR,40,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,4103652A,GARNET MESA RESERVOIR,41,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704821D,ARF-HEADGATE 145: FARM 132/133 RECHARGE FACILITY POND 2,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704822C,ARF-HEADGATE 162: FARM 65 RECHARGE FACILITY POND 1,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704822D,ARF-HEADGATE 162: FARM 65 RECHARGE FACILITY POND 2,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704822E,ARF-HEADGATE 162: FARM 65 RECHARGE FACILITY POND 3,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704822F,ARF-HEADGATE 162: FARM 65 RECHARGE FACILITY POND 4,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704823C,ARF FARM 201 RECHARGE FACILITY POND 2,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704823D,ARF FARM 201 RECHARGE FACILITY POND 3,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704823E,ARF FARM 201 RECHARGE FACILITY POND 4,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704823F,ARF FARM 201 RECHARGE FACILITY POND 5WEST,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704823G,ARF FARM 201 RECHARGE FACILITY POND 6EAST,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704824C,ARF FARM 205 EAST COMBINED POND ,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704825C,ARF-FARM 63 RECHARGE FACILITY POND 1(C),67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704825D,ARF-FARM 63 RECHARGE FACILITY POND 2(D),67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704825E,ARF-FARM 63 RECHARGE FACILITY POND 3(E),67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,6704825F,ARF FARM 63 RECHARGE FACILITY POND 4(F),67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,70RRESCO,70 RANCH RESERVOIR,1,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,ADORESCO,ADOBE RESERVOIR,17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,ALSRESCO,ALSBURY RESERVOIR,45,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BASRESCO,RIDGES BASIN DAM ON LAKE NIGHTHORSE NEAR DURANGO,30,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BCPND1CO,BUCHANAN POND 1,9,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BCPND2CO,BUCHANAN POND 2,9,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BCRRESCO,BEAR CREEK RESERVOIR,9,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BERRESCO,BEERS SISTERS RESERVOIR AT BLUE HERON PARK,9,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BEVRESCO,BEAVER RESERVOIR,20,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BKIRESCO,BUCKEYE RESERVOIR,61,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BLKRESCO,BOSS LAKE RESERVOIR,11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BLMRESCO,BLUE MESA RESERVOIR,59,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BLURESCO,UPPER BLUE RESERVOIR NEAR BRECKENRIDGE,36,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BRERESCO,BRETT GRAY RESERVOIR AT SMITH RANCH NEAR RUSH,17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BRKDAMCO,BUTTONROCK (RALPH PRICE) RESERVOIR,5,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,BVRWP2CO,BRUSH HOLLOW RESERVOIR,12,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,CARTERCO,CARTER RESERVOIR,4,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,CASRESCO,CASCADE RESERVOIR,30,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
 dwr_cdss,CHARESCO,Chatfield Reservoir,South Platte,,confirmed CDSS abbrev
 dwr_cdss,CHERESCO,Cheesman Reservoir,South Platte,,confirmed CDSS abbrev
-dwr_cdss,SPIRESCO,Spinney Mountain Reservoir,South Platte,,confirmed CDSS abbrev
+dwr_cdss,CHRRESCO,CHERRY CREEK RESERVOIR,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,CLRRESCO,CLEAR CREEK RESERVOIR,11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,CONRESCO,CONTINENTAL RESERVOIR NEAR CREEDE,20,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,COTRESCO,COTTONWOOD LAKE RESERVOIR,11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,CTWRESCO,COTTONWOOD LAKE,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,DEWRESCO,DEWEESE RESERVOIR,13,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,DILRESCO,Dillon Reservoir,Blue,,confirmed CDSS abbrev
+dwr_cdss,DORYLKCO,DORY LAKE,7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,DOURESCO,DOUGLAS RESERVOIR AT SMITH RANCH NEAR RUSH,17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,DOZRESCO,DOZIER RESERVOIR #2,80,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,FILLAKCO,FILLY LAKE,6,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,FLARESCO,FLATIRON RESERVOIR,4,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,FVRES2CO,FOUNTAIN VALLEY RES NO 2 (BIG JOHNSON RES),10,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,GEOLAKCO,"GEORGETOWN LAKE NEAR GEORGETOWN, CO",7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,GRARESCO,GRANBY RESERVOIR,51,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,GRERESCO,Green Mountain Reservoir,Colorado,,confirmed CDSS abbrev (telemetry STORAGE)
+dwr_cdss,GRORESCO,"GROUNDHOG RESERVOIR NEAR DUNTON, CO",71,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
 dwr_cdss,GROSRECO,Gross Reservoir,South Boulder,,confirmed CDSS abbrev
+dwr_cdss,GUARESCO,GUANELLA RESERVOIR,7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,HARTLKCO,HEART LAKE RESERVOIR,53,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,HAVRESCO,HAVILAND LAKE RESERVOIR,30,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,HENRESCO,LAKE HENRY RESERVOIR (CONTENT),17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,HOLRESCO,HOLBROOK RESERVOIR,17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,HOMRESCO,HOMESTAKE RESERVOIR,37,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,HORTOOCO,HORSETOOTH RESERVOIR,3,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,IDSRESCO,"IDAHO SPRINGS STORAGE RESERVOIR ABOVE IDAHO SPRINGS, CO",7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,IVALAKCO,IVANHOE LAKE,38,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,JACRESCO,JACKSON GULCH RESERVOIR,34,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,JBRRESCO,JIM BAKER RESERVOIR,7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,JEFLAKCO,"JEFFERSON LAKE NEAR JEFFERSON, CO",23,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,JMRCADCO,"JOHN MARTIN RESERVOIR AT CADDOA, CO.",67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,KENRESCO,KENDRICK LAKE,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,LAJRESCO,LA JARA RESERVOIR,21,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,LAKMINCO,LAKE MINNEQUA,14,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,LBBRESCO,LOWER BEAVER BROOK RESERVOIR,7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,LEVRESCO,LEGGETT-VALMONT RESERVOIR,6,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,LKISBLCO,SAN ISABEL LAKE,15,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,LOMRESCO,LOCH LOMOND RESERVOIR,7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,LONRESCO,"LONG HOLLOW RESERVOIR NEAR RED MESA, CO",33,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,MARYLACO,MARY'S LAKE AT ESTES PARK,4,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,MCPRESCO,MCPHEE RESERVOIR,71,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,MERRESCO,MEREDITH RESERVOIR (CONTENT),17,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,MTELFBCO,"MOUNT ELBERT FOREBAY, CO",11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,MTNRESCO,MOUNTAIN HOME RESERVOIR,35,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,NMIRESCO,"NORTH MICHIGAN CREEK RESERVOIR NEAR GOULD, CO",47,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,NSARESCO,NORTH FORK RESERVOIR ON N. FORK OF S. ARKANSAS RIVER,11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,OHVRRSCO,O'HAVER RESERVOIR,11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,OLYDAMCO,OLYMPUS DAM AT LAKE ESTES,4,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,PEARLACO,PEARL LAKE,58,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,PINRESCO,PINEWOOD RESERVOIR,4,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,PISRESCO,MT PISGAH RESERVOIR,12,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,PLARESCO,PLATORO RESERVOIR,22,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,POMLAKCO,POMONA RESERVOIR 2 & 3,7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,RBLRESCO,RAINBOW LAKE RESERVOIR,11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,REDRESCO,RED MESA RESERVOIR NEAR RED MESA,33,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,RHSRESCO,RUETER-HESS RESERVOIR,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
 dwr_cdss,RIFRESCO,Rifle Gap Reservoir,Colorado,,confirmed CDSS abbrev
-reclamation_rise,blue-mesa,Blue Mesa Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,morrow-point,Morrow Point Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,crystal,Crystal Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,navajo,Navajo Reservoir,San Juan,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,ruedi,Ruedi Reservoir,Fryingpan,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,pueblo,Pueblo Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,turquoise,Turquoise Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,twin-lakes,Twin Lakes Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,taylor-park,Taylor Park Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,mcphee,McPhee Reservoir,Dolores,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,powell,Lake Powell (Glen Canyon),Colorado,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids; basin-wide
-reclamation_rise,flaming-gorge,Flaming Gorge Reservoir,Green,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY; UC region (WY/UT)
-northern_water,carter,Carter Lake,C-BT,,bulk FeatureServer query; documentary
-northern_water,horsetooth,Horsetooth Reservoir,C-BT,,bulk FeatureServer query; documentary
-northern_water,granby,Lake Granby,C-BT,,bulk FeatureServer query; documentary
-northern_water,shadow-mountain,Shadow Mountain Reservoir,C-BT,,bulk FeatureServer query; documentary
-northern_water,grand-lake,Grand Lake,C-BT,,bulk FeatureServer query; documentary
-northern_water,willow-creek,Willow Creek Reservoir,C-BT,,bulk FeatureServer query; documentary
+dwr_cdss,RIORESCO,RIO GRANDE RESERVOIR NEAR CREEDE,20,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,RITRESCO,RITO HONDO RESERVOIR,20,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,ROMOCOCO,ROSEMONT RESERVOIR NEAR PUEBLO,12,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,RUERESCO,RUEDI RESERVOIR NEAR BASALT,38,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,SAMRESCO,SANTA MARIA RESERVOIR NEAR CREEDE,20,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,SANRESCO,"SANCHEZ RESERVOIR NEAR SAN LUIS, CO",24,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,SHARESCO,SHADOW MOUNTAIN RESERVOIR,51,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,SHLAKECO,SAND HILL LAKE,2,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,SKGRESCO,SKAGUAY RESERVOIR,12,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,SPCRESCO,SPRING CREEK RESERVOIR,59,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,SPIRESCO,Spinney Mountain Reservoir,South Platte,,confirmed CDSS abbrev
+dwr_cdss,STELAKCO,STEAMBOAT LAKE,58,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,STRRESCO,STRONTIA SPRINGS RESERVOIR,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,SWARESCO,STILLWATER RESERVOIR,58,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,TARRESCO,TARRYALL RESERVOIR,23,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,TERRESCO,TERRACE RESERVOIR IN CONEJOS COUNTY,21,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,THURESCO,THURSTON RESERVOIR,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,TROUTLVL,TROUT LAKE (LEVEL & ALARM),60,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,TRURESCO,TRUJILLO MEADOWS RESERVOIR NEAR CUMBRES PASS,22,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,TURQLACO,TURQUOISE LAKE AT SUGARLOAF DAM NEAR LEADVILLE CO,11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,TWBTRSCO,TWO BUTTES RESERVOIR,67,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,TWIRESCO,"TWIN LAKES RESERVOIR, CO",11,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,UBBRESCO,UPPER BEAVER BROOK RESERVOIR,7,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,UNIRESCO,UNION RESERVOIR,5,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,VALRESCO,VALLECITO RESERVOIR,31,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,VICBPRCO,VICTOR BISON PARK RESERVOIR,12,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,VICRESCO,VICTOR RESERVOIR NO 2,12,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,VUGRESCO,VOUGA RESERVOIR NEAR DOYLEVILLE,28,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,WCLRESCO,WALSENBURG RESERVOIR,16,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,WDGRESCO,DAIGRE RESERVOIR,16,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,WILRESCO,WILLOW CREEK RESERVOIR,51,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,WLFRESCO,WILLIAM'S FORK RESERVOIR,51,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,WRDRESCO,WARD LAKE,8,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,WWHRESCO,WAHATOYA RESERVOIR,16,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
+dwr_cdss,YAMRESCO,YAMCOLO RESERVOIR ABOVE YAMPA,58,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
 northern_water,boulder,Boulder Reservoir,C-BT,,bulk FeatureServer query; documentary
+northern_water,carter,Carter Lake,C-BT,,bulk FeatureServer query; documentary
+northern_water,granby,Lake Granby,C-BT,,bulk FeatureServer query; documentary
+northern_water,grand-lake,Grand Lake,C-BT,,bulk FeatureServer query; documentary
+northern_water,horsetooth,Horsetooth Reservoir,C-BT,,bulk FeatureServer query; documentary
 northern_water,lake-estes,Lake Estes,C-BT,,bulk FeatureServer query; documentary
 northern_water,marys-lake,Marys Lake,C-BT,,bulk FeatureServer query; documentary
 northern_water,pinewood,Pinewood Reservoir,C-BT,,bulk FeatureServer query; documentary
+northern_water,shadow-mountain,Shadow Mountain Reservoir,C-BT,,bulk FeatureServer query; documentary
+northern_water,willow-creek,Willow Creek Reservoir,C-BT,,bulk FeatureServer query; documentary
+reclamation_rise,blue-mesa,Blue Mesa Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,crystal,Crystal Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,flaming-gorge,Flaming Gorge Reservoir,Green,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY; UC region (WY/UT)
+reclamation_rise,mcphee,McPhee Reservoir,Dolores,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,morrow-point,Morrow Point Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,navajo,Navajo Reservoir,San Juan,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,powell,Lake Powell (Glen Canyon),Colorado,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids; basin-wide
+reclamation_rise,pueblo,Pueblo Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,ruedi,Ruedi Reservoir,Fryingpan,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,taylor-park,Taylor Park Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,turquoise,Turquoise Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,twin-lakes,Twin Lakes Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids

@@ -74,11 +74,16 @@ schema + composite-key uniqueness, and the enumeration helpers
   404=zero-records convention) and returns data. The remaining `⚠️ VERIFY` points
   are **RISE** catalog **item ids** and **Northern Water** FeatureServer **service
   URL** + field names — both skip safely until filled. See `docs/survey-notes.md`.
-- `data/lookups/reservoirs.csv` is a curated **~37-reservoir seed** (15 DWR · 12
-  RISE · 10 Northern), not yet the exhaustive Colorado list. The full enumeration
-  is automated for the first live run via `reservoir.stations` (DWR station-list
-  parsing is implemented + tested; RISE/Northern enumeration URLs build, their
-  response parsers land once the VERIFY endpoints are confirmed).
+- `data/lookups/reservoirs.csv` now holds the **full live DWR enumeration — all
+  140 CDSS STORAGE telemetry stations** (pulled via `reservoir.stations` from the
+  telemetrystation endpoint; the 7 majors keep curated names, the rest carry CDSS
+  names), plus 12 RISE + 10 Northern rows. It is a dated **snapshot**; refresh it
+  by re-running `stations.parse_dwr_stations(...) → stations.merge_into_seed(...)`.
+  The 140 STORAGE stations include small ponds/tanks as well as major reservoirs —
+  subset by name if you want only the majors. RISE/Northern enumeration URLs build;
+  their station parsers land once those VERIFY endpoints are confirmed.
+- A full live run now fans out to **280 DWR requests** (140 reservoirs × STORAGE+ELEV);
+  the resilient `fetch` handles the per-station 404s (no-data) without crashing.
 - RISE `discover()` skips reservoirs whose `rise_item_ids` are still null
   placeholders, so a live run is safe before every id is filled.
 - `reconcile()` has no expected totals filled yet.
