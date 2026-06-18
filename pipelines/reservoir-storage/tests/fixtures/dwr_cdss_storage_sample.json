@@ -1,0 +1,9 @@
+{
+  "ResultList": [
+    {"abbrev": "GREEN MOUNTAIN", "parameter": "STORAGE", "measDate": "2026-06-15T00:00:00", "value": 138010.0, "flagA": "A", "flagB": ""},
+    {"abbrev": "GREEN MOUNTAIN", "parameter": "STORAGE", "measDate": "2026-06-16T00:00:00", "value": 138120.0, "flagA": "A", "flagB": ""},
+    {"abbrev": "GREEN MOUNTAIN", "parameter": "STORAGE", "measDate": "2026-06-17T00:00:00", "value": 138214.0, "flagA": "A", "flagB": ""}
+  ],
+  "ResultCount": 3,
+  "PageCount": 1
+}

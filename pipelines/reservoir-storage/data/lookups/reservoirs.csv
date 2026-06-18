@@ -1,0 +1,12 @@
+source,reservoir_id,reservoir_name,basin,rise_item_ids,notes
+dwr_cdss,GREEN MOUNTAIN,Green Mountain Reservoir,Colorado,,VERIFY CDSS abbrev
+dwr_cdss,DILLON,Dillon Reservoir,Blue,,VERIFY CDSS abbrev
+dwr_cdss,WILLIAMS FORK,Williams Fork Reservoir,Colorado,,VERIFY CDSS abbrev
+dwr_cdss,CHATFIELD,Chatfield Reservoir,South Platte,,VERIFY CDSS abbrev
+reclamation_rise,blue-mesa,Blue Mesa Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,navajo,Navajo Reservoir,San Juan,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,ruedi,Ruedi Reservoir,Fryingpan,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,powell,Lake Powell (Glen Canyon),Colorado,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+northern_water,carter,Carter Lake,C-BT,,bulk FeatureServer query; row documentary only
+northern_water,horsetooth,Horsetooth Reservoir,C-BT,,bulk FeatureServer query; row documentary only
+northern_water,granby,Lake Granby,C-BT,,bulk FeatureServer query; row documentary only

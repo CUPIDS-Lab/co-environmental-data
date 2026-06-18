@@ -1,0 +1,44 @@
+# Concept catalog — cross-source harmonization with caveats.
+#
+# This is NOT a rename map. Each concept declares the canonical name, which
+# source variables map to it, and — most importantly — the CAVEATS bounding the
+# equivalence. A concept with an empty caveats list is suspicious: like a
+# function with no preconditions, it is usually under-specified, not universal.
+# (data-modeling.md#concept-catalogs)
+
+- concept: reservoir.storage_af
+  description: Reservoir contents (volume of water stored), in acre-feet.
+  sources:
+    dwr_cdss:    { variable: STORAGE, notes: "Telemetry STORAGE parameter, daily." }
+    reclamation_rise: { variable: "Lake/Reservoir Storage", notes: "RISE catalog item." }
+    northern_water:   { variable: STORAGE_AF, notes: "ArcGIS attribute (verify)." }
+  caveats:
+    - "Capacity baselines differ: 'storage' is an absolute volume; percent-of-capacity
+       depends on each agency's stated total/active capacity, which are NOT identical
+       conventions. Compute pct_capacity per source, do not mix."
+    - "Federal (RISE) reservoirs and state-administered (DWR) reservoirs are largely
+       disjoint sets; a reservoir appearing in two sources (rare) may report on
+       different gauges/datums — reconcile before treating as the same series."
+    - "Reporting frequency and the 'as-of' time differ (real-time vs. midnight daily);
+       align on the date, not the sub-daily timestamp."
+
+- concept: reservoir.elevation_ft
+  description: Reservoir pool (water-surface) elevation, in feet.
+  sources:
+    dwr_cdss:    { variable: ELEV }
+    reclamation_rise: { variable: "Lake/Reservoir Elevation" }
+    northern_water:   { variable: ELEV_FT }
+  caveats:
+    - "VERTICAL DATUM is the load-bearing caveat: elevations may be reported on
+       different datums (NGVD29 vs NAVD88 vs a local project datum). Do NOT compare
+       elevations across sources until each source's datum is confirmed and, if
+       needed, converted. Document the datum per source in the data dictionary."
+
+- concept: reservoir.release_cfs
+  description: Outflow / release from the reservoir, in cubic feet per second.
+  sources:
+    reclamation_rise: { variable: "Lake/Reservoir Release" }
+  caveats:
+    - "Only consistently available for federal (RISE) reservoirs in this seed;
+       state/Northern release semantics (spill vs controlled release) differ and
+       are not yet harmonized."

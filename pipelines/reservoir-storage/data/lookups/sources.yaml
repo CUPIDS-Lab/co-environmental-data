@@ -1,0 +1,43 @@
+# Non-secret per-source configuration for the reservoir-storage pipeline.
+# Edited by hand; read by reservoir.config.load_sources_config().
+# Secrets (API keys) come from the environment / .env, never from here.
+#
+# ⚠️ Lines marked VERIFY are best-known values to confirm against the live API
+#    on the first real run (see docs/survey-notes.md). The request *machinery*
+#    is correct; these specific codes/URLs are the confirmation points.
+
+dwr_cdss:
+  base_url: "https://dwr.state.co.us/Rest/GET/api/v2"
+  timeseries_endpoint: "telemetrystations/telemetrytimeseriesday/"   # VERIFY endpoint
+  start_date: "1900-01-01"
+  parameters:            # canonical variable -> CDSS parameter code  (VERIFY codes)
+    storage_af: "STORAGE"
+    elevation_ft: "ELEV"
+  notes: >
+    CDSS returns {"ResultList": [...], "ResultCount": N, "PageCount": M}.
+    Paging via pageSize/pageIndex; format=json|csv; apiKey raises rate limits.
+    Reservoir telemetry stations are identified by `abbrev`.
+
+reclamation_rise:
+  base_url: "https://data.usbr.gov/rise/api"      # API host (portal is rise.reclamation.gov)
+  start_date: "1900-01-01"
+  notes: >
+    JSON:API. A reservoir variable is a RISE "catalog item"; pull its
+    /result?itemId=<id> time series. Per-reservoir item ids live in
+    reservoirs.csv (rise_item_ids). Discover real ids via
+    /catalog-item?... or the RISE catalog UI. VERIFY item ids.
+
+northern_water:
+  base_url: "https://data-nw.opendata.arcgis.com"
+  feature_service_url: "https://services.arcgis.com/REPLACE/arcgis/rest/services/Reservoirs/FeatureServer/0"  # VERIFY service URL
+  field_map:             # ArcGIS attribute names differ per service — VERIFY
+    datetime: "DATE"
+    reservoir_id: "STATION_ID"
+    reservoir_name: "NAME"
+    variables:           # canonical variable -> ArcGIS field
+      storage_af: "STORAGE_AF"
+      elevation_ft: "ELEV_FT"
+  notes: >
+    ArcGIS FeatureServer /query?where=1=1&outFields=*&f=json. Date fields are
+    epoch milliseconds. Confirm the exact service URL + field names from
+    data-nw.opendata.arcgis.com.
