@@ -11,9 +11,9 @@ available) for Colorado reservoirs, pulled from three public APIs:
 
 | Source | What | Access | License | Erosion/enclosure |
 |---|---|---|---|---|
-| **CO DWR / CDSS** | Statewide telemetry: storage, elevation | REST API v2 (JSON/CSV), `dwr.state.co.us/Rest` | Public / "as-is" | State-controlled (lower erosion risk); some records only via Laserfiche |
-| **USBR Reclamation RISE** | Colorado River reservoirs (Blue Mesa, Navajo, Powell…): storage, elevation, release | JSON:API, `data.usbr.gov/rise/api` | Public domain | Federal funding dependence |
-| **Northern Water** | C‑BT system (Carter, Horsetooth, Granby): storage, elevation | ArcGIS Hub FeatureServer, `data-nw.opendata.arcgis.com` | Public (verify) | District-funded (stable) |
+| **CO DWR / CDSS** ✅ | Statewide telemetry: storage, elevation (140 stations) | REST API v2 (JSON/CSV), `dwr.state.co.us/Rest` | Public / "as-is" | State-controlled (lower erosion risk) |
+| **USBR Reclamation RISE** ✅ | Federal **and C-BT** reservoirs (Blue Mesa, Navajo, Granby, Carter, Horsetooth…): storage, elevation, release | JSON:API, `data.usbr.gov/rise/api` | Public domain | Federal funding dependence |
+| ~~**Northern Water**~~ ❌ | **No storage series.** The ArcGIS hub publishes only 4 spatial-boundary datasets. The C-BT reservoirs it operates are Reclamation-owned → sourced from **RISE**. Grand Lake (natural) + Boulder (municipal) have no open series. | `data-nw.opendata.arcgis.com` (boundaries) | — | — |
 
 ## Unit of observation (the consequential choice)
 
@@ -64,23 +64,32 @@ The request machinery is correct; these specifics are the first-run confirmation
       `SPIRESCO`, Rifle Gap → `RIFRESCO`). **CDSS returns HTTP 404 for any zero-record
       query** — handled as no-data. Omit `startDate` for full history (a too-early
       startDate triggers the 404). A live pull returned ~4,374 rows across 6 reservoirs.
-- [ ] **RISE:** discover the real catalog **item ids** per reservoir × variable
-      (via `/catalog-item` or the RISE catalog UI); fill `reservoirs.csv:rise_item_ids`.
-- [ ] **Northern Water:** confirm the FeatureServer **service URL** and the ArcGIS
-      **field names** (`field_map` in `sources.yaml`).
-- [x] Enumerate the **full** Colorado reservoir list per source. **DWR done** —
-      `reservoirs.csv` now holds all **140 live CDSS STORAGE telemetry stations**
-      (via `stations.parse_dwr_stations` → `stations.merge_into_seed`); refresh by
-      re-running those. **RISE/Northern still TODO**: add their station parsers
-      once the catalog/FeatureServer responses are confirmed.
+- [x] **RISE:** ✅ **confirmed live (2026-06).** `/result?itemId=<id>` →
+      `data[].attributes.{dateTime, result}`. Item ids resolved via the relationship
+      traversal `location?search=<name>` → Lake/Reservoir match →
+      `location/<id>?include=catalogRecords.catalogItems` → `parameterName`→item id
+      (catalog-item `search`/`locationId[]` filters are broken). 17/20 reservoirs
+      resolved (crystal/powell/taylor-park need search-term tuning). Blue Mesa storage
+      verified = 317,822 acre-ft.
+- [x] **Northern Water:** ❌ **resolved — not a storage source.** The ArcGIS hub
+      (`data-nw.opendata.arcgis.com`) has only 4 boundary datasets; no storage
+      FeatureServer exists. The C-BT reservoirs it operates are Reclamation-owned and
+      moved to RISE (Carter, Horsetooth, Granby, Shadow Mountain, Willow Creek, Lake
+      Estes, Marys Lake, Pinewood). Grand Lake (natural) + Boulder (municipal) have
+      no open storage series.
+- [x] Enumerate the **full** Colorado reservoir list per source. **DWR + RISE done**;
+      Northern is not a storage source (above). `reservoirs.csv` = 140 DWR + 20 RISE.
+- [ ] Resolve the 3 remaining RISE reservoirs (crystal/powell/taylor-park).
 - [ ] Fill `reconcile()` expected totals from each agency's current-conditions page.
 
 ## Enumeration (how the seed gets to "full")
 
-`reservoir.stations` builds each source's catalog/station-list query:
-- **DWR/CDSS:** `telemetrystations/telemetrystation/?parameter=STORAGE` → reservoirs
-  reporting storage; parsed by `parse_dwr_stations` (✅ implemented + tested).
-- **RISE:** `/catalog-item?...` filtered to the reservoir-storage parameter (CO);
-  parse the returned catalog items into `rise_item_ids` per reservoir × variable.
-- **Northern Water:** the FeatureServer `/query` returns all reservoirs in one call;
-  parse `features[].attributes` into rows (the same `field_map` the parser uses).
+`reservoir.stations` builds each source's enumeration query:
+- **DWR/CDSS:** `telemetrystations/telemetrystation/` → client-side STORAGE filter →
+  reservoir stations; parsed by `parse_dwr_stations` (✅ implemented + tested). 140 stations.
+- **RISE:** `rise_location_search_url(name)` → pick the Lake/Reservoir result →
+  `rise_location_items_url(id)` (`?include=catalogRecords.catalogItems`) →
+  `parse_rise_location_items` maps `parameterName`→item id (✅ implemented + tested).
+  17/20 reservoirs resolved.
+- **Northern Water:** ❌ no storage service exists (hub = boundaries only); nothing to
+  enumerate. C-BT reservoirs are enumerated under RISE instead.

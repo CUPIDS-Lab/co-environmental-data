@@ -151,10 +151,14 @@ class NorthernWater(Source):
     license = "Public (verify per dataset)"
 
     def discover(self) -> Iterator[Artifact]:
-        # ArcGIS FeatureServer query. The exact service/layer URL for Northern
-        # Water's reservoir layer must be confirmed from data-nw.opendata.arcgis.com.
+        # FINDING: Northern Water's ArcGIS Hub has boundaries only — no reservoir-
+        # storage FeatureServer. With no service URL configured this yields nothing
+        # (the C-BT reservoirs it operates are sourced from RISE). Kept so a real-time
+        # service can be slotted in later by setting feature_service_url in sources.yaml.
         cfg = config.load_sources_config()[self.name]
-        service = cfg["feature_service_url"].rstrip("/")   # ⚠️ VERIFY service URL
+        service = (cfg.get("feature_service_url") or "").rstrip("/")
+        if not service:
+            return
         q = {"where": "1=1", "outFields": "*", "f": "json", "resultRecordCount": 2000}
         url = f"{service}/query?{urlencode(q)}"
         local = config.ORIGINAL / self.name / "current" / "reservoirs_featureserver.json"

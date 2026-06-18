@@ -22,25 +22,37 @@ dwr_cdss:
     apiKey raises rate limits.
 
 reclamation_rise:
-  base_url: "https://data.usbr.gov/rise/api"      # API host (portal is rise.reclamation.gov)
-  start_date: "1900-01-01"
+  base_url: "https://data.usbr.gov/rise/api"      # ✅ API host (portal is rise.reclamation.gov)
+  start_date: "1900-01-01"   # full history; RISE pulls are large (records back to the 1930s–50s)
   notes: >
-    JSON:API. A reservoir variable is a RISE "catalog item"; pull its
-    /result?itemId=<id> time series. Per-reservoir item ids live in
-    reservoirs.csv (rise_item_ids). Discover real ids via
-    /catalog-item?... or the RISE catalog UI. VERIFY item ids.
+    ✅ CONFIRMED live (2026-06). JSON:API; /result?itemId=<id> returns
+    data[].attributes.{dateTime, result}. Per-reservoir item ids in
+    reservoirs.csv (rise_item_ids). ENUMERATION (the reliable path, since
+    locationId[]/search filters on catalog-item are broken): location?search=<name>
+    -> pick the Lake/Reservoir match -> location/<id>?include=catalogRecords.catalogItems
+    -> map parameterName (Lake/Reservoir Storage|Elevation|Release - Total) to item
+    id. Implemented in reservoir.stations (parse_rise_location_items). 17/20 seed
+    reservoirs resolved; crystal/powell/taylor-park still TODO (search-term tuning).
 
+# ⚠️ FINDING (2026-06): Northern Water's ArcGIS Hub (data-nw.opendata.arcgis.com)
+# publishes ONLY 4 spatial-boundary datasets (Boundary, Inclusions, Subdistrict
+# Boundary/Inclusions) — NO reservoir-storage time series exist there. The C-BT
+# reservoirs Northern operates (Carter, Horsetooth, Granby, Shadow Mountain,
+# Willow Creek, Lake Estes, Marys Lake, Pinewood) are Reclamation-owned and their
+# storage is in RISE — they have been moved to the reclamation_rise source.
+# Grand Lake (natural) and Boulder Reservoir (municipal) have no open storage
+# series anywhere. northern_water is therefore NOT an active storage source; the
+# parser/field_map below stay only in case a real-time service is found later.
 northern_water:
   base_url: "https://data-nw.opendata.arcgis.com"
-  feature_service_url: "https://services.arcgis.com/REPLACE/arcgis/rest/services/Reservoirs/FeatureServer/0"  # VERIFY service URL
-  field_map:             # ArcGIS attribute names differ per service — VERIFY
+  feature_service_url: ""   # none found — hub has boundaries only (see finding above)
+  field_map:
     datetime: "DATE"
     reservoir_id: "STATION_ID"
     reservoir_name: "NAME"
-    variables:           # canonical variable -> ArcGIS field
+    variables:
       storage_af: "STORAGE_AF"
       elevation_ft: "ELEV_FT"
   notes: >
-    ArcGIS FeatureServer /query?where=1=1&outFields=*&f=json. Date fields are
-    epoch milliseconds. Confirm the exact service URL + field names from
-    data-nw.opendata.arcgis.com.
+    Boundaries-only hub; no reservoir-storage FeatureServer exists. C-BT reservoir
+    storage is sourced from RISE instead (see finding above).

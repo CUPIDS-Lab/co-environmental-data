@@ -20,6 +20,7 @@ All notable changes to Colorado Environmental Data Hub are recorded here. Format
 - Expanded the stub `README.md` into an L1 front door.
 - Restructured `ROADMAP.md` with an assignable "this level's work" tracking table linked to issues #2–#5; moved the catalog-hardening + pipeline items out of the deferred list into tracked work.
 - Full DWR enumeration ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)): `pipelines/reservoir-storage/data/lookups/reservoirs.csv` now holds all **140 live CDSS STORAGE telemetry stations** (pulled via `reservoir.stations`), replacing the 7-reservoir curated seed (the 7 majors keep their curated names).
+- RISE + Northern enumeration ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)): resolved RISE catalog **item ids for 17/20 reservoirs** via the confirmed `location → catalogRecords → catalogItems` traversal (implemented + tested in `reservoir.stations`). **Finding: Northern Water's ArcGIS hub has no reservoir-storage series** (4 boundary datasets only) — its C-BT reservoirs (Carter, Horsetooth, Granby, Shadow Mountain, Willow Creek, Lake Estes, Marys Lake, Pinewood) are Reclamation-owned and were **moved to RISE**. `reservoirs.csv` = 140 DWR + 20 RISE; `northern_water` is reclassified as a non-storage (boundaries-only) source.
 
 ### Deprecated
 
