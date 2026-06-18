@@ -18,14 +18,14 @@ against published totals.
 ```bash
 uv sync
 uv run pytest
-# notebooks/nb-01-retrieve → nb-02-audit → nb-03-cleanup → nb-04-publish-csv
+# then run notebooks/reservoir-pipeline.ipynb top to bottom
 ```
 
 ## Layout
 
 | Path | Responsibility |
 |---|---|
-| `notebooks/nb-0{1..4}-*.ipynb` | Thin orchestration + lab notebook (the human-facing pipeline). |
+| `notebooks/reservoir-pipeline.ipynb` | Thin orchestration — all four stages (retrieve/audit/cleanup/publish) in one notebook. |
 | `src/reservoir/schema.py` | `LONG_COLUMNS`, pandera `CanonicalLong`, `normalize_long`. |
 | `src/reservoir/sources.py` | `Source` ABC + `Artifact` + the 3 source clients (discover/ingest). |
 | `src/reservoir/config.py` | Paths, HTTP defaults, `get_sources()`, reads `lookups/sources.yaml`. |
@@ -70,9 +70,10 @@ schema + composite-key uniqueness, and the enumeration helpers
 
 ## Known limitations
 
-- The `⚠️ VERIFY` points are **not yet confirmed against the live APIs**: CDSS
-  endpoint/param codes + station abbrevs; RISE catalog **item ids**; Northern
-  Water FeatureServer **service URL** + field names. See `docs/survey-notes.md`.
+- **DWR/CDSS is confirmed live** (endpoint, params, abbrevs, `measValue`, the
+  404=zero-records convention) and returns data. The remaining `⚠️ VERIFY` points
+  are **RISE** catalog **item ids** and **Northern Water** FeatureServer **service
+  URL** + field names — both skip safely until filled. See `docs/survey-notes.md`.
 - `data/lookups/reservoirs.csv` is a curated **~37-reservoir seed** (15 DWR · 12
   RISE · 10 Northern), not yet the exhaustive Colorado list. The full enumeration
   is automated for the first live run via `reservoir.stations` (DWR station-list

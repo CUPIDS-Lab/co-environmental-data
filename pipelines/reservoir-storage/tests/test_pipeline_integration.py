@@ -16,7 +16,7 @@ from reservoir.sources import Artifact
 
 def _build(fixtures_dir: Path) -> pd.DataFrame:
     a_dwr = Artifact("dwr_cdss", "current", "u", fixtures_dir / "dwr_cdss_storage_sample.json",
-                     {"reservoir_id": "GREEN MOUNTAIN", "reservoir_name": "Green Mountain Reservoir",
+                     {"reservoir_id": "GRERESCO", "reservoir_name": "Green Mountain Reservoir",
                       "param": "STORAGE"})
     a_rise = Artifact("reclamation_rise", "current", "u",
                       fixtures_dir / "reclamation_rise_storage_sample.json",

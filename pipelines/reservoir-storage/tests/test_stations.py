@@ -13,9 +13,10 @@ def test_station_list_urls_build():
 
 def test_parse_dwr_stations(fixtures_dir):
     df = stations.parse_dwr_stations(fixtures_dir / "dwr_cdss_stations_sample.json")
+    # 3 stations in the fixture, but the DISCHRG one is filtered out (STORAGE only)
     assert len(df) == 2
     assert list(df.columns) == stations.SEED_COLUMNS
-    assert set(df["reservoir_id"]) == {"GREEN MOUNTAIN", "DILLON"}
+    assert set(df["reservoir_id"]) == {"GRERESCO", "DILRESCO"}
     assert df["source"].unique().tolist() == ["dwr_cdss"]
 
 

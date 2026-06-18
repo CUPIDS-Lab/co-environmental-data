@@ -29,16 +29,19 @@ uses* note in `AGENTS.md`.
 ```bash
 cd pipelines/reservoir-storage
 uv sync                      # create the pinned environment
-uv run pytest                # verify the scaffold (schema + parser fixture)
-uv run jupyter lab           # then run notebooks nb-01 → nb-04 in order
+uv run pytest                # verify the scaffold (17 tests, offline)
+uv run jupyter lab           # then run notebooks/reservoir-pipeline.ipynb top to bottom
 ```
 
-The four notebooks map to the four stages:
+`notebooks/reservoir-pipeline.ipynb` runs the four stages in one notebook:
 
-1. `nb-01-retrieve` — fetch raw responses → immutable `data/original/` + manifest.
-2. `nb-02-audit` — profile the retrieval (did we get data? shapes? counts?).
-3. `nb-03-cleanup` — parse → tidy long → validate → `data/processed/*.csv`.
-4. `nb-04-publish-csv` — finalize the CSV deliverable + audit summary + reconcile.
+1. **Retrieve** — fetch raw responses → immutable `data/original/` + manifest.
+2. **Audit** — profile the retrieval (did we get data? shapes? counts?).
+3. **Cleanup** — parse → tidy long → validate → `data/processed/*.csv`.
+4. **Publish** — finalize the CSV deliverable + audit summary + reconcile.
+
+DWR/CDSS returns live data today; RISE and Northern Water are wired but skip until
+their `⚠️ VERIFY` ids/URL are filled (see `docs/survey-notes.md`).
 
 ## How to load (consumers)
 

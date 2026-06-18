@@ -8,15 +8,18 @@
 
 dwr_cdss:
   base_url: "https://dwr.state.co.us/Rest/GET/api/v2"
-  timeseries_endpoint: "telemetrystations/telemetrytimeseriesday/"   # VERIFY endpoint
-  start_date: "1900-01-01"
-  parameters:            # canonical variable -> CDSS parameter code  (VERIFY codes)
+  timeseries_endpoint: "telemetrystations/telemetrytimeseriesday/"   # ✅ confirmed live
+  start_date: ""         # empty = full history. ✅ a too-early startDate -> 404/zero records
+  parameters:            # canonical variable -> CDSS parameter code  # ✅ confirmed live
     storage_af: "STORAGE"
     elevation_ft: "ELEV"
   notes: >
-    CDSS returns {"ResultList": [...], "ResultCount": N, "PageCount": M}.
-    Paging via pageSize/pageIndex; format=json|csv; apiKey raises rate limits.
-    Reservoir telemetry stations are identified by `abbrev`.
+    ✅ CONFIRMED against the live API (2026-06): the value is `measValue` (not
+    `value`); the date is `measDate`; abbrevs are codes (GREEN MOUNTAIN RESERVOIR
+    -> GRERESCO, DILLON -> DILRESCO, …). CDSS returns HTTP 404 with body "returns
+    zero records from CDSS" for any empty query — handled as no-data, not an
+    error. Omit startDate for full history (descending); if set, format MM/DD/YYYY.
+    apiKey raises rate limits.
 
 reclamation_rise:
   base_url: "https://data.usbr.gov/rise/api"      # API host (portal is rise.reclamation.gov)

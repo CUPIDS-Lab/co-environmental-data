@@ -53,13 +53,17 @@ def parse_dwr_stations(path: Path) -> pd.DataFrame:
     payload = json.loads(Path(path).read_text())
     rows = []
     for r in payload.get("ResultList", []) or []:
+        # The API's `parameter` query filter is unreliable; filter client-side to
+        # the reservoir-storage stations.
+        if (r.get("parameter") or "") != "STORAGE":
+            continue
         rows.append({
             "source": "dwr_cdss",
             "reservoir_id": r.get("abbrev"),
             "reservoir_name": r.get("stationName"),
             "basin": r.get("waterDistrict") or r.get("division"),
             "rise_item_ids": "",
-            "notes": "auto-enumerated (CDSS telemetrystation, parameter=STORAGE)",
+            "notes": "auto-enumerated (CDSS telemetrystation, STORAGE)",
         })
     return pd.DataFrame(rows, columns=SEED_COLUMNS)
 
