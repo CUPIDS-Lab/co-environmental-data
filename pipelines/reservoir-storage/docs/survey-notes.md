@@ -63,6 +63,20 @@ The request machinery is correct; these specifics are the first-run confirmation
       (via `/catalog-item` or the RISE catalog UI); fill `reservoirs.csv:rise_item_ids`.
 - [ ] **Northern Water:** confirm the FeatureServer **service URL** and the ArcGIS
       **field names** (`field_map` in `sources.yaml`).
-- [ ] Enumerate the **full** Colorado reservoir list per source (the seed in
-      `reservoirs.csv` is a starter set, not exhaustive).
+- [ ] Enumerate the **full** Colorado reservoir list per source. The seed in
+      `reservoirs.csv` is a curated ~37-reservoir starter; `reservoir.stations`
+      automates the full pull — call `stations.station_list_url(slug)`, fetch it,
+      then `stations.parse_dwr_stations(...)` → `stations.merge_into_seed(...)`.
+      DWR station parsing is implemented + tested; add the RISE/Northern station
+      parsers here once their catalog/FeatureServer responses are confirmed.
 - [ ] Fill `reconcile()` expected totals from each agency's current-conditions page.
+
+## Enumeration (how the seed gets to "full")
+
+`reservoir.stations` builds each source's catalog/station-list query:
+- **DWR/CDSS:** `telemetrystations/telemetrystation/?parameter=STORAGE` → reservoirs
+  reporting storage; parsed by `parse_dwr_stations` (✅ implemented + tested).
+- **RISE:** `/catalog-item?...` filtered to the reservoir-storage parameter (CO);
+  parse the returned catalog items into `rise_item_ids` per reservoir × variable.
+- **Northern Water:** the FeatureServer `/query` returns all reservoirs in one call;
+  parse `features[].attributes` into rows (the same `field_map` the parser uses).

@@ -1,0 +1,6 @@
+{
+  "features": [
+    {"attributes": {"DATE": 1781913600000, "STATION_ID": "CARTER", "NAME": "Carter Lake", "STORAGE_AF": 108900.0, "ELEV_FT": 5759.2}},
+    {"attributes": {"DATE": 1781913600000, "STATION_ID": "HORSETOOTH", "NAME": "Horsetooth Reservoir", "STORAGE_AF": 151000.0, "ELEV_FT": 5430.1}}
+  ]
+}

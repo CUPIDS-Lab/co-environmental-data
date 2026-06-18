@@ -55,6 +55,12 @@ class Source(ABC):
     def ingest(self, artifact: Artifact) -> pd.DataFrame:
         """Read the local saved response and return a canonical-schema frame."""
 
+    def enumeration_url(self) -> str:
+        """Upstream catalog/station-list query that enumerates this source's
+        reservoirs (see ``reservoir.stations``). Used to refresh the seed list."""
+        from reservoir import stations
+        return stations.station_list_url(self.name)
+
     # shared helper -----------------------------------------------------------
     def _stations(self) -> pd.DataFrame:
         """Starter reservoir list for this source, from the crosswalk seed.
@@ -119,6 +125,8 @@ class ReclamationRise(Source):
             import json
             item_ids = json.loads(row.get("rise_item_ids") or "{}")  # ⚠️ VERIFY item IDs
             for _var, item_id in item_ids.items():
+                if not item_id:
+                    continue  # placeholder not yet filled — skip until the item id is confirmed
                 q = {"itemId": item_id, "dateTime[after]": start, "page[size]": 10000}
                 url = f"{base}/result?{urlencode(q)}"
                 local = config.ORIGINAL / self.name / "current" / f"item_{item_id}.json"
