@@ -1,16 +1,19 @@
 """Parser for CO DWR / CDSS telemetry daily time series.
 
-The CDSS REST API v2 returns::
+The CDSS REST API v2 ``telemetrytimeseriesday`` returns (confirmed against the
+live API)::
 
     {"ResultList": [
-        {"abbrev": "GRNRES", "parameter": "STORAGE",
-         "measDate": "2026-06-17T00:00:00", "value": 539122.0,
-         "flagA": "", "flagB": ""},
+        {"abbrev": "GRERESCO", "parameter": "STORAGE",
+         "measDate": "2025-06-18T00:00:00", "measValue": 138214.0,
+         "measUnit": "acft", "flagA": "", "flagB": "", "measCount": 1,
+         "modified": "..."},
         ...],
      "ResultCount": 1234, "PageCount": 1}
 
-We map the CDSS ``parameter`` code to a canonical ``variable`` and reshape to
-tidy long. ``flagA``/``flagB`` carry CDSS quality flags → ``qa_flag``.
+The measurement is ``measValue`` (not ``value``); the date is ``measDate``. We
+map the CDSS ``parameter`` code to a canonical ``variable`` and reshape to tidy
+long. ``flagA``/``flagB`` carry CDSS quality flags → ``qa_flag``.
 """
 from __future__ import annotations
 
@@ -46,7 +49,7 @@ def parse(path: Path, artifact: Artifact) -> pd.DataFrame:
             "reservoir_name": artifact.metadata.get("reservoir_name"),
             "datetime": r.get("measDate") or r.get("measDateTime"),
             "variable": variable,
-            "value": r.get("value"),
+            "value": r.get("measValue"),  # CDSS field is measValue, not value
             "unit": schema.VARIABLES[variable],
             "qa_flag": flag or pd.NA,
             "concept": concept,

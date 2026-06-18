@@ -57,8 +57,13 @@ insurance, and a tidy, documented CSV is what a newsroom can actually cite.
 The request machinery is correct; these specifics are the first-run confirmation
 (all marked `VERIFY` in `data/lookups/sources.yaml` and `sources.py`):
 
-- [ ] **DWR/CDSS:** confirm the telemetry timeseries endpoint + parameter codes
-      (`STORAGE`, `ELEV`) and the real station `abbrev`s for the seed reservoirs.
+- [x] **DWR/CDSS:** ✅ **confirmed live (2026-06).** Endpoint
+      `telemetrystations/telemetrytimeseriesday`; params `STORAGE`/`ELEV`; the value
+      is `measValue` (not `value`); abbrevs are codes (Green Mountain → `GRERESCO`,
+      Dillon → `DILRESCO`, Chatfield → `CHARESCO`, Cheesman → `CHERESCO`, Spinney →
+      `SPIRESCO`, Rifle Gap → `RIFRESCO`). **CDSS returns HTTP 404 for any zero-record
+      query** — handled as no-data. Omit `startDate` for full history (a too-early
+      startDate triggers the 404). A live pull returned ~4,374 rows across 6 reservoirs.
 - [ ] **RISE:** discover the real catalog **item ids** per reservoir × variable
       (via `/catalog-item` or the RISE catalog UI); fill `reservoirs.csv:rise_item_ids`.
 - [ ] **Northern Water:** confirm the FeatureServer **service URL** and the ArcGIS

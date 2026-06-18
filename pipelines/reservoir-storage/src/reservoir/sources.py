@@ -81,18 +81,23 @@ class DwrCdss(Source):
     def discover(self) -> Iterator[Artifact]:
         cfg = config.load_sources_config()[self.name]
         base = cfg["base_url"].rstrip("/")
-        endpoint = cfg["timeseries_endpoint"]           # e.g. telemetrystations/telemetrytimeseriesday/
+        endpoint = cfg["timeseries_endpoint"]           # telemetrystations/telemetrytimeseriesday/
         params_for = cfg["parameters"]                  # {"storage_af": "STORAGE", "elevation_ft": "ELEV"}
-        start = cfg.get("start_date", "1900-01-01")
+        # No startDate by default: CDSS returns zero records (HTTP 404) when
+        # startDate predates a station's record, and a large pageSize returns the
+        # full available history regardless. Set start_date in sources.yaml
+        # (format MM/DD/YYYY) only to window a query.
+        start = cfg.get("start_date") or ""
         for _, row in self._stations().iterrows():
             for _var, abbrev_param in params_for.items():
                 q = {
                     "format": "json",
-                    "abbrev": row["reservoir_id"],     # CDSS station abbreviation
-                    "parameter": abbrev_param,         # ⚠️ VERIFY param codes (STORAGE/ELEV)
-                    "startDate": start,
+                    "abbrev": row["reservoir_id"],     # CDSS station abbreviation (e.g. GRERESCO)
+                    "parameter": abbrev_param,         # STORAGE | ELEV (confirmed live)
                     "pageSize": 50000,
                 }
+                if start:
+                    q["startDate"] = start
                 if config.CDSS_API_KEY:
                     q["apiKey"] = config.CDSS_API_KEY
                 url = f"{base}/{endpoint}?{urlencode(q)}"

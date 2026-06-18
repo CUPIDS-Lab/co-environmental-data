@@ -1,19 +1,11 @@
 source,reservoir_id,reservoir_name,basin,rise_item_ids,notes
-dwr_cdss,GREEN MOUNTAIN,Green Mountain Reservoir,Colorado,,VERIFY CDSS abbrev
-dwr_cdss,DILLON,Dillon Reservoir,Blue,,VERIFY CDSS abbrev
-dwr_cdss,WILLIAMS FORK,Williams Fork Reservoir,Colorado,,VERIFY CDSS abbrev
-dwr_cdss,CHATFIELD,Chatfield Reservoir,South Platte,,VERIFY CDSS abbrev
-dwr_cdss,CHEESMAN,Cheesman Reservoir,South Platte,,VERIFY CDSS abbrev
-dwr_cdss,ANTERO,Antero Reservoir,South Platte,,VERIFY CDSS abbrev
-dwr_cdss,ELEVEN MILE,Eleven Mile Reservoir,South Platte,,VERIFY CDSS abbrev
-dwr_cdss,SPINNEY,Spinney Mountain Reservoir,South Platte,,VERIFY CDSS abbrev
-dwr_cdss,GROSS,Gross Reservoir,South Boulder,,VERIFY CDSS abbrev
-dwr_cdss,WOLFORD,Wolford Mountain Reservoir,Colorado,,VERIFY CDSS abbrev
-dwr_cdss,STAGECOACH,Stagecoach Reservoir,Yampa,,VERIFY CDSS abbrev
-dwr_cdss,RIFLE GAP,Rifle Gap Reservoir,Colorado,,VERIFY CDSS abbrev
-dwr_cdss,VEGA,Vega Reservoir,Colorado,,VERIFY CDSS abbrev
-dwr_cdss,TRINIDAD,Trinidad Reservoir,Arkansas,,VERIFY CDSS abbrev
-dwr_cdss,STANDLEY,Standley Lake,South Platte,,VERIFY CDSS abbrev
+dwr_cdss,GRERESCO,Green Mountain Reservoir,Colorado,,confirmed CDSS abbrev (telemetry STORAGE)
+dwr_cdss,DILRESCO,Dillon Reservoir,Blue,,confirmed CDSS abbrev
+dwr_cdss,CHARESCO,Chatfield Reservoir,South Platte,,confirmed CDSS abbrev
+dwr_cdss,CHERESCO,Cheesman Reservoir,South Platte,,confirmed CDSS abbrev
+dwr_cdss,SPIRESCO,Spinney Mountain Reservoir,South Platte,,confirmed CDSS abbrev
+dwr_cdss,GROSRECO,Gross Reservoir,South Boulder,,confirmed CDSS abbrev
+dwr_cdss,RIFRESCO,Rifle Gap Reservoir,Colorado,,confirmed CDSS abbrev
 reclamation_rise,blue-mesa,Blue Mesa Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
 reclamation_rise,morrow-point,Morrow Point Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
 reclamation_rise,crystal,Crystal Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids

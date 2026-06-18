@@ -13,7 +13,7 @@ def _artifact(path: Path) -> Artifact:
     return Artifact(
         source="dwr_cdss", vintage="current", url="https://example/test",
         local_path=path,
-        metadata={"reservoir_id": "GREEN MOUNTAIN",
+        metadata={"reservoir_id": "GRERESCO",
                   "reservoir_name": "Green Mountain Reservoir", "param": "STORAGE"},
     )
 
@@ -31,5 +31,6 @@ def test_known_value(fixtures_dir):
     fx = fixtures_dir / "dwr_cdss_storage_sample.json"
     df = dwr_cdss.parse(fx, _artifact(fx))
     latest = df.sort_values("datetime").iloc[-1]
-    assert latest["value"] == 138214.0          # known from the fixture
-    assert str(latest["datetime"].date()) == "2026-06-17"
+    assert latest["value"] == 138214.0          # measValue from the fixture
+    assert latest["reservoir_id"] == "GRERESCO"  # parser reads abbrev from the response
+    assert str(latest["datetime"].date()) == "2025-06-18"

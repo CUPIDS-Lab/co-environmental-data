@@ -23,7 +23,9 @@ All notable changes to Colorado Environmental Data Hub are recorded here. Format
 ### Deprecated
 
 ### Removed
+- Merged the four reservoir notebooks (`nb-01`…`nb-04`) into one `pipelines/reservoir-storage/notebooks/reservoir-pipeline.ipynb`.
 
 ### Fixed
+- Reservoir-storage live retrieval ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)): CDSS returns **HTTP 404 for zero-record queries**, which was crashing `fetch.fetch_all()`. `fetch` now treats 404 as no-data (durable, not fatal, per-artifact error log); also corrected the parser field (`measValue` not `value`), the real station abbrevs (`GRERESCO`, …), and dropped the too-early default `startDate`. A live DWR pull now returns ~4,374 rows across 6 reservoirs.
 
 ### Security
