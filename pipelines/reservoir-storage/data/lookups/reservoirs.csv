@@ -3,10 +3,36 @@ dwr_cdss,GREEN MOUNTAIN,Green Mountain Reservoir,Colorado,,VERIFY CDSS abbrev
 dwr_cdss,DILLON,Dillon Reservoir,Blue,,VERIFY CDSS abbrev
 dwr_cdss,WILLIAMS FORK,Williams Fork Reservoir,Colorado,,VERIFY CDSS abbrev
 dwr_cdss,CHATFIELD,Chatfield Reservoir,South Platte,,VERIFY CDSS abbrev
+dwr_cdss,CHEESMAN,Cheesman Reservoir,South Platte,,VERIFY CDSS abbrev
+dwr_cdss,ANTERO,Antero Reservoir,South Platte,,VERIFY CDSS abbrev
+dwr_cdss,ELEVEN MILE,Eleven Mile Reservoir,South Platte,,VERIFY CDSS abbrev
+dwr_cdss,SPINNEY,Spinney Mountain Reservoir,South Platte,,VERIFY CDSS abbrev
+dwr_cdss,GROSS,Gross Reservoir,South Boulder,,VERIFY CDSS abbrev
+dwr_cdss,WOLFORD,Wolford Mountain Reservoir,Colorado,,VERIFY CDSS abbrev
+dwr_cdss,STAGECOACH,Stagecoach Reservoir,Yampa,,VERIFY CDSS abbrev
+dwr_cdss,RIFLE GAP,Rifle Gap Reservoir,Colorado,,VERIFY CDSS abbrev
+dwr_cdss,VEGA,Vega Reservoir,Colorado,,VERIFY CDSS abbrev
+dwr_cdss,TRINIDAD,Trinidad Reservoir,Arkansas,,VERIFY CDSS abbrev
+dwr_cdss,STANDLEY,Standley Lake,South Platte,,VERIFY CDSS abbrev
 reclamation_rise,blue-mesa,Blue Mesa Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,morrow-point,Morrow Point Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,crystal,Crystal Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
 reclamation_rise,navajo,Navajo Reservoir,San Juan,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
 reclamation_rise,ruedi,Ruedi Reservoir,Fryingpan,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-reclamation_rise,powell,Lake Powell (Glen Canyon),Colorado,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
-northern_water,carter,Carter Lake,C-BT,,bulk FeatureServer query; row documentary only
-northern_water,horsetooth,Horsetooth Reservoir,C-BT,,bulk FeatureServer query; row documentary only
-northern_water,granby,Lake Granby,C-BT,,bulk FeatureServer query; row documentary only
+reclamation_rise,pueblo,Pueblo Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,turquoise,Turquoise Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,twin-lakes,Twin Lakes Reservoir,Arkansas,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,taylor-park,Taylor Park Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,mcphee,McPhee Reservoir,Dolores,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids
+reclamation_rise,powell,Lake Powell (Glen Canyon),Colorado,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY RISE item ids; basin-wide
+reclamation_rise,flaming-gorge,Flaming Gorge Reservoir,Green,"{""storage_af"": null, ""elevation_ft"": null}",VERIFY; UC region (WY/UT)
+northern_water,carter,Carter Lake,C-BT,,bulk FeatureServer query; documentary
+northern_water,horsetooth,Horsetooth Reservoir,C-BT,,bulk FeatureServer query; documentary
+northern_water,granby,Lake Granby,C-BT,,bulk FeatureServer query; documentary
+northern_water,shadow-mountain,Shadow Mountain Reservoir,C-BT,,bulk FeatureServer query; documentary
+northern_water,grand-lake,Grand Lake,C-BT,,bulk FeatureServer query; documentary
+northern_water,willow-creek,Willow Creek Reservoir,C-BT,,bulk FeatureServer query; documentary
+northern_water,boulder,Boulder Reservoir,C-BT,,bulk FeatureServer query; documentary
+northern_water,lake-estes,Lake Estes,C-BT,,bulk FeatureServer query; documentary
+northern_water,marys-lake,Marys Lake,C-BT,,bulk FeatureServer query; documentary
+northern_water,pinewood,Pinewood Reservoir,C-BT,,bulk FeatureServer query; documentary

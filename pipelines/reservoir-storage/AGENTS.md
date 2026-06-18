@@ -33,6 +33,7 @@ uv run pytest
 | `src/reservoir/parsers/*.py` | Per-source response → tidy long (`dwr_cdss`, `reclamation_rise`, `northern_water`). |
 | `src/reservoir/clean.py` | Orchestrator: ingest all → concat → validate → write CSV + provenance. |
 | `src/reservoir/audit.py` | `profile_raw`, `audit_processed`, `variables_report`, `reconcile`. |
+| `src/reservoir/stations.py` | Reservoir enumeration: build each source's catalog/station-list URL + parse it into the seed (`merge_into_seed`). |
 | `src/reservoir/provenance.py` | Per-extract `provenance.csv` writer + sha256. |
 | `data/{original,processed,audit,lookups}/` | Immutable raw · deliverable CSV · reports · crosswalks/config. |
 | `docs/` | Survey notes, data dictionary, filter-pivot recipes. |
@@ -59,12 +60,26 @@ uv run pytest
   `data/audit/extraction_errors.json`; the run continues. `clean.run(fail_on_empty=True)`
   turns a zero-row result (silent regression) into a hard error.
 
+## Test coverage
+
+All three parsers are fixture-tested (`tests/test_{dwr_cdss,reclamation_rise,northern_water}.py`),
+plus a **multi-source integration test** (`test_pipeline_integration.py`) that
+concatenates one fixture per source and asserts the combined frame satisfies the
+schema + composite-key uniqueness, and the enumeration helpers
+(`test_stations.py`). 17 tests; the suite runs offline with no network.
+
 ## Known limitations
 
-- The three `⚠️ VERIFY` points are **not yet confirmed against the live APIs**:
-  CDSS endpoint/param codes + station abbrevs; RISE catalog **item ids**; Northern
+- The `⚠️ VERIFY` points are **not yet confirmed against the live APIs**: CDSS
+  endpoint/param codes + station abbrevs; RISE catalog **item ids**; Northern
   Water FeatureServer **service URL** + field names. See `docs/survey-notes.md`.
-- `data/lookups/reservoirs.csv` is a **starter** set, not the full Colorado list.
+- `data/lookups/reservoirs.csv` is a curated **~37-reservoir seed** (15 DWR · 12
+  RISE · 10 Northern), not yet the exhaustive Colorado list. The full enumeration
+  is automated for the first live run via `reservoir.stations` (DWR station-list
+  parsing is implemented + tested; RISE/Northern enumeration URLs build, their
+  response parsers land once the VERIFY endpoints are confirmed).
+- RISE `discover()` skips reservoirs whose `rise_item_ids` are still null
+  placeholders, so a live run is safe before every id is filled.
 - `reconcile()` has no expected totals filled yet.
 - Single response shape per source assumed (no vintage bands yet); add
   `parsers/<source>_<vintage>.py` if a source's API response shape changes.

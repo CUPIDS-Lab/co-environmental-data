@@ -1,0 +1,8 @@
+{
+  "ResultList": [
+    {"abbrev": "GREEN MOUNTAIN", "stationName": "Green Mountain Reservoir", "waterDistrict": 36, "latitude": 39.8826, "longitude": -106.3314},
+    {"abbrev": "DILLON", "stationName": "Dillon Reservoir", "waterDistrict": 36, "latitude": 39.6286, "longitude": -106.0561}
+  ],
+  "ResultCount": 2,
+  "PageCount": 1
+}

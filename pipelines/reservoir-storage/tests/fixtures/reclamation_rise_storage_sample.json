@@ -1,0 +1,7 @@
+{
+  "data": [
+    {"type": "Result", "attributes": {"dateTime": "2026-06-15T00:00:00", "result": 561500.0}},
+    {"type": "Result", "attributes": {"dateTime": "2026-06-16T00:00:00", "result": 561650.0}},
+    {"type": "Result", "attributes": {"dateTime": "2026-06-17T00:00:00", "result": 561800.0}}
+  ]
+}
