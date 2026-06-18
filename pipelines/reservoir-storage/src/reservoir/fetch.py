@@ -64,10 +64,48 @@ def fetch_artifact(sess, art: Artifact, *, force: bool = False) -> Path | None:
     if resp.status_code == 404:
         return None  # zero records — not an error (CDSS/RISE convention)
     resp.raise_for_status()  # other 4xx/5xx are real failures (caught by fetch_all)
-    art.local_path.write_bytes(resp.content)
-    if not getattr(resp, "from_cache", False):
-        time.sleep(config.RATE_LIMIT_SECONDS)
+    if art.metadata.get("paginate") == "jsonapi":
+        _save_paginated(sess, art, resp)        # full history may span many pages
+    else:
+        art.local_path.write_bytes(resp.content)
+        if not getattr(resp, "from_cache", False):
+            time.sleep(config.RATE_LIMIT_SECONDS)
     return art.local_path
+
+
+def _save_paginated(sess, art: Artifact, first_resp) -> None:
+    """Follow JSON:API ``links.next`` and merge every page's ``data[]`` into one
+    saved file. RISE caps a page at 10,000 rows, so a full reservoir history
+    (e.g. Blue Mesa storage ≈ 22k daily values back to 1952) spans several pages.
+
+    Uses a plain (non-cached) session for the page walk — the ``requests-cache``
+    session returns an empty body for these large paginated responses.
+    """
+    import requests
+    from urllib.parse import urljoin
+
+    plain = requests.Session()
+    plain.headers.update({"User-Agent": config.USER_AGENT})
+    payload = first_resp.json()
+    data = list(payload.get("data", []) or [])
+    nxt = (payload.get("links") or {}).get("next")
+    pages = 1
+    while nxt and pages < 5000:
+        time.sleep(config.RATE_LIMIT_SECONDS)
+        resp = _get_with_retry(plain, urljoin(art.url, nxt))
+        if resp.status_code != 200:
+            break
+        try:
+            pj = resp.json()
+        except ValueError:
+            break
+        rows = pj.get("data", []) or []
+        if not rows:
+            break
+        data.extend(rows)
+        nxt = (pj.get("links") or {}).get("next")
+        pages += 1
+    art.local_path.write_text(json.dumps({"data": data}))
 
 
 def fetch_all(*, sources: list[str] | None = None, force: bool = False) -> list[Artifact]:

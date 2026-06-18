@@ -29,5 +29,6 @@ All notable changes to Colorado Environmental Data Hub are recorded here. Format
 
 ### Fixed
 - Reservoir-storage live retrieval ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)): CDSS returns **HTTP 404 for zero-record queries**, which was crashing `fetch.fetch_all()`. `fetch` now treats 404 as no-data (durable, not fatal, per-artifact error log); also corrected the parser field (`measValue` not `value`), the real station abbrevs (`GRERESCO`, …), and dropped the too-early default `startDate`. A live DWR pull now returns ~4,374 rows across 6 reservoirs.
+- **Full historical scope** ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)): the pipeline was returning only the past ~year per site. Two root causes fixed: **DWR** needs *both* `startDate`+`endDate` (no dates → last 365 days; startDate alone → 404) — now sends an early start + `endDate=today` so CDSS auto-clamps to each site's period of record; **RISE** silently capped series at 10,000 rows (used the wrong page param `page[size]`, no pagination) — now uses `itemsPerPage` and the fetcher follows `links.next`. Verified: Green Mountain 14,187 rows back to 1986, Blue Mesa 22,053 back to 1966. `normalize_long` floors to day-resolution for uniform serialization; new `audit.coverage_report` documents each site's span (different sites, different coverage).
 
 ### Security
