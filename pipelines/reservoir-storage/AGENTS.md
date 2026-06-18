@@ -33,7 +33,7 @@ uv run pytest
 | `src/reservoir/schema.py` | `LONG_COLUMNS`, pandera `CanonicalLong`, `normalize_long`. |
 | `src/reservoir/sources.py` | `Source` ABC + `Artifact` + the 3 source clients (discover/ingest). |
 | `src/reservoir/config.py` | Paths, HTTP defaults, `get_sources()`, reads `lookups/sources.yaml`. |
-| `src/reservoir/fetch.py` | Idempotent downloader (requests-cache + tenacity); writes `data/original/`. |
+| `src/reservoir/fetch.py` | Idempotent downloader (requests-cache + tenacity); RISE pagination; throttled progress reporting; writes `data/original/`. |
 | `src/reservoir/parsers/*.py` | Per-source response → tidy long (`dwr_cdss`, `reclamation_rise`, `northern_water`). |
 | `src/reservoir/clean.py` | Orchestrator: ingest all → concat → validate → write CSV + provenance. |
 | `src/reservoir/audit.py` | `profile_raw`, `audit_processed`, `coverage_report` (per-site period of record), `variables_report`, `reconcile`. |

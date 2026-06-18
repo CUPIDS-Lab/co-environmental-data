@@ -108,41 +108,110 @@ def _save_paginated(sess, art: Artifact, first_resp) -> None:
     art.local_path.write_text(json.dumps({"data": data}))
 
 
-def fetch_all(*, sources: list[str] | None = None, force: bool = False) -> list[Artifact]:
+PROGRESS_INTERVAL = 2.0  # seconds between throttled progress lines
+
+
+def _progress_message(ev: dict) -> str:
+    """Render one progress event as a human line (pure; unit-tested)."""
+    ph = ev.get("phase")
+    if ph == "start":
+        srcs = ", ".join(ev["sources"])
+        return f"⏳ fetching ~{ev['total']} series from {len(ev['sources'])} source(s): {srcs}"
+    if ph == "source":
+        return f"  → {ev['source']}: {ev['count']} series"
+    if ph == "tick":
+        pct = 100 * ev["done"] // max(1, ev["total"])
+        res = ev.get("reservoir") or ""
+        return (f"    {ev['done']}/{ev['total']} ({pct}%) · {ev['fetched']} ok · "
+                f"{ev['no_data']} no-data · {ev['errors']} err  {res}").rstrip()
+    if ph == "done":
+        return (f"✓ fetched {ev['fetched']} · {ev['no_data']} no-data (404) · "
+                f"{ev['errors']} errors (see data/audit/fetch_errors.json)")
+    return ""
+
+
+def _make_emitter(progress):
+    """Resolve the ``progress`` argument into an emit(event) callable.
+
+    ``True`` → throttled printer (notebook- and terminal-safe); ``False``/``None``
+    → silent; a callable → receives each raw event dict (for tqdm/structlog/tests).
+    """
+    if not progress:
+        return lambda ev: None
+    if callable(progress):
+        return progress
+    state = {"last": 0.0}
+
+    def emit(ev):
+        ph = ev.get("phase")
+        if ph in ("start", "source", "done"):
+            print(_progress_message(ev))
+            state["last"] = time.monotonic()
+        elif ph == "tick":
+            now = time.monotonic()
+            if now - state["last"] >= PROGRESS_INTERVAL:   # throttle: not every object
+                state["last"] = now
+                print(_progress_message(ev))
+
+    return emit
+
+
+def fetch_all(*, sources: list[str] | None = None, force: bool = False,
+              progress=True) -> list[Artifact]:
     """Discover + download every artifact; refresh the sha256 manifest.
 
     Never raises on a single bad artifact: a 404 (no data) is skipped silently,
     any other error is logged to ``data/audit/fetch_errors.json`` and the run
     continues. Returns the list of artifacts that actually produced a file.
+
+    ``progress`` reports how far along the run is — important because a full live
+    pull fans out to hundreds of series and RISE histories paginate. It is *not* a
+    deterministic bar: lines are throttled to ~one every few seconds and name the
+    current source/reservoir + running counts. Pass ``progress=False`` to silence,
+    or a callable to receive raw event dicts (e.g. drive a tqdm bar).
     """
     sess = _session()
     registry = config.get_sources()
+    emit = _make_emitter(progress)
+
+    # discover() is cheap (builds URLs, no I/O) — materialize it so we have a
+    # denominator for "X/Y" without it being a hard promise about timing.
+    plan = [(slug, src, list(src.discover()))
+            for slug, src in registry.items()
+            if not sources or slug in sources]
+    total = sum(len(arts) for _, _, arts in plan)
+    emit({"phase": "start", "total": total, "sources": [s for s, _, _ in plan]})
+
     fetched: list[Artifact] = []
     manifest: dict[str, str] = {}
     errors: list[dict] = []
     no_data = 0
+    done = 0
 
-    for slug, src in registry.items():
-        if sources and slug not in sources:
-            continue
-        for art in src.discover():
+    for slug, src, arts in plan:
+        emit({"phase": "source", "source": slug, "count": len(arts)})
+        for art in arts:
+            emit({"phase": "tick", "done": done, "total": total, "fetched": len(fetched),
+                  "no_data": no_data, "errors": len(errors),
+                  "reservoir": art.metadata.get("reservoir_name")})
             try:
                 path = fetch_artifact(sess, art, force=force)
             except Exception as err:  # durable, not fatal
                 errors.append({"source": slug, "url": art.url,
                                "error": f"{type(err).__name__}: {err}",
                                "at": _dt.datetime.utcnow().isoformat() + "Z"})
-                continue
-            if path is None:
-                no_data += 1
-                continue
-            manifest[str(path.relative_to(config.ORIGINAL))] = provenance.sha256_file(path)
-            fetched.append(art)
+                path = None
+            else:
+                if path is None:
+                    no_data += 1
+                else:
+                    manifest[str(path.relative_to(config.ORIGINAL))] = provenance.sha256_file(path)
+                    fetched.append(art)
+            done += 1
 
     config.MANIFEST.parent.mkdir(parents=True, exist_ok=True)
     config.MANIFEST.write_text(json.dumps(manifest, indent=2, sort_keys=True))
     config.AUDIT.mkdir(parents=True, exist_ok=True)
     (config.AUDIT / "fetch_errors.json").write_text(json.dumps(errors, indent=2))
-    print(f"fetched {len(fetched)} artifacts · {no_data} returned no data (404) · "
-          f"{len(errors)} errors (see data/audit/fetch_errors.json)")
+    emit({"phase": "done", "fetched": len(fetched), "no_data": no_data, "errors": len(errors)})
     return fetched
