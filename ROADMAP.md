@@ -12,8 +12,9 @@ The actionable-now slice of the roadmap: harden the catalog, then stand up the p
 | ☐ | Quarantine the spurious NREL `nlr.gov` claim | _unassigned_ | High | S | `nrel.gov` confirmed canonical; `nlr.gov` absent everywhere | **Yes** | L1 | [#3](https://github.com/CUPIDS-Lab/co-environmental-data/issues/3) |
 | ☐ | Add `match_hosts` / `match_keywords` to the catalog | @brianckeegan | High | M | both fields on every source; matcher unit-tested | **Yes** | L2 | [#4](https://github.com/CUPIDS-Lab/co-environmental-data/issues/4) |
 | ☐ | Build the L2 reproducible pipeline (cejcorpus stubs) | @brianckeegan | Med | L | env + package + `nb-00…09` stubs + tests + CI dry-run | No | L2 | [#5](https://github.com/CUPIDS-Lab/co-environmental-data/issues/5) |
+| ☐ | Liberate CO water data — reservoir, streamflow, snowpack (*Water data liberation* milestone) | _unassigned_ · help-wanted | High | L | series retrieved, tidied, documented, reconciled vs. source, republished to Datasette | No | L2 | [#7](https://github.com/CUPIDS-Lab/co-environmental-data/issues/7) |
 
-**Tracking:** this checklist is the source of truth for the current work. It is mirrored as GitHub Issues #2–#5 (and, once the `project` scope is granted, the **Colorado Environmental Data Hub** Project board) — see `PROJECT-MANAGEMENT.md`. Edit this checklist and re-run `.github/seed-github.sh` (or `data-project track`) to create-or-update the issues idempotently; the checklist stays canonical. The two `good-first-issue` rows are left unassigned for incoming undergraduate contributors.
+**Tracking:** this checklist is the source of truth for the current work. It is mirrored as GitHub Issues #2–#5 and #7 on the **Colorado Environmental Data Hub** [Project board](https://github.com/orgs/CUPIDS-Lab/projects/1) — see `PROJECT-MANAGEMENT.md`. Edit this checklist and re-run `.github/seed-github.sh` (or `data-project track`) to create-or-update the issues idempotently; the checklist stays canonical. The two `good-first-issue` rows are left unassigned for incoming undergraduate contributors.
 
 ## Deferred items
 

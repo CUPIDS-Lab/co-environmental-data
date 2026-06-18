@@ -11,6 +11,7 @@ All notable changes to Colorado Environmental Data Hub are recorded here. Format
 - `ROADMAP.md` recording the deferred L2–L5 program (pipeline, collaboration, responsible-data, open-knowledge publication).
 - `AGENTS.md`, `decision-log.md`, data-aware `.gitignore`, and `.gitattributes`.
 - GitHub project-management layer (Track mode): 4 tracked issues ([#2–#5](https://github.com/CUPIDS-Lab/co-environmental-data/issues)), the `L1-L2: catalog hardening & pipeline` milestone, the full `priority/size/level/type/blocking` label taxonomy, issue forms + PR template under `.github/`, `PROJECT-MANAGEMENT.md`, `NEXT-STEPS.md`, `.github/ACCESS.md`, an idempotent `.github/seed-github.sh` + `engagement-sync.json`, and wiki seeds under `.github/wiki-seeds/`.
+- Epic issue [#7](https://github.com/CUPIDS-Lab/co-environmental-data/issues/7) under a new **Water data liberation** milestone: retrieve / clean / document / republish Colorado reservoir storage, stream/river flow, and snowpack (SWE) — current and historical — added to the Project board and the `ROADMAP.md` tracking table.
 
 ### Changed
 - Expanded the stub `README.md` into an L1 front door.
