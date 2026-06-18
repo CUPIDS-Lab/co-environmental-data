@@ -1,6 +1,22 @@
 {
-  "verify-needs-followup-sources": { "issue": 2, "hash": "4792bb771237666f1733a1610c54b0ec5338a91a1720715fc350bf400de297f3" },
-  "quarantine-nrel-nlr-claim": { "issue": 3, "hash": "ea1c1a2c97641226746c8ef7ba53801f3056b5471cc8934feedaeed7233859dd" },
-  "add-match-hosts-keywords": { "issue": 4, "hash": "3ac9a220a9fd3525811efac8662d529d14d1e50d80f8111b45fc9f72a81b4aa3" },
-  "build-l2-pipeline": { "issue": 5, "hash": "bdff7e5935b2058d6a1a6c5eeecd5e4b2c065c8398eba8e4764697257b8d9256" }
+  "verify-needs-followup-sources": {
+    "issue": 2,
+    "hash": "4792bb771237666f1733a1610c54b0ec5338a91a1720715fc350bf400de297f3"
+  },
+  "quarantine-nrel-nlr-claim": {
+    "issue": 3,
+    "hash": "ea1c1a2c97641226746c8ef7ba53801f3056b5471cc8934feedaeed7233859dd"
+  },
+  "add-match-hosts-keywords": {
+    "issue": 4,
+    "hash": "3ac9a220a9fd3525811efac8662d529d14d1e50d80f8111b45fc9f72a81b4aa3"
+  },
+  "build-l2-pipeline": {
+    "issue": 5,
+    "hash": "bdff7e5935b2058d6a1a6c5eeecd5e4b2c065c8398eba8e4764697257b8d9256"
+  },
+  "liberate-co-water-data": {
+    "issue": 7,
+    "hash": "cd6b524f833d5d428e33c6b6b62cbf89a1aeaef5f4a1e1155445f78345268314"
+  }
 }
