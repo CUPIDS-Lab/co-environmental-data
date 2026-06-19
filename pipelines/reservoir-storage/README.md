@@ -40,8 +40,13 @@ uv run jupyter lab           # then run notebooks/reservoir-pipeline.ipynb top t
 3. **Cleanup** — parse → tidy long → validate → `data/processed/*.csv`.
 4. **Publish** — finalize the CSV deliverable + audit summary + reconcile.
 
-DWR/CDSS returns live data today; RISE and Northern Water are wired but skip until
-their `⚠️ VERIFY` ids/URL are filled (see `docs/survey-notes.md`).
+The retrieve cell has a small config block: **`MODE`** (`"live"` = fetch from the
+APIs / `"demo"` = offline 1-reservoir sample), **`FRESH`** (`True` clears the
+`data/original/` cache first so the CSV reflects exactly that run), and **`SOURCES`**
+(split the fast DWR pull from the large RISE one). For the **full dataset**, run with
+`MODE="live"`, `FRESH=True` — it pulls full history for all 118 DWR + RISE reservoirs
+(large/slow; progress streams). DWR/CDSS and RISE return data; Northern Water is
+boundaries-only (its C-BT reservoirs come from RISE).
 
 ## How to load (consumers)
 
