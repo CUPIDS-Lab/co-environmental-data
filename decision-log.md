@@ -2,6 +2,13 @@
 
 A running, dated record of design and data decisions and *why* they were made — the provenance of the project's choices, legible to people who join later. Add an entry whenever you make a non-obvious choice (a filtering rule, a definition, a tool, a tradeoff). Newest first.
 
+## 2026-06-19 — Monthly CI/CD refresh + Harvard Dataverse as the dataset's home of record
+
+- **Context:** the reservoir-storage pipeline produces a tidy CSV that needs re-deriving as upstream telemetry updates, a durable home between (ephemeral) runs, and a citable archive. Asked to automate a monthly refresh and to integrate the Dataverse deposit that landed in `data-project-skill` [PR #7](https://github.com/CUPIDS-Lab/data-project-skill/pull/7).
+- **Decision:** schedule the refresh with **GitHub Actions** (monthly cron, matrix-per-pipeline) running a **full rebuild** — the composite-key de-dup in `clean.run` makes a rebuild a superset-append that also self-heals upstream revisions. Adopt **Harvard Dataverse** as the canonical home (citable DOI) via the skill's deposit kit, rendered into `pipelines/reservoir-storage/dataverse/`. CI **validates** the kit every run and deposits only a **draft** (opt-in `DATAVERSE_DEPOSIT`), **never** minting/publishing a DOI unattended.
+- **Why:** a monthly batch doesn't justify a long-running Prefect agent; Actions is native, free, and secret-aware. Full rebuild is the simplest correct thing (and needs no restored prior CSV). Dataverse gives FAIR, citable archiving; the skill's hard rule — a deposit stops at a draft, publish only on explicit confirmation, since a DOI is permanent — is preserved by keeping CI draft-only and human-gated.
+- **Consequences:** the first deposit creates the dataset (human reviews + publishes v1.0); recurring monthly updates should target that existing dataset (a new version, not a new DOI) via the `data-project-depositor` idempotent workflow — until configured, `DATAVERSE_DEPOSIT` stays off so the job validates without draft clutter. Needs repo config: `DATAVERSE_COLLECTION` (real alias), `DATAVERSE_API_TOKEN` (secret), optional `CDSS_API_KEY`. Streamflow (#10) / snowpack (#11) inherit the pattern with a one-line matrix add + their own `dataverse/` kit.
+
 ## 2026-06-18 — Project-manage the roadmap on GitHub (Track mode)
 
 - **Context:** with the L1 scaffold merged, the next need was a shared, assignable work record so the undergraduate team can pick up tasks. Asked to add issues, a Project board, and a wiki.

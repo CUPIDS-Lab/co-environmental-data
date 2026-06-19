@@ -31,7 +31,7 @@ Concerns that are real but above the current tracked work — added when you cli
 | **Data-quality + bulletproofing checklists** — boilerplate false positives, syndication dedupe, link-rot archiving, reconcile against source totals | QA matters at analysis/publication; pre-pilot today | L4 (`data-bulletproofing-checklist`, `data-quality-checklist`) | **Blocking** before publishing findings |
 | **LLM-detector validation** — precision/recall vs. gold standard, quote-span hallucination guard, closed-set constraint | No detector running yet; load-bearing for defensibility (`context/methodology.md` §4.5) | L4 (QA) | **Blocking** before promoting LLM labels as authoritative |
 | **Accessibility** — alt text, plain-language summaries, colorblind-safe viz for the public site | No public site yet | L4 (`accessibility-checklist`) | No |
-| **Open-knowledge publication** — OKF `knowledge/` bundle, Datasette catalog + Quarto site, `LICENSE-NOTE`, `data-collaborative-canvas` | Publish after the pilot clears its exit thresholds (`context/methodology.md` §7) | L5 | No |
+| **Open-knowledge publication** — OKF `knowledge/` bundle, Datasette catalog + Quarto site, `LICENSE-NOTE`, `data-collaborative-canvas`. **Harvard Dataverse deposit (citable DOI)** is now scaffolded for the reservoir-storage pipeline (`pipelines/reservoir-storage/dataverse/`) and wired into the monthly refresh (draft-only; publish on review) — extend to the sibling pipelines | Publish after the pilot clears its exit thresholds (`context/methodology.md` §7) | L5 | No |
 
 ## How to climb a level
 
