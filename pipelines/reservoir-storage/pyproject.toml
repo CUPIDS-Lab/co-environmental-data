@@ -23,7 +23,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.2", "ruff>=0.5", "jupytext>=1.16", "nbstripout>=0.8"]
-publish = ["sqlite-utils>=3.36", "datasette>=0.64"]   # deferred: Datasette surface (roadmap)
+publish = ["sqlite-utils>=3.36", "datasette>=0.64",   # deferred: Datasette surface (roadmap)
+           "pyDataverse>=0.3"]                         # Dataverse deposit kit (dataverse/)
 
 [build-system]
 requires = ["hatchling"]

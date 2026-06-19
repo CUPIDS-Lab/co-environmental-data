@@ -83,7 +83,19 @@ qa_flag, concept`. See `docs/data-dictionary.md`.
 Per-extract sidecar at `data/processed/provenance.csv` (`source_url`,
 `retrieved_at`, `sha256`, license, parser). Sources update daily (telemetry); the
 pipeline is re-runnable and idempotent. Originals in `data/original/` are
-immutable (sha256 manifest).
+immutable (sha256 manifest). The dataset is **rebuilt and re-audited monthly** by
+[`.github/workflows/monthly-data-refresh.yml`](../../.github/workflows/README.md).
+
+## Archive & DOI (Dataverse)
+
+The processed dataset, the pipeline code, and the docs can be deposited to
+**Harvard Dataverse** for a citable DOI. The deposit kit is in
+[`dataverse/`](dataverse/DEPOSIT.md) (`dataset.json` + `deposit-dataverse.sh` /
+`deposit_dataverse.py`); it creates a **draft** and only publishes on explicit
+confirmation. Validate it offline with
+`DRY_RUN=1 python dataverse/deposit_dataverse.py --no-publish`. The monthly
+workflow validates the kit every run and can deposit a draft when opted in — see
+`dataverse/DEPOSIT.md`.
 
 ## License
 

@@ -41,3 +41,8 @@ jobs:
         run: uv run pytest -q
       - name: Pipeline smoke — offline demo (retrieve → audit → clean → publish)
         run: uv run python -m ${{ matrix.module }}.pipeline --mode demo --fresh
+      - name: Validate the Dataverse deposit kit (offline dry-run)
+        run: |
+          if [ -f dataverse/deposit_dataverse.py ]; then
+            DRY_RUN=1 uv run python dataverse/deposit_dataverse.py --no-publish
+          fi

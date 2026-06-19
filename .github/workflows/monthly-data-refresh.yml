@@ -81,26 +81,32 @@ jobs:
           if-no-files-found: warn
           retention-days: 90
 
-      # ── Publish to Dataverse — SEAM (canonical home) ───────────────────────────
-      # The refreshed dataset's home of record is a Dataverse dataset. The upload
-      # is intentionally NOT implemented yet: it waits on the conventions coming
-      # from the data-project-skill (dataset DOI, file layout, replace-vs-add
-      # version semantics). This step always runs but cleanly no-ops until the
-      # DATAVERSE_* secrets are configured, so the workflow is safe to enable now.
-      # When the conventions land, replace the TODO body with the upload call.
-      - name: Publish to Dataverse (pending data-project-skill conventions)
+      # ── Dataverse deposit (canonical home — Harvard Dataverse, L5) ─────────────
+      # The deposit kit lives in pipelines/<pipeline>/dataverse/ (generated from the
+      # data-project-skill, PR #7). CI VALIDATES it on every run, and — when opted
+      # in via the DATAVERSE_DEPOSIT repo variable — uploads the freshly rebuilt
+      # data/processed to a DRAFT. It NEVER publishes a DOI unattended: per the
+      # skill's rule, a deposit stops at a draft for human review before publish.
+      - name: Validate the Dataverse deposit kit (dry-run)
         if: always()
-        env:
-          DATAVERSE_BASE_URL: ${{ secrets.DATAVERSE_BASE_URL }}
-          DATAVERSE_TOKEN: ${{ secrets.DATAVERSE_TOKEN }}
-          DATAVERSE_DATASET_DOI: ${{ secrets.DATAVERSE_DATASET_DOI }}
         run: |
-          if [ -z "$DATAVERSE_TOKEN" ]; then
-            echo "Dataverse secrets not set — skipping publish."
-            echo "Interim deliverable is the uploaded artifact above."
-            echo "Set DATAVERSE_BASE_URL / DATAVERSE_TOKEN / DATAVERSE_DATASET_DOI to enable."
+          if [ -f dataverse/deposit_dataverse.py ]; then
+            DRY_RUN=1 uv run python dataverse/deposit_dataverse.py --no-publish
+          else
+            echo "No dataverse/ kit for ${{ matrix.pipeline }} — skipping."
+          fi
+
+      - name: Deposit to Dataverse (draft; opt-in, never publishes)
+        if: ${{ vars.DATAVERSE_DEPOSIT == 'true' }}
+        env:
+          DATAVERSE_URL: ${{ vars.DATAVERSE_URL }}               # e.g. https://dataverse.harvard.edu
+          DATAVERSE_COLLECTION: ${{ vars.DATAVERSE_COLLECTION }} # target collection alias (must exist + be published)
+          DATAVERSE_API_TOKEN: ${{ secrets.DATAVERSE_API_TOKEN }}
+        run: |
+          if [ -z "$DATAVERSE_API_TOKEN" ]; then
+            echo "DATAVERSE_DEPOSIT=true but the DATAVERSE_API_TOKEN secret is unset — skipping deposit."
+            echo "Interim deliverable remains the uploaded artifact above."
             exit 0
           fi
-          echo "::error::Dataverse publish not yet implemented — pending data-project-skill conventions (see .github/workflows/README.md)."
-          echo "TODO: upload data/processed/*.csv to $DATAVERSE_DATASET_DOI on $DATAVERSE_BASE_URL and publish a new dataset version."
-          exit 1
+          uv sync --extra publish          # installs pyDataverse
+          uv run python dataverse/deposit_dataverse.py --no-publish   # draft only; a human publishes the DOI

@@ -45,28 +45,39 @@ would silently miss. Monthly cadence makes the cost acceptable. A windowed
 incremental mode (fetch only `--start-date`'s window, merge into the prior CSV) is
 a future optimization with a periodic full-rebuild safety net.
 
-## Review & persistence (interim) and the Dataverse seam
+## Review, persistence, and the Dataverse deposit
 
-The canonical home for each refreshed dataset is a **Dataverse** dataset. Until
-that integration is wired (it depends on conventions coming from the
-`data-project-skill` — dataset DOI, file layout, replace-vs-add version
-semantics), the monthly run:
+The canonical home for each refreshed dataset is a **Harvard Dataverse** dataset
+(a citable DOI). Each pipeline carries a deposit kit at `pipelines/<pipeline>/dataverse/`
+(`dataset.json`, `deposit-dataverse.sh`, `deposit_dataverse.py`, `DEPOSIT.md`),
+generated from the `data-project-skill` (PR #7). Every monthly run:
 
 1. writes the audit summary to the **Job Summary** so a human can scan
-   row counts / coverage / reconcile at a glance, and
+   row counts / coverage / reconcile at a glance,
 2. uploads `data/processed/*.csv` + `data/audit/*` as a **workflow artifact**
-   (90-day retention) — the recoverable interim deliverable.
+   (90-day retention) — the recoverable deliverable, and
+3. **validates the deposit kit** (`DRY_RUN=1`) so a broken citation manifest fails
+   the run.
 
-The **Publish to Dataverse** step is scaffolded and **safely no-ops** until these
-repository secrets are set, at which point its TODO body is replaced with the
-upload call:
+The actual deposit is **opt-in and draft-only** — it never mints/publishes a DOI
+unattended (the skill's hard rule: a deposit stops at a draft for human review).
+Set the repo variable `DATAVERSE_DEPOSIT=true` to have the monthly run upload the
+fresh `data/processed` to a **draft** dataset; a maintainer reviews and publishes.
 
-| Secret | Purpose |
-|---|---|
-| `DATAVERSE_BASE_URL` | Dataverse installation, e.g. `https://dataverse.harvard.edu` |
-| `DATAVERSE_TOKEN` | API token for the publishing account |
-| `DATAVERSE_DATASET_DOI` | Target dataset DOI, e.g. `doi:10.7910/DVN/XXXXXX` |
-| `CDSS_API_KEY` | *(optional)* raises CO DWR/CDSS rate limits; the run works without it |
+| Setting | Kind | Purpose |
+|---|---|---|
+| `DATAVERSE_DEPOSIT` | variable | `true` enables the draft-deposit step (default off → validate only) |
+| `DATAVERSE_URL` | variable | installation, e.g. `https://dataverse.harvard.edu` (script default) |
+| `DATAVERSE_COLLECTION` | variable | target collection alias — **must exist and be published** |
+| `DATAVERSE_API_TOKEN` | secret | API token for the depositing account (treat like a password) |
+| `CDSS_API_KEY` | secret | *(optional)* raises CO DWR/CDSS rate limits; the run works without it |
+
+**First deposit vs. monthly versioning.** The kit's scripts *create* a draft dataset;
+the first deposit mints v1.0 after a human publishes. Recurring monthly updates should
+target that **existing** dataset (a new version, not a new DOI) — record its persistent
+id and drive the idempotent update via the `data-project-depositor` agent. Until that is
+configured, keep `DATAVERSE_DEPOSIT` off so the monthly job validates the kit without
+creating draft clutter. See `pipelines/<pipeline>/dataverse/DEPOSIT.md`.
 
 ## Notes
 
