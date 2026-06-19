@@ -133,11 +133,16 @@ def variables_report(csv: Path | None = None) -> pd.DataFrame:
 
 
 def reconcile(expected_totals: dict | None = None, csv: Path | None = None) -> pd.DataFrame:
-    """Compare current storage per reservoir to a confirmed published figure.
+    """Spot-check our latest storage value against the agency's own published figure.
 
-    ``expected_totals`` maps ``(source, reservoir_id) -> storage_af`` taken from
-    each agency's own current-conditions page. Any |Δ| beyond tolerance is a
-    regression. Left empty until the figures are confirmed (survey-notes).
+    ``expected_totals`` maps ``(source, reservoir_id) -> storage_af``, where the value
+    is the current storage (acre-feet) read off the agency's current-conditions page
+    (DWR: dwr.colorado.gov station search; RISE: data.usbr.gov/rise). Returns a frame
+    with ``expected_af`` (yours), ``got_af`` (our latest ``storage_af`` for that
+    reservoir, or null if absent), and ``match`` — True when ``|got - expected|`` is
+    within ``max(1, 0.01 * expected)`` (1%, or 1 AF for tiny reservoirs). A False is a
+    discrepancy to investigate before publishing (units / wrong id / stale / not
+    fetched). Optional and non-blocking; see ``docs/survey-notes.md`` (Reconciliation).
     """
     expected_totals = expected_totals or {}
     csv = csv or config.CANONICAL_CSV
