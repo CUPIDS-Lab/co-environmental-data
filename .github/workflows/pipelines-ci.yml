@@ -1,0 +1,43 @@
+# Phase 0 — protect the pipelines on every change.
+# Runs the offline test suite + an offline demo of the full retrieve→publish
+# flow for each pipeline under pipelines/. No network to the upstream APIs, no
+# secrets — this is the fast guardrail that keeps the parsers and the headless
+# entrypoint healthy before the scheduled live refresh ever runs.
+name: pipelines-ci
+
+on:
+  pull_request:
+    paths: ["pipelines/**", ".github/workflows/pipelines-ci.yml"]
+  push:
+    branches: [main]
+    paths: ["pipelines/**", ".github/workflows/pipelines-ci.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false          # one pipeline breaking must not hide the others
+      matrix:
+        # Add a row per pipeline as the siblings land (streamflow #10, snowpack #11).
+        # `module` is the importable package name for `python -m <module>.pipeline`.
+        include:
+          - pipeline: reservoir-storage
+            module: reservoir
+    defaults:
+      run:
+        working-directory: pipelines/${{ matrix.pipeline }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install (pinned env + dev tools)
+        run: uv sync --extra dev
+      - name: Tests (offline)
+        run: uv run pytest -q
+      - name: Pipeline smoke — offline demo (retrieve → audit → clean → publish)
+        run: uv run python -m ${{ matrix.module }}.pipeline --mode demo --fresh

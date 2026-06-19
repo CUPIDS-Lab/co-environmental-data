@@ -48,6 +48,19 @@ APIs / `"demo"` = offline 1-reservoir sample), **`FRESH`** (`True` clears the
 (large/slow; progress streams). DWR/CDSS and RISE return data; Northern Water is
 boundaries-only (its C-BT reservoirs come from RISE).
 
+### Headless / CI
+
+The notebook's automatable twin runs the same four stages without Jupyter:
+
+```bash
+uv run python -m reservoir.pipeline --mode live --fresh   # full rebuild
+uv run python -m reservoir.pipeline --mode demo --fresh   # offline smoke test
+```
+
+It exits non-zero on a regression (zero rows / empty retrieval / reconcile
+mismatch), which is what the scheduled monthly refresh keys off — see
+[`.github/workflows`](../../.github/workflows/README.md).
+
 ## How to load (consumers)
 
 ```python

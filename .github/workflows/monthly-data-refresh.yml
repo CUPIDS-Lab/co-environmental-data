@@ -1,0 +1,106 @@
+# Phase 1 — refresh every pipeline's dataset once a month.
+#
+# For each pipeline under pipelines/: gate on the offline tests, then run a LIVE
+# full rebuild (retrieve → audit → clean → audit/reconcile → publish). The
+# composite-key de-dup inside clean.run() makes the rebuild an append: the new
+# CSV is a superset of last month plus the new rows, and it self-heals upstream
+# revisions/backfills a pure windowed append would miss.
+#
+# Review & persistence (interim, until Dataverse is wired — see the seam below):
+#   * the audit summary is written to the run's Job Summary for a human to scan;
+#   * the deliverable + audit reports are uploaded as a workflow artifact.
+# The canonical home is a Dataverse dataset; that publish step is scaffolded and
+# safely no-ops until its secrets + conventions land (data-project-skill).
+name: monthly-data-refresh
+
+on:
+  schedule:
+    - cron: "0 9 1 * *"         # 09:00 UTC on the 1st of each month (cron is always UTC)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "live | demo (demo = offline dry-run of the whole flow)"
+        default: "live"
+
+concurrency:                     # never let two refreshes of the same scope overlap
+  group: monthly-data-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: read                 # outputs go to artifacts / Dataverse, not git
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120         # RISE full-history pulls are large (records to the 1930s)
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pipeline: reservoir-storage
+            module: reservoir
+    defaults:
+      run:
+        working-directory: pipelines/${{ matrix.pipeline }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev
+
+      - name: Gate — offline tests
+        run: uv run pytest -q
+
+      - name: Refresh — retrieve → audit → clean → audit/reconcile → publish
+        env:
+          CDSS_API_KEY: ${{ secrets.CDSS_API_KEY }}   # optional; raises CDSS rate limits
+        run: uv run python -m ${{ matrix.module }}.pipeline --mode ${{ github.event.inputs.mode || 'live' }} --fresh
+
+      - name: Surface the audit summary in the run
+        if: always()
+        run: |
+          {
+            echo "## ${{ matrix.pipeline }} — monthly refresh"
+            if [ -f data/audit/summary-latest.md ]; then
+              cat data/audit/summary-latest.md
+            else
+              echo "_No summary produced — retrieval or clean failed; see the step logs._"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Archive outputs (interim persistence until Dataverse is wired)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.pipeline }}-${{ github.run_id }}
+          path: |
+            pipelines/${{ matrix.pipeline }}/data/processed/*.csv
+            pipelines/${{ matrix.pipeline }}/data/audit/*.md
+            pipelines/${{ matrix.pipeline }}/data/audit/*.json
+          if-no-files-found: warn
+          retention-days: 90
+
+      # ── Publish to Dataverse — SEAM (canonical home) ───────────────────────────
+      # The refreshed dataset's home of record is a Dataverse dataset. The upload
+      # is intentionally NOT implemented yet: it waits on the conventions coming
+      # from the data-project-skill (dataset DOI, file layout, replace-vs-add
+      # version semantics). This step always runs but cleanly no-ops until the
+      # DATAVERSE_* secrets are configured, so the workflow is safe to enable now.
+      # When the conventions land, replace the TODO body with the upload call.
+      - name: Publish to Dataverse (pending data-project-skill conventions)
+        if: always()
+        env:
+          DATAVERSE_BASE_URL: ${{ secrets.DATAVERSE_BASE_URL }}
+          DATAVERSE_TOKEN: ${{ secrets.DATAVERSE_TOKEN }}
+          DATAVERSE_DATASET_DOI: ${{ secrets.DATAVERSE_DATASET_DOI }}
+        run: |
+          if [ -z "$DATAVERSE_TOKEN" ]; then
+            echo "Dataverse secrets not set — skipping publish."
+            echo "Interim deliverable is the uploaded artifact above."
+            echo "Set DATAVERSE_BASE_URL / DATAVERSE_TOKEN / DATAVERSE_DATASET_DOI to enable."
+            exit 0
+          fi
+          echo "::error::Dataverse publish not yet implemented — pending data-project-skill conventions (see .github/workflows/README.md)."
+          echo "TODO: upload data/processed/*.csv to $DATAVERSE_DATASET_DOI on $DATAVERSE_BASE_URL and publish a new dataset version."
+          exit 1
