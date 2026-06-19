@@ -36,6 +36,12 @@ parser is usually wrong.
 - **Type:** `datetime` (UTC, day-resolution)
 - **Description:** Observation date. Sources report at different sub-daily times;
   align on the **date**, not the timestamp.
+- **Known caveat:** Some days carry **multiple readings** in the source — a sub-daily
+  timestamp or a later same-day revision (e.g. RISE ruedi 2026-03-06 at 06:00Z and
+  07:00Z; DWR same-day `AF`/`ACFT` revisions). The pipeline floors to the date and
+  keeps the **latest reading** per `(reservoir, date, variable)`, so there is exactly
+  one row per day. Revised/superseded same-day values are dropped (the differences are
+  typically negligible).
 
 ## `variable`
 - **Type:** `string`

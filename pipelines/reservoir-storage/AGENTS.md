@@ -71,7 +71,12 @@ Clones without it just skip stripping (the filter is non-required — no errors)
   partial/stale cache yields a partial/stale CSV. Rebuild from clean on any contract change.
 - **Day resolution is the grain.** `normalize_long` floors timestamps to the date
   (DWR reports midnight, RISE 07:00Z) so the CSV serializes uniformly and re-parses
-  cleanly; the UTC date is preserved.
+  cleanly; the UTC date is preserved. Sources carry **multiple readings on some days**
+  (sub-daily times / same-day revisions); `normalize_long` keeps the latest reading
+  per `(reservoir, day, variable)` *before* validating, so a few dupe dates don't fail
+  the uniqueness check and drop the whole reservoir. `clean.run` also resets
+  `data/audit/extraction_errors.json` per run (it's append-only) so it reflects only
+  the current run.
 - **Tidy long, not wide.** One row per `(source, reservoir_id, datetime, variable)`.
   A new reservoir/variable is more rows, not a schema change; cross-source compare
   is a `groupby`. Wide views are recipes (`docs/filter-pivot-recipes.md`).
