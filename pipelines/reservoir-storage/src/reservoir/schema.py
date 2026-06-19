@@ -95,10 +95,20 @@ def normalize_long(df: pd.DataFrame) -> pd.DataFrame:
     for optional in ("reservoir_name", "qa_flag", "concept"):
         if optional not in out.columns:
             out[optional] = pd.NA
-    out = out[LONG_COLUMNS]
-    # Day resolution is the grain: floor to midnight so heterogeneous source
-    # timestamps (DWR midnight vs RISE 07:00Z) serialize uniformly and re-parse
-    # cleanly. UTC date is preserved (e.g. 1966-01-31T07:00Z -> 1966-01-31).
-    out["datetime"] = (pd.to_datetime(out["datetime"], utc=True)
-                       .dt.tz_localize(None).dt.normalize())
+    out = out[LONG_COLUMNS].copy()
+    # Day resolution is the grain. Floor to midnight so heterogeneous source
+    # timestamps (DWR midnight vs RISE 07:00Z) serialize uniformly; the UTC date is
+    # preserved (e.g. 1966-01-31T07:00Z -> 1966-01-31). Some days carry MULTIPLE
+    # readings — sub-daily timestamps or a later same-day revision (e.g. RISE ruedi
+    # 2026-03-06 at 06:00Z and 07:00Z; DWR same-day AF/ACFT revisions). Collapse
+    # those to the latest reading per (reservoir, day, variable) so the day key is
+    # unique; otherwise a few dupe dates would fail validation and drop the whole
+    # reservoir.
+    _ts = pd.to_datetime(out["datetime"], utc=True).dt.tz_localize(None)
+    out["datetime"] = _ts.dt.normalize()
+    out = (out.assign(_ts=_ts)
+              .sort_values("_ts")
+              .drop_duplicates(["source", "reservoir_id", "datetime", "variable"], keep="last")
+              .drop(columns="_ts")
+              .reset_index(drop=True))
     return validate(out)

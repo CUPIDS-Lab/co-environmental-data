@@ -40,6 +40,16 @@ def test_bad_variable_rejected():
         schema.normalize_long(df)
 
 
+def test_normalize_long_collapses_multiple_readings_per_day():
+    # a day with two readings (sub-daily times / same-day revision) must not fail
+    # the composite-key uniqueness check — keep the latest reading.
+    early = _good_frame(); early["datetime"] = ["2026-06-17T00:00:00"]; early["value"] = [100.0]
+    late = _good_frame(); late["datetime"] = ["2026-06-17T18:00:00"]; late["value"] = [200.0]
+    out = schema.normalize_long(pd.concat([early, late], ignore_index=True))
+    assert len(out) == 1                      # collapsed to one day
+    assert out["value"].iloc[0] == 200.0      # kept the latest reading
+
+
 def test_bad_source_rejected():
     df = _good_frame()
     df["source"] = "made_up_source"

@@ -34,6 +34,12 @@ def _record_error(source: str, artifact_path: Path, err: Exception) -> None:
 def run(*, sources: list[str] | None = None, fail_on_empty: bool = False,
         write: bool = True) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Ingest → concat → validate → write. Returns ``(data, provenance)`` frames."""
+    # Fresh error log per run: _record_error appends, so reset here so the file
+    # reflects only this run rather than accumulating stale failures across runs.
+    errs_path = config.AUDIT / "extraction_errors.json"
+    if errs_path.exists():
+        errs_path.unlink()
+
     registry = config.get_sources()
     frames: list[pd.DataFrame] = []
     prov: list[provenance.ProvenanceRecord] = []
