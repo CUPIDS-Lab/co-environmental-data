@@ -61,6 +61,14 @@ Clones without it just skip stripping (the filter is non-required — no errors)
   startDate alone → 404), and **RISE must paginate** (`links.next`; its page cap is
   10k rows, well under a full series). `audit.coverage_report` documents each site's
   span. **RISE full-history pulls are large/slow** — window via `start_date` to speed up.
+- **`data/original/` is a rebuildable cache, not an archive.** `fetch_all` skips
+  files that already exist (idempotent re-runs), so when the *retrieval contract*
+  changes (the full-history / pagination fixes), already-cached files go stale and a
+  normal re-run won't refresh them. The notebook's retrieve cell defaults to
+  **`FRESH=True`** (clears `data/original/` first) so the CSV always reflects exactly
+  that run; `MODE` (live/demo) and `SOURCES` (split the big RISE pull) round out the
+  config. `clean.run` faithfully turns whatever is on disk into the CSV — so a
+  partial/stale cache yields a partial/stale CSV. Rebuild from clean on any contract change.
 - **Day resolution is the grain.** `normalize_long` floors timestamps to the date
   (DWR reports midnight, RISE 07:00Z) so the CSV serializes uniformly and re-parses
   cleanly; the UTC date is preserved.
@@ -98,14 +106,14 @@ schema + composite-key uniqueness, and the enumeration helpers
   storage sources are now DWR (state) + RISE (federal + C-BT). **Northern Water is
   NOT a storage source** — its ArcGIS hub publishes only 4 spatial-boundary datasets,
   so its discover() yields nothing and its C-BT reservoirs were moved to RISE.
-- `data/lookups/reservoirs.csv` holds **140 DWR** STORAGE telemetry stations (full
-  live enumeration via `reservoir.stations`) + **20 RISE** reservoirs, **17 with
+- `data/lookups/reservoirs.csv` holds **118 DWR** reservoirs + **20 RISE**, **17 with
   confirmed item ids** (the 3 TODO — crystal/powell/taylor-park — need search-term
-  tuning; their rows carry null `rise_item_ids` and are skipped). It is a dated
-  **snapshot**; refresh DWR via `stations.parse_dwr_stations → merge_into_seed`, and
-  RISE via `stations.{rise_location_search_url, rise_location_items_url,
-  parse_rise_location_items}`. The 140 DWR STORAGE stations include small ponds/tanks
-  as well as major reservoirs — subset by name for just the majors.
+  tuning; their rows carry null `rise_item_ids` and are skipped). It was enumerated
+  from CDSS (`reservoir.stations`) then **filtered to major reservoirs** — recharge/ag
+  ponds (`POND|RECHARGE|ARF`, ~22 stations) were dropped as noise for a *reservoir
+  storage* dataset; re-add them by re-running the full enumeration if needed. It is a
+  dated **snapshot**; refresh DWR via `stations.parse_dwr_stations → merge_into_seed`,
+  RISE via `stations.{rise_location_search_url, rise_location_items_url, parse_rise_location_items}`.
 - A full live run fans out to **~280 DWR + ~51 RISE requests**; the resilient `fetch`
   handles per-station 404s (no-data) without crashing. **RISE full-history pulls are
   large** (records back to the 1930s–50s) — window with `start_date` for speed.
