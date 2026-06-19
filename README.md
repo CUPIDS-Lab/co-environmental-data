@@ -17,7 +17,14 @@ Colorado's environmental data lives in dozens of federal, state, and local syste
 
 ## Repository layout
 
-This repo follows the CUPIDS Lab data-project conventions. Key locations: `data/raw` holds original, **immutable** source data (never edited in place) — currently the curated source catalog; `data/interim` and `data/processed` hold derived data that can always be regenerated from raw; `DATA-DICTIONARY.md` documents the schema; `context/` holds the project's design memos (methodology, architecture, source-inventory audit, proposals). See `ROADMAP.md` for what is planned but not yet built (the pipeline, collaboration, responsible-data, and publication layers).
+This repo follows the CUPIDS Lab data-project conventions. Key locations: `data/raw` holds original, **immutable** source data (never edited in place) — currently the curated source catalog; `data/interim` and `data/processed` hold derived data that can always be regenerated from raw; `DATA-DICTIONARY.md` documents the schema; `context/` holds the project's design memos (methodology, architecture, source-inventory audit, proposals); **`pipelines/<name>/`** holds self-contained data-liberation pipelines, one per liberated dataset. See `ROADMAP.md` for what is planned but not yet built (the corpus pipeline, collaboration, responsible-data, and publication layers).
+
+## Pipelines
+
+The Hub hosts self-contained **data-liberation pipelines** under `pipelines/<name>/` — each liberates one dataset into a tidy, documented CSV and is tracked by a roadmap issue.
+
+- **`pipelines/reservoir-storage/`** ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)) — **built.** Liberates Colorado **reservoir storage** (volume, elevation, release) from **CO DWR/CDSS** and **USBR Reclamation RISE** into a tidy, day-resolution CSV with full per-site history (118 major reservoirs + ~17 RISE), per-extract provenance, a concept catalog (vertical-datum / capacity caveats), and a reconciliation spot-check. Notebook-driven (`reservoir-pipeline.ipynb`) over a tested `reservoir` package. *Northern Water's hub publishes only boundaries, so its C-BT reservoirs are sourced from RISE.* See its [README](pipelines/reservoir-storage/README.md) and [AGENTS.md](pipelines/reservoir-storage/AGENTS.md).
+- Streamflow ([#10](https://github.com/CUPIDS-Lab/co-environmental-data/issues/10)) and snowpack ([#11](https://github.com/CUPIDS-Lab/co-environmental-data/issues/11)) are the planned sibling pipelines.
 
 ## Getting started
 

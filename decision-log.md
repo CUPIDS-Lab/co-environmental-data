@@ -2,6 +2,13 @@
 
 A running, dated record of design and data decisions and *why* they were made — the provenance of the project's choices, legible to people who join later. Add an entry whenever you make a non-obvious choice (a filtering rule, a definition, a tool, a tradeoff). Newest first.
 
+## 2026-06-19 — First data-liberation pipeline (reservoir storage) under `pipelines/`
+
+- **Context:** issue #9 (reservoir storage) was the first slice of the water-liberation epic (#7) to be built, using the `data-liberation` skill.
+- **Decision:** scaffold it as a **self-contained pipeline under `pipelines/reservoir-storage/`** — thin notebooks over a tested `src/reservoir/` package — establishing the **`pipelines/<name>/` convention** for liberated datasets. Sources: CO DWR/CDSS + USBR Reclamation RISE (Northern Water resolved as **boundaries-only**; its C-BT reservoirs are sourced from RISE). Scope filtered to **118 major reservoirs** (recharge/ag ponds dropped). `data/original/` is treated as a **rebuildable cache**, not an archive.
+- **Why:** the Hub will host several liberated datasets (streamflow, snowpack, …); one pipeline per directory keeps them independent and individually testable. `src/<pkg>/` (over the data-liberation template's `scripts/`) matches the repo's package convention and keeps notebooks thin and testable.
+- **Consequences:** `pipelines/<name>/` is the home for future datasets (#10/#11 stamp out from it). The Hub stays **L1**; pipelines are data-liberation sub-projects, not Hub level-climbs. Full per-extract provenance, day-resolution grain, and concept caveats (vertical-datum / capacity) are the pipeline's documented contracts. See `pipelines/reservoir-storage/AGENTS.md`.
+
 ## 2026-06-18 — Project-manage the roadmap on GitHub (Track mode)
 
 - **Context:** with the L1 scaffold merged, the next need was a shared, assignable work record so the undergraduate team can pick up tasks. Asked to add issues, a Project board, and a wiki.

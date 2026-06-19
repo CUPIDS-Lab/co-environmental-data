@@ -12,12 +12,13 @@ Read this first. It states the non-negotiables and points you at the right place
 ## Where things are
 
 - Source data and derived outputs: `data/`. Schema: `DATA-DICTIONARY.md`.
-- Project design memos (methodology, technical architecture, source-inventory audit, grant proposals): `context/`. Read these before extending the project — the pipeline is already specified there.
+- Project design memos (methodology, technical architecture, source-inventory audit, grant proposals): `context/`. Read these before extending the project — the corpus pipeline is already specified there.
+- **Data-liberation pipelines:** `pipelines/<name>/` — one self-contained pipeline per liberated dataset, each with its own `AGENTS.md`. The first, `pipelines/reservoir-storage/` ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)), is built; **read its `AGENTS.md` before touching it.**
 - What's planned but not built yet: `ROADMAP.md`.
 
 ## How we work
 
-The repository is currently a **documented catalog**, not yet a running pipeline. When you build the L2 pipeline, explore in `exploratory/`, then package reusable code into `src/cejcorpus/` at the exploration boundary (per `context/architecture.md`). Pipelines are code (re-runnable), not cleaned snapshots. Pin environments so others — and other agents — can reproduce results. Stamp every row a stage writes with a `run_id`, and archive every cited URL at coding time.
+The repository is a **documented catalog** plus a growing set of **data-liberation pipelines** under `pipelines/<name>/` (the first — reservoir-storage, #9 — is built and live against the DWR/CDSS and Reclamation RISE APIs). Each pipeline is thin notebooks over a tested `src/<pkg>/` package: explore, then package reusable code at the exploration boundary. The journalist→citation **corpus** pipeline (`context/architecture.md`) is still to be built (the `cejcorpus` package, notebooks `nb-00…09`). Pipelines are code (re-runnable), not cleaned snapshots. Pin environments so others — and other agents — can reproduce results. Stamp every row a stage writes with a `run_id`, and archive every cited URL at coding time.
 
 ## A data-integrity note (read before touching the catalog)
 
