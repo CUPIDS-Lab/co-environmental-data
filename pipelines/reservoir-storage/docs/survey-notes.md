@@ -80,7 +80,50 @@ The request machinery is correct; these specifics are the first-run confirmation
 - [x] Enumerate the **full** Colorado reservoir list per source. **DWR + RISE done**;
       Northern is not a storage source (above). `reservoirs.csv` = 140 DWR + 20 RISE.
 - [ ] Resolve the 3 remaining RISE reservoirs (crystal/powell/taylor-park).
-- [ ] Fill `reconcile()` expected totals from each agency's current-conditions page.
+- [ ] Fill `reconcile()` expected totals as a spot-check (see **Reconciliation** below).
+
+## Reconciliation — confirming our numbers against the agencies
+
+Reconciliation is the cheap insurance that the pipeline didn't quietly corrupt the
+*values* — wrong units, a parsing slip, the wrong station, stale data. It compares a few
+storage numbers you read off the agencies' own websites against the **latest** storage
+value in `data/processed/reservoir-storage.csv`. It's a **spot-check** (2–3 reservoirs per
+source is plenty), and it's **optional** — it never blocks a run. It lives in nb-04's
+reconcile cell and calls `audit.reconcile(expected)`.
+
+**Where to read the ground-truth number** (current storage, in **acre-feet**):
+
+| Source | Where | How |
+|---|---|---|
+| `dwr_cdss` | [dwr.colorado.gov](https://dwr.colorado.gov) — *Surface Water Conditions* map / station search | Find the reservoir by name or `abbrev` (e.g. `GRERESCO`); read the latest **Storage (AF)**. |
+| `reclamation_rise` | [data.usbr.gov/rise](https://data.usbr.gov/rise) | Search the reservoir; open its **Lake/Reservoir Storage** series; the most recent point is current storage. (Reclamation's UC Region *current reservoir status* tables are an alternative.) |
+
+**How to enter it.** Each entry is `(source, reservoir_id): storage_af`:
+- `source` — the slug, `"dwr_cdss"` or `"reclamation_rise"`.
+- `reservoir_id` — the id **exactly as in `data/lookups/reservoirs.csv`** (CDSS `abbrev` like
+  `DILRESCO`, or RISE slug like `blue-mesa`).
+- the value — current storage in acre-feet, e.g. `138214.0`.
+
+```python
+expected = {
+    ("dwr_cdss", "GRERESCO"):          138000.0,   # Green Mountain
+    ("reclamation_rise", "blue-mesa"): 317000.0,   # Blue Mesa
+}
+```
+
+**Reading the result** — `audit.reconcile` returns a table of `expected_af` (yours) vs
+`got_af` (ours) with a boolean `match`, and writes `data/audit/reconcile.json`:
+- **`match = True`** — within **1 %** (or 1 acre-foot, whichever is larger; tolerance is
+  `max(1, 0.01·expected)`) → faithful extraction; trust that series.
+- **`match = False`** — investigate **before publishing**:
+  - `got_af` blank → reservoir not in the CSV (not fetched / rows dropped) → check Retrieve.
+  - off by a round factor (×1000, ×43 560) → a **units** bug.
+  - off by a bit but >1 % → wrong `reservoir_id`, *or* the CSV's latest **daily** value is
+    several days stale vs. the live page (check our latest `datetime`).
+
+The tolerance is slack on purpose: the agency page is "now," ours is the latest daily value,
+so they differ slightly but should agree to within a percent. Confirmed anchor: Blue Mesa
+storage = **317,822 AF** (2026-06).
 
 ## Enumeration (how the seed gets to "full")
 
