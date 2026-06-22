@@ -111,9 +111,9 @@ schema + composite-key uniqueness, and the enumeration helpers
   storage sources are now DWR (state) + RISE (federal + C-BT). **Northern Water is
   NOT a storage source** — its ArcGIS hub publishes only 4 spatial-boundary datasets,
   so its discover() yields nothing and its C-BT reservoirs were moved to RISE.
-- `data/lookups/reservoirs.csv` holds **118 DWR** reservoirs + **20 RISE**, **17 with
-  confirmed item ids** (the 3 TODO — crystal/powell/taylor-park — need search-term
-  tuning; their rows carry null `rise_item_ids` and are skipped). It was enumerated
+- `data/lookups/reservoirs.csv` holds **118 DWR** reservoirs + **20 RISE**, **all 20 with
+  confirmed item ids** (crystal/powell/taylor-park resolved 2026-06 via the
+  location->catalogRecords->catalogItems traversal). It was enumerated
   from CDSS (`reservoir.stations`) then **filtered to major reservoirs** — recharge/ag
   ponds (`POND|RECHARGE|ARF`, ~22 stations) were dropped as noise for a *reservoir
   storage* dataset; re-add them by re-running the full enumeration if needed. It is a

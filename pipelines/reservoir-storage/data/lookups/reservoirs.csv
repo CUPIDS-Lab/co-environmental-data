@@ -119,7 +119,7 @@ dwr_cdss,WWHRESCO,WAHATOYA RESERVOIR,16,,"auto-enumerated (CDSS telemetrystation
 dwr_cdss,YAMRESCO,YAMCOLO RESERVOIR ABOVE YAMPA,58,,"auto-enumerated (CDSS telemetrystation, STORAGE)"
 reclamation_rise,blue-mesa,Blue Mesa Reservoir,Gunnison,"{""storage_af"": 76, ""elevation_ft"": 78, ""release_cfs"": 4310}",✅ confirmed RISE item ids (live)
 reclamation_rise,carter,Carter Lake,C-BT,"{""storage_af"": 216, ""elevation_ft"": 217, ""release_cfs"": 11}","✅ confirmed RISE item ids (live); C-BT, Reclamation-owned"
-reclamation_rise,crystal,Crystal Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",TODO: resolve item ids (enumeration search-term tuning)
+reclamation_rise,crystal,Crystal Reservoir,Gunnison,"{""storage_af"": 274, ""elevation_ft"": 276, ""release_cfs"": 4312}",✅ confirmed RISE item ids (live)
 reclamation_rise,flaming-gorge,Flaming Gorge Reservoir,Green,"{""storage_af"": 337, ""elevation_ft"": 341, ""release_cfs"": 4314}",✅ confirmed RISE item ids (live)
 reclamation_rise,granby,Lake Granby,C-BT,"{""storage_af"": 383, ""elevation_ft"": 384, ""release_cfs"": 386}","✅ confirmed RISE item ids (live); C-BT, Reclamation-owned"
 reclamation_rise,horsetooth,Horsetooth Reservoir,C-BT,"{""storage_af"": 86, ""elevation_ft"": 87, ""release_cfs"": 90}","✅ confirmed RISE item ids (live); C-BT, Reclamation-owned"
@@ -129,11 +129,11 @@ reclamation_rise,mcphee,McPhee Reservoir,Dolores,"{""storage_af"": 569, ""elevat
 reclamation_rise,morrow-point,Morrow Point Reservoir,Gunnison,"{""storage_af"": 592, ""elevation_ft"": 594, ""release_cfs"": 4311}",✅ confirmed RISE item ids (live)
 reclamation_rise,navajo,Navajo Reservoir,San Juan,"{""storage_af"": 613, ""elevation_ft"": 612, ""release_cfs"": 4316}",✅ confirmed RISE item ids (live)
 reclamation_rise,pinewood,Pinewood Reservoir,C-BT,"{""storage_af"": 657, ""elevation_ft"": 658, ""release_cfs"": 660}","✅ confirmed RISE item ids (live); C-BT, Reclamation-owned"
-reclamation_rise,powell,Lake Powell (Glen Canyon),Colorado,"{""storage_af"": null, ""elevation_ft"": null}",TODO: resolve item ids (enumeration search-term tuning)
+reclamation_rise,powell,Lake Powell (Glen Canyon),Colorado,"{""storage_af"": 509, ""elevation_ft"": 508, ""release_cfs"": 4315}",✅ confirmed RISE item ids (live)
 reclamation_rise,pueblo,Pueblo Reservoir,Arkansas,"{""storage_af"": 681, ""elevation_ft"": 682, ""release_cfs"": 684}",✅ confirmed RISE item ids (live)
 reclamation_rise,ruedi,Ruedi Reservoir,Fryingpan,"{""storage_af"": 711, ""elevation_ft"": 712, ""release_cfs"": 716}",✅ confirmed RISE item ids (live)
 reclamation_rise,shadow-mountain,Shadow Mountain Reservoir,C-BT,"{""storage_af"": 737, ""elevation_ft"": 738, ""release_cfs"": 740}","✅ confirmed RISE item ids (live); C-BT, Reclamation-owned"
-reclamation_rise,taylor-park,Taylor Park Reservoir,Gunnison,"{""storage_af"": null, ""elevation_ft"": null}",TODO: resolve item ids (enumeration search-term tuning)
+reclamation_rise,taylor-park,Taylor Park Reservoir,Gunnison,"{""storage_af"": 793, ""elevation_ft"": 796, ""release_cfs"": 4309}",✅ confirmed RISE item ids (live)
 reclamation_rise,turquoise,Turquoise Reservoir,Arkansas,"{""storage_af"": 814, ""elevation_ft"": 815, ""release_cfs"": 817}",✅ confirmed RISE item ids (live)
 reclamation_rise,twin-lakes,Twin Lakes Reservoir,Arkansas,"{""storage_af"": 818, ""elevation_ft"": 819, ""release_cfs"": 823}",✅ confirmed RISE item ids (live)
 reclamation_rise,willow-creek,Willow Creek Reservoir,C-BT,"{""storage_af"": 856, ""elevation_ft"": 857, ""release_cfs"": 861}","✅ confirmed RISE item ids (live); C-BT, Reclamation-owned"

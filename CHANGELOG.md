@@ -5,6 +5,7 @@ All notable changes to Colorado Environmental Data Hub are recorded here. Format
 ## [Unreleased]
 
 ### Added
+- Finished #9's data last mile: resolved the **last 3 RISE reservoirs** (crystal→item 274, powell→509 under "Lake Powell Glen Canyon Dam and Powerplant", taylor-park→793), so `reservoirs.csv` is **20/20 RISE** confirmed; ran the **reconcile spot-check** across DWR + RISE (all current values plausible vs. capacity — Powell 5.67M AF, Blue Mesa 309,743, etc.) and recorded dated reference anchors in `docs/survey-notes.md`.
 - Initial project scaffold (level L1) via the CUPIDS Lab `data-project` skill.
 - `DATA-DICTIONARY.md` documenting the 56-source Colorado environmental data catalog (schema v1.0, compiled 2026-06-17).
 - Immutable copy of `colorado_environmental_data_sources.json` under `data/raw/` (tracked).
