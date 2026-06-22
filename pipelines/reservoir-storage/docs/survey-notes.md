@@ -69,8 +69,9 @@ The request machinery is correct; these specifics are the first-run confirmation
       traversal `location?search=<name>` → Lake/Reservoir match →
       `location/<id>?include=catalogRecords.catalogItems` → `parameterName`→item id
       (catalog-item `search`/`locationId[]` filters are broken). 17/20 reservoirs
-      resolved (crystal/powell/taylor-park need search-term tuning). Blue Mesa storage
-      verified = 317,822 acre-ft.
+      resolved — **all 20/20** (crystal, taylor-park, and powell added 2026-06; powell's
+      storage lives under "Lake Powell Glen Canyon Dam and Powerplant", loc 393, not the
+      "Lake Powell At …" sub-gauges). Blue Mesa storage verified = 317,822 acre-ft.
 - [x] **Northern Water:** ❌ **resolved — not a storage source.** The ArcGIS hub
       (`data-nw.opendata.arcgis.com`) has only 4 boundary datasets; no storage
       FeatureServer exists. The C-BT reservoirs it operates are Reclamation-owned and
@@ -79,8 +80,8 @@ The request machinery is correct; these specifics are the first-run confirmation
       no open storage series.
 - [x] Enumerate the **full** Colorado reservoir list per source. **DWR + RISE done**;
       Northern is not a storage source (above). `reservoirs.csv` = 140 DWR + 20 RISE.
-- [ ] Resolve the 3 remaining RISE reservoirs (crystal/powell/taylor-park).
-- [ ] Fill `reconcile()` expected totals as a spot-check (see **Reconciliation** below).
+- [x] Resolve the 3 remaining RISE reservoirs — **done; RISE is 20/20** (crystal→item 274, powell→509, taylor-park→793).
+- [x] Fill `reconcile()` expected totals — **done**; reference values recorded in **Reconciliation** below (2026-06-21).
 
 ## Reconciliation — confirming our numbers against the agencies
 
@@ -105,9 +106,9 @@ reconcile cell and calls `audit.reconcile(expected)`.
 - the value — current storage in acre-feet, e.g. `138214.0`.
 
 ```python
-expected = {
-    ("dwr_cdss", "GRERESCO"):          138000.0,   # Green Mountain
-    ("reclamation_rise", "blue-mesa"): 317000.0,   # Blue Mesa
+expected = {   # real values as of 2026-06-21 — refresh before running
+    ("dwr_cdss", "GRERESCO"):           55480.0,   # Green Mountain
+    ("reclamation_rise", "blue-mesa"):  309743.0,  # Blue Mesa
 }
 ```
 
@@ -122,8 +123,21 @@ expected = {
     several days stale vs. the live page (check our latest `datetime`).
 
 The tolerance is slack on purpose: the agency page is "now," ours is the latest daily value,
-so they differ slightly but should agree to within a percent. Confirmed anchor: Blue Mesa
-storage = **317,822 AF** (2026-06).
+so they differ slightly but should agree to within a percent.
+
+**Confirmed reference values** — current storage per the pipeline, spot-checked against each
+reservoir's known capacity (all plausible), **as of 2026-06-21**. Use as reconcile anchors;
+refresh against the live agency page before re-running, since storage changes daily.
+
+| source | reservoir | storage (acre-ft) |
+|---|---|--:|
+| reclamation_rise | Lake Powell (powell) | 5,674,710 |
+| reclamation_rise | Blue Mesa (blue-mesa) | 309,743 |
+| reclamation_rise | Taylor Park (taylor-park) | 67,584 |
+| reclamation_rise | Crystal (crystal) | 17,005 |
+| dwr_cdss | Dillon (DILRESCO) | 204,746 |
+| dwr_cdss | Cheesman (CHERESCO) | 66,315 |
+| dwr_cdss | Green Mountain (GRERESCO) | 55,480 |
 
 ## Enumeration (how the seed gets to "full")
 
