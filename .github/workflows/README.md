@@ -1,7 +1,8 @@
 # CI/CD for `pipelines/`
 
 Two workflows keep every dataset under [`pipelines/`](../../pipelines) healthy and
-fresh. They share one contract so adding a pipeline is a one-line matrix edit.
+fresh. They share one contract and **auto-discover** the pipeline list, so adding a
+pipeline needs no workflow edit.
 
 | Workflow | Trigger | What it does |
 |---|---|---|
@@ -19,21 +20,20 @@ Every pipeline directory exposes the same seams, so the workflows stay generic:
 - `data/processed/*.csv` as the deliverable and `data/audit/summary-latest.md`
   as the stable-named run summary.
 
-## Adding a pipeline (e.g. streamflow #10, snowpack #11)
+## Adding a pipeline
 
-Add one row to the `matrix.include` in **both** workflows:
+**Nothing to edit here.** Both workflows derive their matrix from
+`pipelines/*/pyproject.toml` via the shared
+[`../scripts/discover-pipelines.sh`](../scripts/discover-pipelines.sh) (a `discover`
+job whose output is consumed with `fromJson`); the shared `_core` library is
+excluded. Drop in a `pipelines/<name>/` with a `pyproject.toml` and a
+`src/<module>/` package and it is tested + refreshed automatically — and a matrix
+row can never reference a directory that doesn't exist on `main` (the ordering
+hazard that reded `main` in PR #47; AAR §4.3).
 
-```yaml
-include:
-  - pipeline: reservoir-storage
-    module: reservoir
-  - pipeline: streamflow          # ← new
-    module: streamflow
-```
-
-`fail-fast: false` isolates a failing pipeline from the rest. (A later
-enhancement can auto-discover the matrix from `pipelines/*/pyproject.toml` so even
-this edit goes away.)
+`fail-fast: false` isolates a failing pipeline from the rest. CI also gates
+**doc accuracy**: if a pipeline README's stated `N tests` drifts from the actual
+`def test_` count, the run fails.
 
 ## Why a full rebuild, not a windowed append
 
