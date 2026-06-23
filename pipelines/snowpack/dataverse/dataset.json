@@ -1,0 +1,104 @@
+{
+  "datasetVersion": {
+    "license": {
+      "name": "CC BY 4.0",
+      "uri": "http://creativecommons.org/licenses/by/4.0/"
+    },
+    "metadataBlocks": {
+      "citation": {
+        "displayName": "Citation Metadata",
+        "fields": [
+          {
+            "typeName": "title",
+            "typeClass": "primitive",
+            "multiple": false,
+            "value": "Colorado Snowpack (SWE)"
+          },
+          {
+            "typeName": "alternativeURL",
+            "typeClass": "primitive",
+            "multiple": false,
+            "value": "https://github.com/CUPIDS-Lab/co-environmental-data"
+          },
+          {
+            "typeName": "author",
+            "typeClass": "compound",
+            "multiple": true,
+            "value": [
+              {
+                "authorName": {
+                  "typeName": "authorName",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "Keegan, Brian"
+                },
+                "authorAffiliation": {
+                  "typeName": "authorAffiliation",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "CUPIDS Lab"
+                }
+              }
+            ]
+          },
+          {
+            "typeName": "datasetContact",
+            "typeClass": "compound",
+            "multiple": true,
+            "value": [
+              {
+                "datasetContactName": {
+                  "typeName": "datasetContactName",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "Keegan, Brian"
+                },
+                "datasetContactEmail": {
+                  "typeName": "datasetContactEmail",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "accounts@brianckeegan.com"
+                }
+              }
+            ]
+          },
+          {
+            "typeName": "dsDescription",
+            "typeClass": "compound",
+            "multiple": true,
+            "value": [
+              {
+                "dsDescriptionValue": {
+                  "typeName": "dsDescriptionValue",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "A tidy, documented, reproducible dataset of Colorado snowpack — snow water equivalent (SWE), snow depth, and water-year precipitation accumulation, in inches — at NRCS SNOTEL (automated, daily, since ~1980) and snow-course (manual, semimonthly, many back to the 1930s-40s) sites, liberated from the NRCS AWDB REST API into a single long-format CSV: one row per (source, site_id, datetime, variable). Each station carries its full period of record. Part of the Colorado Environmental Data Hub (CUPIDS Lab); implements issue #11. The headline product is basin SWE as a percent of normal (1991-2020 baseline). Note that the two networks (SNOTEL and snow course) are NEARBY but DISTINCT sites, not duplicate measurements of one point: they are complementary (snow courses extend the record before SNOTEL), and a co-located pair tracks closely but is not identical. precip_accum_in is water-year-cumulative (resets each Oct 1), not a daily increment; missing values are NA, never zero-filled. Each extract carries per-source provenance (source URL, retrieval time, SHA-256, license). Regenerated and re-audited monthly from the AWDB API; see the repository for the re-runnable pipeline."
+                }
+              }
+            ]
+          },
+          {
+            "typeName": "subject",
+            "typeClass": "controlledVocabulary",
+            "multiple": true,
+            "value": ["Earth and Environmental Sciences"]
+          },
+          {
+            "typeName": "keyword",
+            "typeClass": "compound",
+            "multiple": true,
+            "value": [
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "Colorado" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "snowpack" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "snow water equivalent" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "SNOTEL" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "snow course" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "water resources" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "hydrology" } }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

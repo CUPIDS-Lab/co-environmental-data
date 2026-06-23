@@ -1,0 +1,121 @@
+# Concept catalog — cross-source harmonization with caveats.
+#
+# This is NOT a rename map. Each concept declares the canonical name, which source
+# variables map to it, and — most importantly — the CAVEATS bounding the
+# equivalence. A concept with an empty caveats list is suspicious: like a function
+# with no preconditions, it is usually under-specified, not universal.
+# (data-modeling.md#concept-catalogs)
+#
+# The two sources here are BOTH the NRCS AWDB API (SNOTEL network SNTL + snow-course
+# network SNOW). They are complementary, NOT a re-serve overlap — read the first
+# caveat on swe_in before combining them.
+
+- concept: snowpack.swe_in
+  description: >
+    Snow water equivalent (SWE) — the depth of liquid water held in the snowpack
+    if melted, in inches. The single most important snowpack variable: SWE (not
+    snow depth) drives runoff and water-supply forecasting.
+  sources:
+    nrcs_snotel:     { variable: "WTEQ (DAILY)", notes: "Automated snow-pillow SWE; record since ~1980." }
+    nrcs_snowcourse: { variable: "WTEQ (SEMIMONTHLY)", notes: "Manual gravimetric SWE; many courses back to the 1930s–40s." }
+  caveats:
+    - "⚠️ NEARBY, NOT IDENTICAL — the two sources are COMPLEMENTARY, not a re-serve
+       overlap. A SNOTEL and a same-named snow course (e.g. Park Cone) sit at roughly
+       the same place but are DISTINCT sites (different aspect, elevation, exposure)
+       sampled differently (a continuous pillow vs a periodic manual transect). Do
+       NOT treat them as duplicate measurements of one point. They are kept distinct
+       (`source` is in the key); `audit.reconcile_cross_source` checks their agreement
+       as a LOOSER sanity correlation (a co-located pair typically tracks to within a
+       few inches, NOT byte-identically like streamflow's USGS↔DWR re-serve). The
+       snow course's value is extending the SWE record decades before SNOTEL existed."
+    - "POINT MEASUREMENT, BASIN INFERENCE. Each station samples one point; basin and
+       statewide SWE are inferred by aggregating stations (see % of normal below).
+       A single station is not 'the basin's snowpack'."
+    - "MISSING ≠ ZERO. An absent value means the site was not reporting, NOT that SWE
+       was zero. Off-season (late summer) SWE is a genuine 0; a gap is NA. Impossible
+       negatives (AWDB missing sentinels, e.g. -99.9) are mapped to NA, never zero-filled."
+    - "PROVISIONAL vs APPROVED. Recent SNOTEL values are provisional and may be revised.
+       AWDB carries two flags (preserved space-joined in `qa_flag`): qcFlag (quality
+       control — e.g. V=valid, E=edited/estimated, S=suspect) and qaFlag (e.g.
+       P=provisional). A recent-date disagreement between sources is usually a
+       provisional/revision lag, not an error. Full flag definitions: NRCS NWCC docs."
+    - "% OF NORMAL = SUM-OF-STATIONS. `audit.basin_percent_normal` reports basin SWE as
+       100 × Σ(current SWE) / Σ(day-of-year median SWE) over the stations reporting
+       both, using the NRCS 1991–2020 normals period for the median (falling back to
+       the full record where 1991–2020 is not covered). This mirrors the NRCS basin
+       construction but is computed from THIS liberated record, not read off the NRCS
+       basin report — `reconcile_basin_pct_normal` is the accuracy check against the
+       published figure. The percent is only meaningful in snow season (~Nov–Jun);
+       off-season it is a degenerate 0/0."
+    - "SNOW-PILLOW CAVEATS (SNOTEL). Pillow SWE can be affected by bridging (snow
+       forming a self-supporting arch over the pillow), wind scour/loading, and
+       freeze. These are usually flagged/edited (qcFlag) but treat anomalous jumps
+       with the flag in mind."
+
+- concept: snowpack.snow_depth_in
+  description: >
+    Snow depth — the physical height of the snowpack, in inches. Combined with SWE
+    it gives snow density (SWE/depth).
+  sources:
+    nrcs_snotel:     { variable: "SNWD (DAILY)", notes: "Ultrasonic depth sensor; ADDED LATER than SWE/precip (most CO stations ~2003+)." }
+    nrcs_snowcourse: { variable: "SNWD (SEMIMONTHLY)", notes: "Manual ruler/probe depth at the course." }
+  caveats:
+    - "SHORTER RECORD THAN SWE (SNOTEL). The ultrasonic snow-depth sensor was added
+       to SNOTEL sites well after the snow-pillow (SWE) and precip gauge — typically
+       the early 2000s — so a station's `snow_depth_in` series usually starts ~20+
+       years after its `swe_in`. A missing early depth is 'sensor not installed', not
+       'no snow'."
+    - "NOISIER THAN SWE. Ultrasonic depth is sensitive to vegetation, sensor tilt, and
+       blowing snow; SWE is the more robust water-supply variable. Use depth for
+       density/settling context, not as a runoff predictor."
+    - "MISSING ≠ ZERO (as for SWE)."
+
+- concept: snowpack.precip_accum_in
+  description: >
+    Precipitation accumulation — cumulative precipitation (rain + snow water) at the
+    station's storage gauge, in inches, RESET each water year (Oct 1).
+  sources:
+    nrcs_snotel: { variable: "PREC (DAILY)", notes: "Water-year-cumulative storage-gauge precipitation." }
+  caveats:
+    - "⚠️ WATER-YEAR CUMULATIVE — a RUNNING TOTAL, not a daily increment. PREC climbs
+       monotonically through the water year and RESETS to ~0 on Oct 1. To get daily or
+       monthly precipitation, DIFFERENCE successive values within a water year (or use
+       the AWDB PRCP 'increment' element — not pulled here). Never sum PREC across days."
+    - "SNOTEL-ONLY. Snow courses have no precip gauge; this concept is populated only
+       for `nrcs_snotel`."
+    - "GAUGE UNDER-CATCH. Storage-gauge precipitation under-catches snowfall in wind
+       (often 10–50%); the gauges use antifreeze + oil and are subject to evaporation
+       and occasional resets. Treat PREC as a consistent index rather than absolute truth."
+
+# ── Declared for extensibility (NOT populated in this build) ───────────────────
+# Adding these is a parser change, not a contract change — the vocabulary admits them.
+- concept: snowpack.snow_density_pct
+  description: Snow density (SWE ÷ depth), percent — served by snow courses (SNDN); not pulled in this build.
+  sources:
+    nrcs_snowcourse: { variable: "SNDN (SEMIMONTHLY)", notes: "Not pulled; derivable as swe_in/snow_depth_in." }
+  caveats:
+    - "Derivable from swe_in / snow_depth_in where both exist; kept as a declared
+       concept so the snow-course SNDN element can be added without a contract change."
+
+- concept: snowpack.air_temp_obs_f
+  description: Observed air temperature at the station (TOBS), degrees Fahrenheit — declared, not pulled.
+  sources:
+    nrcs_snotel: { variable: "TOBS (DAILY)", notes: "Not pulled in this build." }
+  caveats:
+    - "⚠️ DOCUMENTED EXTENDED-RANGE TEMPERATURE-SENSOR BIAS. NRCS has documented a bias
+       in the SNOTEL extended-range temperature sensors (affecting historical air-temp
+       series and any precipitation-phase inference from them). This is WHY temperature
+       is left out of this water-focused build; if you populate `air_temp_obs_f`, carry
+       this caveat and prefer NRCS's bias-corrected products. (Issue #11 flags this.)"
+
+# ── Crosswalk to sibling pipelines ────────────────────────────────────────────
+crosswalks:
+  - to: "climate-stations (#44, CO DWR/CDSS)"
+    note: >
+      CDSS climate stations also serve SnowSWE / SnowDepth, and some CDSS records have
+      dataSource=NRCS (the SAME physical SNOTEL site). #44 owns the CDSS climate-station
+      domain; this pipeline owns NRCS SNOTEL + snow courses. When both are used together,
+      build an explicit SNOTEL↔CDSS site crosswalk (by name/proximity, as
+      `audit.colocated_pairs` does here) and do NOT treat the CDSS SnowSWE and the NRCS
+      WTEQ for the same site as independent measurements — same discipline as the
+      streamflow USGS↔DWR overlap.
