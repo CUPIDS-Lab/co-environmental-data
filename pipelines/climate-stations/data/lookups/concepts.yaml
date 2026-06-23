@@ -1,0 +1,138 @@
+# Concept catalog — cross-network harmonization with caveats.
+#
+# This is NOT a rename map. Each concept declares the canonical name, the CDSS
+# measType it maps to, and — most importantly — the CAVEATS bounding the
+# equivalence. A concept with an empty caveats list is suspicious: like a function
+# with no preconditions, it is usually under-specified, not universal.
+#
+# THE CROSS-CUTTING CAVEAT (applies to every concept below): the CDSS climate API
+# federates MANY observing networks behind one schema — NOAA COOP/GHCN, CoCoRaHS
+# (citizen observers), NRCS/SNOTEL, CoAgMet (agricultural mesonet), NCWCD. The same
+# measType from two networks is NOT instrument-, siting-, or QA-equivalent. Each
+# station's network is in stations.csv (`network`); filter/stratify by it before
+# comparing stations. flagA..flagD carry CDSS quality codes (→ qa_flag); recent
+# values may be provisional and revised.
+
+- concept: climate.precip_in
+  description: Daily total precipitation (liquid-water equivalent), in inches.
+  sources:
+    cdss_climate: { variable: "Precip (climatestationtsday)", notes: "measUnit 'in'." }
+  caveats:
+    - "NETWORK-HETEROGENEOUS. NOAA COOP & CoCoRaHS are manual once-daily gauges read
+       at an observer-set time (the 'observation-day' is not midnight-to-midnight);
+       CoAgMet/SNOTEL are automated. Daily totals are NOT clock-aligned across
+       networks — beware comparing a CoCoRaHS 7am-to-7am day to a midnight automated day."
+    - "GAUGE UNDERCATCH in wind & snow. Unshielded gauges under-measure frozen precip;
+       high-elevation/windy sites read low. A zero can mean 'trace' (sub-0.005 in) —
+       trace is often coded, not numeric."
+    - "CoCoRaHS is the largest network here (citizen observers). Excellent density,
+       variable rigor; treat single-observer outliers with care."
+
+- concept: climate.swe_in
+  description: Snow water equivalent — water contained in the snowpack, in inches.
+  sources:
+    cdss_climate: { variable: "SnowSWE (climatestationtsday)", notes: "measUnit 'in'; chiefly NRCS/SNOTEL." }
+  caveats:
+    - "⚠️ OVERLAPS SNOWPACK ISSUE #11. SnowSWE here is almost entirely NRCS/SNOTEL
+       sites — the SAME physical sites the snowpack pipeline pulls from the NRCS AWDB
+       API directly. Do NOT treat CDSS-climate SWE and AWDB SWE as independent
+       measurements; crosswalk on `site_id_network`/site name and de-duplicate. CDSS
+       re-serving NRCS is the climate analogue of DWR re-serving USGS in streamflow."
+    - "SNOTEL pillow-measured; subject to bridging, pillow leaks, and the documented
+       extended-range sensor bias. Snow-course manual SWE is sparser but a check."
+    - "Seasonal: meaningful only in snow season; off-season zeros/absence are 'no snow',
+       not missing."
+
+- concept: climate.snow_depth_in
+  description: Snow depth on the ground, in inches.
+  sources:
+    cdss_climate: { variable: "SnowDepth (climatestationtsday)", notes: "measUnit 'in'." }
+  caveats:
+    - "DEPTH, NOT WATER. Depth ≠ SWE (snow density varies 5–50%); do not infer water
+       content from depth without a density/SWE pairing."
+    - "Manual COOP depth is a single ruler reading at one point; drifting and melt make
+       it noisier than SWE. SNOTEL depth is automated (sonic)."
+
+- concept: climate.snowfall_in
+  description: New snowfall accumulated over the observation day, in inches.
+  sources:
+    cdss_climate: { variable: "Snow (climatestationtsday)", notes: "measUnit 'in'." }
+  caveats:
+    - "NEW snow, not depth on ground (that is snow_depth_in). Board-cleared once daily
+       in COOP practice; measurement frequency changes the seasonal total materially."
+    - "Trace snowfall is common and often coded rather than numeric (0 may mean trace)."
+
+- concept: climate.evap_in
+  description: Daily pan evaporation, in inches.
+  sources:
+    cdss_climate: { variable: "Evap (climatestationtsday)", notes: "measUnit 'in'; Class-A pan." }
+  caveats:
+    - "PAN evaporation, NOT lake/reservoir or reference ET. Apply a pan coefficient
+       (~0.7, site/season dependent) to estimate open-water evaporation; do not use raw."
+    - "WARM-SEASON ONLY at most sites (pans are drained in freezing months) — absence in
+       winter is 'not operating', not zero. Sparse network."
+
+- concept: climate.temp_max_f
+  description: Daily maximum air temperature, in degrees Fahrenheit.
+  sources:
+    cdss_climate: { variable: "MaxTemp (climatestationtsday)", notes: "measUnit 'degF'." }
+  caveats:
+    - "SUB-ZERO degF IS VALID (not a sentinel) — the parser does NOT null negative
+       temperatures (unlike the non-negative measures). Only values <= -999 are the
+       missing sentinel."
+    - "TIME-OF-OBSERVATION BIAS (COOP). The fixed daily reset time biases COOP min/max
+       (the classic TOB adjustment in homogenized records); raw values here are NOT
+       TOB-adjusted. Sensor changes (LIG → MMTS) introduce step inhomogeneities."
+
+- concept: climate.temp_min_f
+  description: Daily minimum air temperature, in degrees Fahrenheit.
+  sources:
+    cdss_climate: { variable: "MinTemp (climatestationtsday)", notes: "measUnit 'degF'." }
+  caveats:
+    - "Sub-zero is valid (see temp_max_f). Time-of-observation & sensor-change biases
+       apply; raw, not homogenized."
+
+- concept: climate.temp_mean_f
+  description: Daily mean air temperature, in degrees Fahrenheit.
+  sources:
+    cdss_climate: { variable: "MeanTemp (climatestationtsday)", notes: "measUnit 'degF'." }
+  caveats:
+    - "DEFINITION VARIES BY NETWORK. COOP 'mean' is typically (max+min)/2; mesonets may
+       integrate sub-hourly readings. (max+min)/2 ≠ true daily mean — they differ by a
+       few degrees. Do not pool means across networks without noting the definition."
+
+- concept: climate.solar_rad_mj_m2
+  description: Daily total solar (shortwave) radiation, in megajoules per square metre.
+  sources:
+    cdss_climate: { variable: "Solar (climatestationtsday)", notes: "measUnit 'mJ/m^2'; chiefly CoAgMet." }
+  caveats:
+    - "DAILY TOTAL energy (MJ/m^2/day), not an instantaneous flux (W/m^2) — 1 MJ/m^2/day
+       ≈ 11.57 W/m^2 averaged. Pyranometer drift/soiling is the main error."
+    - "Effectively a CoAgMet-only measure here; sparse outside the agricultural mesonet."
+
+- concept: climate.vapor_pressure_kpa
+  description: Daily mean actual vapor pressure, in kilopascals.
+  sources:
+    cdss_climate: { variable: "VP (climatestationtsday)", notes: "measUnit 'kPa'; chiefly CoAgMet." }
+  caveats:
+    - "ACTUAL vapor pressure (humidity), not saturation/deficit. Pair with temperature
+       to derive VPD/RH; do not confuse with VPD. CoAgMet-dominated, sparse elsewhere."
+
+- concept: climate.wind_run_km
+  description: Daily wind run — total wind passage over the day, in kilometres.
+  sources:
+    cdss_climate: { variable: "Wind (climatestationtsday)", notes: "measUnit 'KM' (km/day run)." }
+  caveats:
+    - "WIND RUN (distance/day), NOT wind SPEED. Mean speed ≈ wind_run_km / 24 (km/h).
+       Do not read the value as a speed. Anemometer height varies by site — not a
+       standard 10 m everywhere. CoAgMet-dominated."
+
+- concept: climate.frost_date
+  description: Frost measure (FrostDate) — semantics unconfirmed in this build.
+  sources:
+    cdss_climate: { variable: "FrostDate (climatestationtsday)", notes: "rare; unit not observed in sampled stations." }
+  caveats:
+    - "⚠️ UNVERIFIED. FrostDate is a valid CDSS climate measType but returned no rows in
+       the sampled stations, so its daily-series unit/semantics are not confirmed here.
+       The parser passes its source-reported value/unit through untouched and applies NO
+       sentinel cleaning. Verify against CDSS before relying on it; treat as provisional."
