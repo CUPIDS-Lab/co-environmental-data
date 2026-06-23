@@ -396,6 +396,90 @@ BODY
     "type:pipeline,blocking,level:L4,priority:med,size:m" "$B_LLM" "$MILESTONE_L3L4"
   seed_issue "run-qa-before-dataverse-publish" "Run the QA gates before the first reservoir Dataverse publish" \
     "type:data,blocking,level:L4,priority:high,size:s" "$B_QA" "$MILESTONE_L3L4"
+
+  # --- QA-audit batch (findings from audits/2026-06-22-qa-audit.md) ---
+  local B_RECON B_RISE B_VALUES B_KNOWN B_CATLIC B_A11Y
+
+  IFS= read -r -d '' B_RECON <<'BODY' || true
+The QA audit (`audits/2026-06-22-qa-audit.md`) found the reservoir reconciliation spot-check is **stubbed and failing**, while `pipelines/reservoir-storage/docs/survey-notes.md` claims it is "done". `data/audit/reconcile.json` carries placeholder values (`GRERESCO` expected `1.0`; a literal `NOTREAL` entry; `blue-mesa` off by ~50%), and the notebook `expected` block is commented out. Per the bulletproofing checklist this reconciliation IS the canonical pre-publication gate.
+
+### Definition of done
+- [ ] Fill `expected` in the notebook with >=2 reservoirs per source from the live agency current-storage pages (record source + date)
+- [ ] `data/audit/reconcile.json` shows `match=true` for all entries; commit the passing artifact
+- [ ] Remove the false "reconcile done" claim + the three inconsistent Blue Mesa anchors from `survey-notes.md`; reconcile to one verified value
+- [ ] Remove the `NOTREAL` placeholder
+
+**Why blocking:** gates the first Dataverse publish (#36); a DOI is permanent.
+BODY
+  IFS= read -r -d '' B_RISE <<'BODY' || true
+The QA audit found `src/reservoir/parsers/reclamation_rise.py` uses `attrs.get("result") or attrs.get("value")`, so a legitimate **0.0 storage (dead pool) is coerced to None -> NA**. The CSV carries ~5,217 storage zeros and ~7,451 storage NAs with a corrupted boundary between them.
+
+### Definition of done
+- [ ] Replace the `or` with an explicit key / None check so real `0.0` survives
+- [ ] Add a parser test with a `0.0` storage fixture row
+- [ ] Re-run; confirm storage zero-vs-NA counts change as expected; note the delta in the data-dictionary known-issues
+
+**Why blocking:** silently dropping real zeros corrupts the published series.
+BODY
+  IFS= read -r -d '' B_VALUES <<'BODY' || true
+The QA audit found physically impossible values in the published CSV: an elevation of **70,235 ft** (Dillon, 1 row), **2,903 negative elevations**, and **134 negative `release_cfs`** across 4 reservoirs. The audit summary reports them but nothing flags or gates them.
+
+### Definition of done
+- [ ] Add a range / plausibility gate (e.g. CO reservoir elevation 0-15,000 ft; `release_cfs >= 0` unless documented) that flags or quarantines out-of-range rows
+- [ ] Disposition the flagged rows (drop / correct / document) and record it
+- [ ] Add a test asserting no out-of-range values survive to `data/processed`
+
+**Why blocking:** impossible values in a published, citable dataset are indefensible.
+BODY
+  IFS= read -r -d '' B_KNOWN <<'BODY' || true
+Data-integrity follow-ups from the QA audit (`audits/2026-06-22-qa-audit.md`) that are not strictly publication-blocking but should land before/with publish.
+
+### Definition of done
+- [ ] Fix the `qa_flag` join so it does not emit the literal string `"None None"` (~268k rows) / `"O None"` -- emit empty/NA
+- [ ] Document the **53-built vs 138-enumerated** reservoir shortfall (404 / no-data breakdown from `fetch_errors.json`); assert an expected-non-empty set so a silent drop != real no-data
+- [ ] Add a **Known issues** section to `docs/data-dictionary.md` recording every audit finding (impossible values, zeros-vs-NA, qa_flag, name-case duplication) per the data-quality checklist
+- [ ] Add a cross-source name/id crosswalk note (`Blue Mesa Reservoir` vs `BLUE MESA RESERVOIR`) or document them as intentionally distinct
+BODY
+  IFS= read -r -d '' B_CATLIC <<'BODY' || true
+NEW catalog findings from the QA audit not covered by #2 / #3 / #4:
+- **License fragmentation:** 29 distinct free-text `license` strings; 16/56 sources carry unstated / "verify" / restricted licenses.
+- **Schema drift:** 15/56 sources use a `links.download` sub-key that `DATA-DICTIONARY.md` does not declare.
+- **2 empty `links` objects** (`wind-local-met-towers`, `minerals-local-county-gis`) -- no `landing_page`.
+- Minor: DATA-DICTIONARY range examples use en-dashes while the file uses ASCII hyphens; one non-TLS `http://` download URL.
+
+### Definition of done
+- [ ] Map the free-text licenses to a controlled set (`public-domain` / `cc-by` / `cc0` / `restricted` / `verify`); triage the 16 unstated entries
+- [ ] Declare `download` in the DATA-DICTIONARY `links` schema (or rename to a declared key); new vintage + dict agree
+- [ ] Give the 2 empty-`links` sources a `landing_page` or a `links_unavailable`-style flag
+- [ ] Fix the en-dash / hyphen doc example; verify or annotate the http-only URL
+
+L2 catalog hardening; complements #2 (verify) and #4 (match fields).
+BODY
+  IFS= read -r -d '' B_A11Y <<'BODY' || true
+The accessibility audit found document structure, link text, and table headers all PASS, and figures/color N/A (no charts exist yet). The one "applies now" gap is **undefined acronyms** plus two prose gaps. (A `GLOSSARY.md` was added in the audit PR; the inline first-use work + prose remain.)
+
+### Definition of done
+- [ ] Define CDSS, RISE, DWR, C-BT, SWE, TDM, OKF, UNF on first use across `README.md`, `ROADMAP.md`, `NEXT-STEPS.md`, `GOVERNANCE.md`, and the pipeline `README.md` (or link the `GLOSSARY.md`)
+- [ ] Add a one-line plain-language "what we found" headline to the README summary
+- [ ] State inclusive-meeting practice (notes/captions, materials in advance, async contribution) in `collaboration-protocol.md`
+- [ ] Add a "tell us what you need" accessibility invitation pointing to the contact / remedy path
+- [ ] (L5) alt text + colorblind-safe palettes + contrast become acceptance criteria when the Datasette + Quarto site is built
+
+Applies-now items are doc-only; the figure/color items track to the L5 publication row.
+BODY
+
+  seed_issue "reservoir-real-reconciliation" "Reservoir: run a real reconciliation before publish (it is stubbed)" \
+    "type:data,blocking,level:L4,priority:high,size:m" "$B_RECON" "$MILESTONE_L3L4"
+  seed_issue "reservoir-rise-zeros-bug" "Reservoir: fix RISE zeros-vs-missing parser bug" \
+    "type:pipeline,blocking,level:L4,priority:high,size:s" "$B_RISE" "$MILESTONE_L3L4"
+  seed_issue "reservoir-screen-impossible-values" "Reservoir: screen impossible elevation/release values" \
+    "type:pipeline,blocking,level:L4,priority:high,size:m" "$B_VALUES" "$MILESTONE_L3L4"
+  seed_issue "reservoir-knownissues-and-counts" "Reservoir: qa_flag fix + record-count doc + known-issues section" \
+    "type:data,level:L4,priority:med,size:m" "$B_KNOWN" "$MILESTONE_L3L4"
+  seed_issue "catalog-license-and-schema-drift" "Catalog: normalize licenses + reconcile links.download schema drift" \
+    "type:data,level:L2,priority:med,size:m" "$B_CATLIC" "$MILESTONE_TITLE"
+  seed_issue "accessibility-glossary-and-prose" "Accessibility: define acronyms/glossary + inclusive-meeting prose" \
+    "type:docs,level:L4,priority:med,size:s" "$B_A11Y" "$MILESTONE_L3L4"
   # --- end per-task calls ---
 
   project_status_update

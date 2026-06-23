@@ -81,9 +81,11 @@ The request machinery is correct; these specifics are the first-run confirmation
 - [x] Enumerate the **full** Colorado reservoir list per source. **DWR + RISE done**;
       Northern is not a storage source (above). `reservoirs.csv` = 140 DWR + 20 RISE.
 - [x] Resolve the 3 remaining RISE reservoirs — **done; RISE is 20/20** (crystal→item 274, powell→509, taylor-park→793).
-- [x] Fill `reconcile()` expected totals — **done**; reference values recorded in **Reconciliation** below (2026-06-21).
+- [ ] Fill `reconcile()` expected totals **and run a passing reconciliation** — **NOT done** (corrected 2026-06-22). Reference anchors are recorded in **Reconciliation** below, but the notebook `expected` block is commented out and the persisted `data/audit/reconcile.json` still holds placeholder values (a literal `NOTREAL`, `expected=1.0`, a failing `blue-mesa`). Tracked as [#38](https://github.com/CUPIDS-Lab/co-environmental-data/issues/38); **must pass before the first Dataverse publish.**
 
 ## Reconciliation — confirming our numbers against the agencies
+
+> ⚠️ **Status (2026-06-22 QA audit): NOT yet run to passing.** The anchors below are recorded, but no passing reconciliation exists on disk — `data/audit/reconcile.json` holds placeholders. This is the canonical pre-publication gate (per `data-bulletproofing-checklist.md`); resolve [#38](https://github.com/CUPIDS-Lab/co-environmental-data/issues/38) before publishing #36.
 
 Reconciliation is the cheap insurance that the pipeline didn't quietly corrupt the
 *values* — wrong units, a parsing slip, the wrong station, stale data. It compares a few

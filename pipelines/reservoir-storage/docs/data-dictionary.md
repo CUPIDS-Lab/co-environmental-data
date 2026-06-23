@@ -70,3 +70,15 @@ parser is usually wrong.
   `data/lookups/concepts.yaml`. **Concepts carry caveats** — especially the
   vertical-datum caveat on elevation; read the catalog before comparing across
   sources.
+
+## Known issues (2026-06-22 QA audit)
+
+Defects found auditing the built CSV against `data-bulletproofing-checklist.md` and `data-quality-checklist.md`. Documented here so downstream users are not surprised; tracked in the repo `ROADMAP.md`. **Do not treat the current `data/processed` output as publication-ready until the blocking items clear.**
+
+- **Reconciliation not run (blocking — [#38](https://github.com/CUPIDS-Lab/co-environmental-data/issues/38)).** No passing reconciliation exists; `data/audit/reconcile.json` holds placeholder values. The values have not been independently confirmed against the agencies' current-storage pages.
+- **Impossible values present (blocking — [#40](https://github.com/CUPIDS-Lab/co-environmental-data/issues/40)).** The output contains an elevation of ~70,235 ft (Dillon, 1 row), ~2,903 negative elevations, and ~134 negative `release_cfs`. No range gate screens these yet.
+- **RISE zeros read as missing (blocking — [#39](https://github.com/CUPIDS-Lab/co-environmental-data/issues/39)).** The RISE parser coerces a real `0.0` storage (dead pool) to NA, corrupting the boundary between ~5,217 storage zeros and ~7,451 NAs.
+- **`qa_flag` corruption ([#41](https://github.com/CUPIDS-Lab/co-environmental-data/issues/41)).** The DWR flag join emits the literal string `"None None"` in ~268k rows (`"O None"` in ~134k) instead of empty/NA.
+- **Record-count shortfall ([#41](https://github.com/CUPIDS-Lab/co-environmental-data/issues/41)).** The CSV covers ~53 reservoirs vs. the 138 enumerated (the rest returned 404/no-data); the shortfall is not yet documented, so a silent drop is indistinguishable from real no-data.
+- **Cross-source name casing ([#41](https://github.com/CUPIDS-Lab/co-environmental-data/issues/41)).** The same reservoir appears as `Blue Mesa Reservoir` (RISE) and `BLUE MESA RESERVOIR` (DWR); no crosswalk yet.
+- **Documented & accepted (not defects):** real historical gaps per site; multi-reading-per-day flooring (tested); vertical-datum and capacity-baseline caveats (`concepts.yaml`).

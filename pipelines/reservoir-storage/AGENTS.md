@@ -103,7 +103,7 @@ All three parsers are fixture-tested (`tests/test_{dwr_cdss,reclamation_rise,nor
 plus a **multi-source integration test** (`test_pipeline_integration.py`) that
 concatenates one fixture per source and asserts the combined frame satisfies the
 schema + composite-key uniqueness, and the enumeration helpers
-(`test_stations.py`). 17 tests; the suite runs offline with no network.
+(`test_stations.py`). 30 tests; the suite runs offline with no network.
 
 ## Known limitations
 

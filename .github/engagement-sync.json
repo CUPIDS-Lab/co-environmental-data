@@ -57,5 +57,29 @@
   "run-qa-before-dataverse-publish": {
     "issue": 36,
     "hash": "2a58571f8476dc2652860e990a7080a817675a84f23e53241b2752ab38faedb6"
+  },
+  "reservoir-real-reconciliation": {
+    "issue": 38,
+    "hash": "cad14f0f0aad21f1451aacc4ad2f4a82d711e5ad692bd1e77acce9240825bfcf"
+  },
+  "reservoir-rise-zeros-bug": {
+    "issue": 39,
+    "hash": "ced9f0d4adc0329d29bd4028f13411fb8c34f09f55aec6dc3d7fd360dc530769"
+  },
+  "reservoir-screen-impossible-values": {
+    "issue": 40,
+    "hash": "0cd52cb95fd9984898765dfb0f16751cfd2591a13863839df5a0020dcb76ac64"
+  },
+  "reservoir-knownissues-and-counts": {
+    "issue": 41,
+    "hash": "a74d369f5061994023cf6e47f15412b52421fe3456e5f76bc8a6d1b043decc10"
+  },
+  "catalog-license-and-schema-drift": {
+    "issue": 42,
+    "hash": "e6616810e64a7fab48726d35f2c455992580821b8bb28bfeb47f21c6ae654a92"
+  },
+  "accessibility-glossary-and-prose": {
+    "issue": 43,
+    "hash": "c4bb27b6446a79a3d60d8b0afb71bc34383151e8baacb4f95004337c48bef8cf"
   }
 }

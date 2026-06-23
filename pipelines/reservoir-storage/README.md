@@ -29,7 +29,7 @@ uses* note in `AGENTS.md`.
 ```bash
 cd pipelines/reservoir-storage
 uv sync                      # create the pinned environment
-uv run pytest                # verify the scaffold (17 tests, offline)
+uv run pytest                # verify the scaffold (30 tests, offline)
 uv run jupyter lab           # then run notebooks/reservoir-pipeline.ipynb top to bottom
 ```
 
