@@ -31,6 +31,8 @@ import pandas as pd
 
 from snowpack import config
 
+from co_pipeline_core import audit as _coreaudit
+
 # NRCS normals baseline (the current official period). The median for a station's
 # day-of-year is computed over these years where available; documented in concepts.
 NORMAL_BASELINE = (1991, 2020)
@@ -41,66 +43,13 @@ def _ts() -> str:
 
 
 def profile_raw(original_dir: Path | None = None) -> str:
-    """Summarize what's on disk in ``data/original/`` → Markdown (also written)."""
-    original_dir = original_dir or config.ORIGINAL
-    lines = [f"# Raw retrieval profile — {_ts()}", ""]
-    files = sorted(p for p in original_dir.rglob("*.json") if p.name != "manifest.json")
-    by_source: dict[str, list[Path]] = {}
-    for f in files:
-        by_source.setdefault(f.relative_to(original_dir).parts[0], []).append(f)
-    lines.append(f"- Sources with data: **{len(by_source)}** · files: **{len(files)}**\n")
-    lines.append("| Source | Files | Total bytes | Sample top-level shape |")
-    lines.append("|---|--:|--:|---|")
-    for source, fs in sorted(by_source.items()):
-        nbytes = sum(p.stat().st_size for p in fs)
-        try:
-            sample = json.loads(fs[0].read_text())
-            if isinstance(sample, list):
-                shape = f"list[{len(sample)}]"
-            elif isinstance(sample, dict):
-                shape = ", ".join(list(sample)[:5])
-            else:
-                shape = type(sample).__name__
-        except Exception as e:  # noqa: BLE001
-            shape = f"(unreadable: {e})"
-        lines.append(f"| `{source}` | {len(fs)} | {nbytes:,} | {shape} |")
-    if not by_source:
-        lines.append("\n> ⚠️ No raw files found — run the retrieve step first, or the fetch failed.")
-    report = "\n".join(lines) + "\n"
-    out = config.AUDIT / f"raw-profile-{_ts()}.md"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(report)
-    return report
+    """Summarize what's on disk in ``data/original/`` -> Markdown (shared)."""
+    return _coreaudit.profile_raw(original_dir or config.ORIGINAL, config.AUDIT)
 
 
 def audit_processed(csv: Path | None = None) -> str:
-    """Profile the tidy CSV → ``data/audit/summary-<ts>.md`` (returns the text)."""
-    csv = csv or config.CANONICAL_CSV
-    df = pd.read_csv(csv, parse_dates=["datetime"])
-    L = [f"# Processed audit — {_ts()}", "", f"Rows: **{len(df):,}**", ""]
-
-    L += ["## Rows per source × variable", "",
-          "| source | variable | rows | stations | null values |", "|---|---|--:|--:|--:|"]
-    for (src, var), sub in df.groupby(["source", "variable"]):
-        L.append(f"| {src} | {var} | {len(sub):,} | {sub['site_id'].nunique()} | "
-                 f"{sub['value'].isna().sum()} |")
-
-    L += ["", "## Date coverage per source", "", "| source | earliest | latest |", "|---|---|---|"]
-    for src, sub in df.groupby("source"):
-        L.append(f"| {src} | {sub['datetime'].min():%Y-%m-%d} | {sub['datetime'].max():%Y-%m-%d} |")
-
-    L += ["", "## Value ranges per variable (sanity / outliers)", "",
-          "| variable | unit | min | median | max |", "|---|---|--:|--:|--:|"]
-    for var, sub in df.groupby("variable"):
-        v = sub["value"].dropna()
-        if len(v):
-            L.append(f"| {var} | {sub['unit'].iloc[0]} | {v.min():,.1f} | "
-                     f"{v.median():,.1f} | {v.max():,.1f} |")
-
-    report = "\n".join(L) + "\n"
-    out = config.AUDIT / f"summary-{_ts()}.md"
-    out.write_text(report)
-    return report
+    """Profile the tidy CSV -> ``data/audit/summary-<ts>.md`` (shared)."""
+    return _coreaudit.audit_processed(csv or config.CANONICAL_CSV, config.AUDIT, id_col="site_id", entity="stations")
 
 
 def coverage_report(csv: Path | None = None) -> pd.DataFrame:

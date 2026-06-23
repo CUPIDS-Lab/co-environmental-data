@@ -28,37 +28,16 @@ import pandas as pd
 
 from climate_stations import config
 
+from co_pipeline_core import audit as _coreaudit
+
 
 def _ts() -> str:
     return _dt.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
 
 
 def profile_raw(original_dir: Path | None = None) -> str:
-    """Summarize what's on disk in ``data/original/`` → Markdown (also written)."""
-    original_dir = original_dir or config.ORIGINAL
-    lines = [f"# Raw retrieval profile — {_ts()}", ""]
-    files = sorted(p for p in original_dir.rglob("*.json") if p.name != "manifest.json")
-    by_source: dict[str, list[Path]] = {}
-    for f in files:
-        by_source.setdefault(f.relative_to(original_dir).parts[0], []).append(f)
-    lines.append(f"- Sources with data: **{len(by_source)}** · files: **{len(files)}**\n")
-    lines.append("| Source | Files | Total bytes | Sample top-level keys |")
-    lines.append("|---|--:|--:|---|")
-    for source, fs in sorted(by_source.items()):
-        nbytes = sum(p.stat().st_size for p in fs)
-        try:
-            sample = json.loads(fs[0].read_text())
-            keys = ", ".join(list(sample)[:5]) if isinstance(sample, dict) else type(sample).__name__
-        except Exception as e:  # noqa: BLE001
-            keys = f"(unreadable: {e})"
-        lines.append(f"| `{source}` | {len(fs)} | {nbytes:,} | {keys} |")
-    if not by_source:
-        lines.append("\n> ⚠️ No raw files found — run the retrieve step first, or the fetch failed.")
-    report = "\n".join(lines) + "\n"
-    out = config.AUDIT / f"raw-profile-{_ts()}.md"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(report)
-    return report
+    """Summarize what's on disk in ``data/original/`` -> Markdown (shared)."""
+    return _coreaudit.profile_raw(original_dir or config.ORIGINAL, config.AUDIT)
 
 
 def audit_processed(csv: Path | None = None) -> str:
