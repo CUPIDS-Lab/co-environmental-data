@@ -1,0 +1,50 @@
+{
+  "PageNumber": 1,
+  "PageCount": 10,
+  "ResultCount": 3,
+  "ResultDateTime": "2026-06-22T20:29:29.0463903-06:00",
+  "ResultList": [
+    {
+      "stationNum": 3,
+      "siteId": "USC00051060",
+      "measType": "Precip",
+      "measDate": "2024-06-01T00:00:00-06:00",
+      "value": 0.0,
+      "flagA": null,
+      "flagB": null,
+      "flagC": "7",
+      "flagD": null,
+      "dataSource": "NOAA",
+      "modified": "2025-12-15T20:28:43.6-07:00",
+      "measUnit": "in"
+    },
+    {
+      "stationNum": 3,
+      "siteId": "USC00051060",
+      "measType": "Precip",
+      "measDate": "2024-06-02T00:00:00-06:00",
+      "value": 0.0,
+      "flagA": "T",
+      "flagB": null,
+      "flagC": "7",
+      "flagD": null,
+      "dataSource": "NOAA",
+      "modified": "2025-12-15T20:28:43.6-07:00",
+      "measUnit": "in"
+    },
+    {
+      "stationNum": 3,
+      "siteId": "USC00051060",
+      "measType": "Precip",
+      "measDate": "2024-06-03T00:00:00-06:00",
+      "value": 0.0,
+      "flagA": "T",
+      "flagB": null,
+      "flagC": "7",
+      "flagD": null,
+      "dataSource": "NOAA",
+      "modified": "2025-12-15T20:28:43.6-07:00",
+      "measUnit": "in"
+    }
+  ]
+}

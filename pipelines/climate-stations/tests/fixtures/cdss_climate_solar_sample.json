@@ -1,0 +1,36 @@
+{
+  "PageNumber": 1,
+  "PageCount": 3,
+  "ResultCount": 2,
+  "ResultDateTime": "2026-06-22T20:29:29.3588861-06:00",
+  "ResultList": [
+    {
+      "stationNum": 1886,
+      "siteId": "CTR01",
+      "measType": "Solar",
+      "measDate": "2024-06-01T00:00:00-06:00",
+      "value": 27.45,
+      "flagA": null,
+      "flagB": null,
+      "flagC": null,
+      "flagD": null,
+      "dataSource": "CoAgMet",
+      "modified": "2024-06-15T20:09:27.83-06:00",
+      "measUnit": "mJ/m^2"
+    },
+    {
+      "stationNum": 1886,
+      "siteId": "CTR01",
+      "measType": "Solar",
+      "measDate": "2024-06-02T00:00:00-06:00",
+      "value": 31.54,
+      "flagA": null,
+      "flagB": null,
+      "flagC": null,
+      "flagD": null,
+      "dataSource": "CoAgMet",
+      "modified": "2024-06-15T20:09:27.86-06:00",
+      "measUnit": "mJ/m^2"
+    }
+  ]
+}

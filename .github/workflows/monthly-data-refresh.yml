@@ -41,6 +41,8 @@ jobs:
             module: reservoir
           - pipeline: streamflow
             module: streamflow
+          - pipeline: snowpack
+            module: snowpack
     defaults:
       run:
         working-directory: pipelines/${{ matrix.pipeline }}

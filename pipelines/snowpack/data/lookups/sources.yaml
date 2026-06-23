@@ -1,0 +1,55 @@
+# Non-secret per-source configuration for the snowpack pipeline.
+# Edited by hand; read by snowpack.config.load_sources_config().
+# The NRCS AWDB REST API needs no API key (it is open) — there is no secret here.
+#
+# ✅ CONFIRMED markers were verified against the live API on 2026-06-22 (see
+#    docs/survey-notes.md). The request machinery and these specific endpoints /
+#    element codes / durations both returned data; re-confirm on any contract change.
+#
+# Both sources are the SAME API (AWDB), differing only in network + duration + the
+# per-value date field — so they share base_url, endpoints, and the fetch client.
+
+nrcs_snotel:
+  base_url: "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1"
+  stations_endpoint: "stations"                 # ✅ station metadata + period of record
+  data_endpoint: "data"                         # ✅ time series
+  state_code: "CO"
+  network: "SNTL"                               # ✅ SNOTEL (automated telemetry)
+  duration: "DAILY"                             # ✅ daily values
+  date_field: "date"                            # ✅ each value carries {date, value, qcFlag, qaFlag}
+  parameters:                                   # canonical variable -> AWDB element code  # ✅ confirmed
+    swe_in: "WTEQ"                              # Snow Water Equivalent (in)
+    snow_depth_in: "SNWD"                       # Snow Depth (in)
+    precip_accum_in: "PREC"                     # Precipitation Accumulation, water-year cumulative (in)
+  start_date: "1900-01-01"                      # early bound for FULL history; AWDB clamps to each station's POR
+  end_date: ""                                  # empty = today
+  notes: >
+    ✅ CONFIRMED live (2026-06): GET data?stationTriplets=<id>:CO:SNTL&
+    elements=WTEQ,SNWD,PREC&duration=DAILY&beginDate=<ymd>&endDate=<ymd>&
+    returnFlags=true. Response is a list of {stationTriplet, data:[{stationElement:
+    {elementCode,storedUnitCode,beginDate,endDate}, values:[{date,value,qcFlag,qaFlag}]}]}.
+    Full POR arrives in ONE response (not paginated) — e.g. station 713 returns
+    ~16.7k daily rows 1980->present. A (station,element) with no data returns an
+    empty values list (HTTP 200) — handled as no-data, not an error. No API key.
+
+nrcs_snowcourse:
+  base_url: "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1"
+  stations_endpoint: "stations"
+  data_endpoint: "data"
+  state_code: "CO"
+  network: "SNOW"                               # ✅ Snow Course / Aerial Marker (manual)
+  duration: "SEMIMONTHLY"                       # ✅ snow courses are measured ~monthly; DAILY returns nothing
+  date_field: "collectionDate"                  # ⚠️ values use {month,monthPart,year,collectionDate,value} — NOT `date`
+  parameters:                                   # snow courses measure SWE + depth (no PREC gauge)
+    swe_in: "WTEQ"
+    snow_depth_in: "SNWD"
+  start_date: "1900-01-01"
+  end_date: ""
+  notes: >
+    ✅ CONFIRMED live (2026-06): GET data?stationTriplets=<id>:CO:SNOW&
+    elements=WTEQ,SNWD&duration=SEMIMONTHLY&beginDate=<ymd>&endDate=<ymd>&
+    returnFlags=true. ⚠️ TWO gotchas vs SNOTEL: (1) duration is SEMIMONTHLY
+    (DAILY/MONTHLY return zero blocks for most courses); (2) each value is
+    {month, monthPart, year, collectionDate, value} — the real measurement date is
+    `collectionDate`, NOT `date`. Deep history (e.g. Antero back to 1949). Snow
+    courses are point manual samples, not continuous telemetry — see concepts.yaml.
