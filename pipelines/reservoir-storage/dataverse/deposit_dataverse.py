@@ -71,6 +71,7 @@ DATA_DIRS = [
     (root / "src", "Code", "code", False),
     (root / "notebooks", "Code", "code", False),
     (root / "docs", "Documentation", "documentation", False),
+    (root / "data" / "lookups", "Documentation", "data/lookups", False),
 ]
 DOC_FILES = ["README.md", "AGENTS.md"]
 

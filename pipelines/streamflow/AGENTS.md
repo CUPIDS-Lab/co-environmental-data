@@ -10,7 +10,7 @@ A data-liberation pipeline that pulls **Colorado stream/river flow** (daily mean
 
 ```bash
 uv sync
-uv run pytest                 # 21 tests, offline
+uv run pytest                 # 25 tests, offline
 # then run notebooks/streamflow-pipeline.ipynb top to bottom, OR the headless twin:
 uv run python -m streamflow.pipeline --mode demo --fresh    # offline smoke test
 uv run python -m streamflow.pipeline --mode live --fresh \
@@ -51,7 +51,7 @@ uv run python -m streamflow.pipeline --mode live --fresh \
 
 ## Test coverage
 
-Both parsers are fixture-tested against **real** (trimmed) API responses (`tests/test_{usgs_nwis,dwr_cdss}.py`), including the ice-sentinel→NA regression and the DWR `value`-not-`measValue` guard; a **multi-source integration test** asserts the combined frame satisfies the schema + composite-key uniqueness and that the overlap values agree; `test_sources.py` pins the URL contract + sites filter; `test_audit_cross_source.py` checks the cross-source reconciliation math; `test_schema.py` guards the contract; `test_fetch.py` covers progress rendering. 21 tests; the suite runs offline with no network.
+Both parsers are fixture-tested against **real** (trimmed) API responses (`tests/test_{usgs_nwis,dwr_cdss}.py`), including the ice-sentinel→NA regression and the DWR `value`-not-`measValue` guard; a **multi-source integration test** asserts the combined frame satisfies the schema + composite-key uniqueness and that the overlap values agree; `test_sources.py` pins the URL contract + sites filter; `test_audit_cross_source.py` checks the cross-source reconciliation math; `test_schema.py` guards the contract; `test_fetch.py` covers progress rendering; `test_stations.py` asserts the committed seed carries station coordinates (lat/long within Colorado) and that the enumeration helpers parse coordinates/county/POR. 25 tests; the suite runs offline with no network.
 
 ## Known limitations
 

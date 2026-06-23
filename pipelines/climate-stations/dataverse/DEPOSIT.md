@@ -9,6 +9,7 @@ This dataset can be archived in a [Dataverse](https://dataverse.org) repository 
 | `data/processed/` (`climate-stations.csv`, `provenance.csv`) | **Data** | `data/processed` |
 | `src/climate_stations/` · `notebooks/` (the re-runnable pipeline) | **Code** | `code` |
 | `README.md`, `AGENTS.md`, `docs/` (data dictionary, recipes, survey notes) | **Documentation** | `documentation` |
+| `data/lookups/` (`stations.csv` station metadata — name, lat/long, elevation, county, period of record; plus `sources.yaml`, `concepts.yaml`) | **Documentation** | `data/lookups` |
 | title · author · contact · description · subject · keywords | citation metadata | — |
 
 `data/original/` (the immutable raw cache) is **not** uploaded — the deliverable is the regenerable `data/processed` output plus the pipeline. Subject: **Earth and Environmental Sciences**; data license **CC BY 4.0** (code is MIT).

@@ -19,6 +19,12 @@ def test_parse_dwr_stations(fixtures_dir):
     assert list(df.columns) == stations.SEED_COLUMNS
     assert set(df["reservoir_id"]) == {"GRERESCO", "DILRESCO"}
     assert df["source"].unique().tolist() == ["dwr_cdss"]
+    # station metadata is captured (coords / county / period of record)
+    green = df.set_index("reservoir_id").loc["GRERESCO"]
+    assert green["latitude"] == 39.8826 and green["longitude"] == -106.3314
+    assert green["county"] == "Summit"                      # title-cased
+    assert green["start_date"] == "1943-10-01" and green["end_date"] == "2026-06-23"
+    assert green["elevation_ft"] is None                    # not in telemetrystation
 
 
 def test_parse_rise_location_items(fixtures_dir):

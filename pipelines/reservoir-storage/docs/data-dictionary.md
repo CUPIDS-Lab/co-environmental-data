@@ -82,3 +82,25 @@ Defects found auditing the built CSV against `data-bulletproofing-checklist.md` 
 - **Record-count shortfall ([#41](https://github.com/CUPIDS-Lab/co-environmental-data/issues/41)).** The CSV covers ~53 reservoirs vs. the 138 enumerated (the rest returned 404/no-data); the shortfall is not yet documented, so a silent drop is indistinguishable from real no-data.
 - **Cross-source name casing ([#41](https://github.com/CUPIDS-Lab/co-environmental-data/issues/41)).** The same reservoir appears as `Blue Mesa Reservoir` (RISE) and `BLUE MESA RESERVOIR` (DWR); no crosswalk yet.
 - **Documented & accepted (not defects):** real historical gaps per site; multi-reading-per-day flooring (tested); vertical-datum and capacity-baseline caveats (`concepts.yaml`).
+
+
+---
+
+## Station metadata — `data/lookups/reservoirs.csv`
+
+Sidecar metadata about each reservoir (one row per `(source, reservoir_id)`), joined to the observations above by `reservoir_id`. Hand-curated seed; the metadata columns are filled in place by `scripts/build_reservoirs_seed.py` from the CDSS telemetrystation catalog (dwr) and the RISE `location` records (rise) — it does **not** re-enumerate, so the curated set is preserved.
+
+| Column | Type | Description |
+| --- | --- | --- |
+| `source` | string | `dwr_cdss` · `reclamation_rise`. |
+| `reservoir_id` | string | CDSS abbrev / RISE slug — matches the output `reservoir_id`. |
+| `reservoir_name` | string | Reservoir name. |
+| `basin` | string | CDSS water-district number (dwr rows) or named basin (rise rows) — heterogeneous by source (pre-existing). |
+| `rise_item_ids` | json | RISE catalog-item ids per variable (`storage_af`/`elevation_ft`/`release_cfs`); drives the RISE pull. Empty for dwr rows. |
+| `latitude` / `longitude` | float | Decimal degrees, WGS84. dwr from CDSS telemetrystation; rise from the RISE `location` GeoJSON point. |
+| `elevation_ft` | float | Fixed site elevation, feet — **rise rows only** (RISE `location.elevation`). Blank for dwr rows: a reservoir's pool elevation is a measured variable (the `ELEV` series), not static metadata, and the telemetrystation record exposes none. |
+| `county` | string | Colorado county — **dwr rows only** (the RISE location carries no county). |
+| `start_date` / `end_date` | date | CDSS station period of record — **dwr rows only** (RISE POR is per-series, not on the location). |
+| `notes` | string | Provenance note. |
+
+> **Out-of-state RISE reservoirs are expected.** Lake Powell, Flaming Gorge and Navajo sit outside Colorado by design — they regulate Colorado-basin water. (A coordinate check during enrichment also corrected `willow-creek`, whose RISE item ids had referenced the *Montana* Willow Creek; they now point to Willow Creek Reservoir (CO), RISE location 515.)

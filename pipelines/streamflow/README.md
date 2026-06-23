@@ -30,7 +30,7 @@ This follows the civic data-liberation tradition (Sunlight â†’ PDF Liberation â†
 ```bash
 cd pipelines/streamflow
 uv sync                      # create the pinned environment
-uv run pytest                # verify the scaffold (21 tests, offline)
+uv run pytest                # verify the scaffold (25 tests, offline)
 uv run jupyter lab           # then run notebooks/streamflow-pipeline.ipynb top to bottom
 ```
 
