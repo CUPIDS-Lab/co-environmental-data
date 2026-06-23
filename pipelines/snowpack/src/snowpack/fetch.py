@@ -30,45 +30,13 @@ from pathlib import Path
 from snowpack import config, provenance
 from snowpack.sources import Artifact
 
+from co_pipeline_core import fetch as _corefetch
+
 
 def _session():
-    import requests_cache
-
-    sess = requests_cache.CachedSession(
-        cache_name=str(config.PROJECT_DIR / ".requests-cache"),
-        expire_after=3600,
-        allowable_codes=(200,),   # never cache transient 5xx — only successes, so a
-                                  # retry/re-run actually re-hits a failed station
-    )
-    sess.headers.update({"User-Agent": config.USER_AGENT})
-    return sess
+    return _corefetch.make_session(config.PROJECT_DIR, config.USER_AGENT, allowable_codes=(200,))
 
 
-class _RateLimited(Exception):
-    """A transient response (HTTP 429/502/503/504) worth retrying with backoff.
-
-    AWDB has not been observed to throttle, but transient 5xx happen on any large
-    full-state pull; the exponential back-off is cheap insurance."""
-
-
-def _get_with_retry(sess, url: str):
-    """GET with retries on *transient* errors only (connection/timeout and 5xx/429);
-    returns the Response as-is (including 404, which we treat as 'no data')."""
-    import requests
-    from tenacity import (retry, retry_if_exception_type, stop_after_attempt,
-                          wait_exponential)
-
-    @retry(stop=stop_after_attempt(config.MAX_RETRIES),
-           wait=wait_exponential(multiplier=1, min=2, max=30), reraise=True,
-           retry=retry_if_exception_type(
-               (requests.ConnectionError, requests.Timeout, _RateLimited)))
-    def _do():
-        resp = sess.get(url, timeout=config.REQUEST_TIMEOUT)
-        if resp.status_code in (429, 502, 503, 504):   # transient — back off and retry
-            raise _RateLimited(f"HTTP {resp.status_code}")
-        return resp
-
-    return _do()
 
 
 def fetch_artifact(sess, art: Artifact, *, force: bool = False) -> Path | None:
@@ -78,7 +46,7 @@ def fetch_artifact(sess, art: Artifact, *, force: bool = False) -> Path | None:
     art.local_path.parent.mkdir(parents=True, exist_ok=True)
     if art.local_path.exists() and not force:
         return art.local_path
-    resp = _get_with_retry(sess, art.url)
+    resp = _corefetch.get_with_retry(sess, art.url, max_retries=config.MAX_RETRIES, timeout=config.REQUEST_TIMEOUT, retry_codes=(429, 502, 503, 504))
     if resp.status_code == 404:
         return None  # unknown station — treat as no data, not an error
     resp.raise_for_status()  # other 4xx/5xx are real failures (caught by fetch_all)
@@ -88,7 +56,6 @@ def fetch_artifact(sess, art: Artifact, *, force: bool = False) -> Path | None:
     return art.local_path
 
 
-PROGRESS_INTERVAL = 2.0  # seconds between throttled progress lines
 
 
 def _progress_message(ev: dict) -> str:
@@ -111,29 +78,8 @@ def _progress_message(ev: dict) -> str:
 
 
 def _make_emitter(progress):
-    """Resolve the ``progress`` argument into an emit(event) callable.
-
-    ``True`` → throttled printer (notebook- and terminal-safe); ``False``/``None``
-    → silent; a callable → receives each raw event dict (for tqdm/structlog/tests).
-    """
-    if not progress:
-        return lambda ev: None
-    if callable(progress):
-        return progress
-    state = {"last": 0.0}
-
-    def emit(ev):
-        ph = ev.get("phase")
-        if ph in ("start", "source", "done"):
-            print(_progress_message(ev))
-            state["last"] = time.monotonic()
-        elif ph == "tick":
-            now = time.monotonic()
-            if now - state["last"] >= PROGRESS_INTERVAL:   # throttle: not every object
-                state["last"] = now
-                print(_progress_message(ev))
-
-    return emit
+    """Throttled printer over this pipeline's _progress_message (shared)."""
+    return _corefetch.make_emitter(progress, _progress_message)
 
 
 def fetch_all(*, sources: list[str] | None = None, sites: set[str] | None = None,
