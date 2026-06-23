@@ -1,38 +1,40 @@
 # Phase 0 — protect the pipelines on every change.
-# Runs the offline test suite + an offline demo of the full retrieve→publish
-# flow for each pipeline under pipelines/. No network to the upstream APIs, no
-# secrets — this is the fast guardrail that keeps the parsers and the headless
-# entrypoint healthy before the scheduled live refresh ever runs.
+# Runs the offline test suite + an offline demo of the full retrieve→publish flow
+# for each pipeline under pipelines/. The matrix is DISCOVERED from
+# pipelines/*/pyproject.toml (via .github/scripts/discover-pipelines.sh, excluding
+# the shared _core library) — so adding a pipeline needs no workflow edit, and a
+# matrix row can never reference a directory missing on main (the PR #47 hazard;
+# AAR §4.3). No network to the upstream APIs, no secrets.
 name: pipelines-ci
 
 on:
   pull_request:
-    paths: ["pipelines/**", ".github/workflows/pipelines-ci.yml"]
+    paths: ["pipelines/**", ".github/workflows/pipelines-ci.yml", ".github/scripts/discover-pipelines.sh"]
   push:
     branches: [main]
-    paths: ["pipelines/**", ".github/workflows/pipelines-ci.yml"]
+    paths: ["pipelines/**", ".github/workflows/pipelines-ci.yml", ".github/scripts/discover-pipelines.sh"]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set
+        name: Discover pipelines from pipelines/*/pyproject.toml
+        run: bash .github/scripts/discover-pipelines.sh >> "$GITHUB_OUTPUT"
+
   test:
+    needs: discover
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false          # one pipeline breaking must not hide the others
-      matrix:
-        # Add a row per pipeline as the siblings land.
-        # `module` is the importable package name for `python -m <module>.pipeline`.
-        include:
-          - pipeline: reservoir-storage
-            module: reservoir
-          - pipeline: streamflow
-            module: streamflow
-          - pipeline: snowpack
-            module: snowpack
-          - pipeline: climate-stations
-            module: climate_stations
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
     defaults:
       run:
         working-directory: pipelines/${{ matrix.pipeline }}
@@ -45,6 +47,15 @@ jobs:
         run: uv sync --extra dev
       - name: Tests (offline)
         run: uv run pytest -q
+      - name: Doc-accuracy — README test count matches reality
+        run: |
+          actual=$(grep -rho 'def test_' tests | wc -l | tr -d ' ')
+          stated=$(grep -oE '[0-9]+ tests' README.md | head -1 | grep -oE '[0-9]+' || true)
+          echo "README states '${stated:-<none>}' tests; actual def test_ = $actual"
+          if [ -n "$stated" ] && [ "$stated" != "$actual" ]; then
+            echo "::error::README test count ($stated) != actual ($actual) in pipelines/${{ matrix.pipeline }} — update the README."
+            exit 1
+          fi
       - name: Pipeline smoke — offline demo (retrieve → audit → clean → publish)
         run: uv run python -m ${{ matrix.module }}.pipeline --mode demo --fresh
       - name: Validate the Dataverse deposit kit (offline dry-run)

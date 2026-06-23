@@ -30,21 +30,22 @@ permissions:
   contents: read                 # outputs go to artifacts / Dataverse, not git
 
 jobs:
+  discover:                        # derive the pipeline matrix from pipelines/*/ (shared with pipelines-ci)
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set
+        run: bash .github/scripts/discover-pipelines.sh >> "$GITHUB_OUTPUT"
+
   refresh:
+    needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 120         # RISE full-history pulls are large (records to the 1930s)
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - pipeline: reservoir-storage
-            module: reservoir
-          - pipeline: streamflow
-            module: streamflow
-          - pipeline: snowpack
-            module: snowpack
-          - pipeline: climate-stations
-            module: climate_stations
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
     defaults:
       run:
         working-directory: pipelines/${{ matrix.pipeline }}
