@@ -1,8 +1,8 @@
 {
   "ResultList": [
-    {"abbrev": "GRERESCO", "parameter": "STORAGE", "stationName": "GREEN MOUNTAIN RESERVOIR", "waterDistrict": 36, "latitude": 39.8826, "longitude": -106.3314},
-    {"abbrev": "DILRESCO", "parameter": "STORAGE", "stationName": "DILLON RESERVOIR", "waterDistrict": 36, "latitude": 39.6286, "longitude": -106.0561},
-    {"abbrev": "0100569A", "parameter": "DISCHRG", "stationName": "FORT MORGAN CANAL", "waterDistrict": 1, "latitude": 40.2, "longitude": -103.8}
+    {"abbrev": "GRERESCO", "parameter": "STORAGE", "stationName": "GREEN MOUNTAIN RESERVOIR", "waterDistrict": 36, "latitude": 39.8826, "longitude": -106.3314, "county": "SUMMIT", "stationPorStart": "1943-10-01T00:00:00-07:00", "stationPorEnd": "2026-06-23T00:00:00-06:00"},
+    {"abbrev": "DILRESCO", "parameter": "STORAGE", "stationName": "DILLON RESERVOIR", "waterDistrict": 36, "latitude": 39.6286, "longitude": -106.0561, "county": "SUMMIT", "stationPorStart": "1963-09-01T00:00:00-07:00", "stationPorEnd": "2026-06-23T00:00:00-06:00"},
+    {"abbrev": "0100569A", "parameter": "DISCHRG", "stationName": "FORT MORGAN CANAL", "waterDistrict": 1, "latitude": 40.2, "longitude": -103.8, "county": "MORGAN"}
   ],
   "ResultCount": 3,
   "PageCount": 1

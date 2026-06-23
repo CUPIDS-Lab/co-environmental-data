@@ -23,7 +23,9 @@ import pandas as pd
 
 from reservoir import config
 
-SEED_COLUMNS = ["source", "reservoir_id", "reservoir_name", "basin", "rise_item_ids", "notes"]
+SEED_COLUMNS = ["source", "reservoir_id", "reservoir_name", "basin", "rise_item_ids",
+                "latitude", "longitude", "elevation_ft", "county", "start_date",
+                "end_date", "notes"]
 
 
 def station_list_url(slug: str, cfg: dict | None = None) -> str:
@@ -48,9 +50,13 @@ def station_list_url(slug: str, cfg: dict | None = None) -> str:
 
 
 def parse_dwr_stations(path: Path) -> pd.DataFrame:
-    """CDSS telemetrystation list → reservoir seed rows.
+    """CDSS telemetrystation list → reservoir seed rows (with station metadata).
 
-    Response shape: ``{"ResultList": [{"abbrev", "stationName", "waterDistrict", …}]}``.
+    Response shape: ``{"ResultList": [{"abbrev", "stationName", "waterDistrict",
+    "latitude", "longitude", "county", "stationPorStart", "stationPorEnd", …}]}``.
+    The telemetrystation record has no elevation — that stays blank for CDSS rows
+    (reservoir pool elevation is a measured variable, not static station metadata;
+    RISE-sourced rows do carry a fixed elevation).
     """
     payload = json.loads(Path(path).read_text())
     rows = []
@@ -65,6 +71,12 @@ def parse_dwr_stations(path: Path) -> pd.DataFrame:
             "reservoir_name": r.get("stationName"),
             "basin": r.get("waterDistrict") or r.get("division"),
             "rise_item_ids": "",
+            "latitude": r.get("latitude"),
+            "longitude": r.get("longitude"),
+            "elevation_ft": None,
+            "county": (r.get("county") or "").strip().title() or None,
+            "start_date": (r.get("stationPorStart") or "")[:10] or None,
+            "end_date": (r.get("stationPorEnd") or "")[:10] or None,
             "notes": "auto-enumerated (CDSS telemetrystation, STORAGE)",
         })
     return pd.DataFrame(rows, columns=SEED_COLUMNS)

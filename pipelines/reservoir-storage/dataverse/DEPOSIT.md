@@ -14,6 +14,7 @@ two scripts beside it (`deposit-dataverse.sh`, `deposit_dataverse.py`) deposit f
 | `data/processed/` (`reservoir-storage.csv`, `provenance.csv`) | **Data** | `data/processed` |
 | `src/reservoir/` · `notebooks/` (the re-runnable pipeline) | **Code** | `code` |
 | `README.md`, `AGENTS.md`, `docs/` (data dictionary, recipes, survey notes) | **Documentation** | `documentation` |
+| `data/lookups/` (`reservoirs.csv` station metadata — name, lat/long, elevation, county, period of record; plus `sources.yaml`, `concepts.yaml`) | **Documentation** | `data/lookups` |
 | title · author · contact · description · subject · keywords | citation metadata | — |
 
 `data/original/` (the immutable raw cache) and `data/raw` are **not** uploaded — the deliverable is

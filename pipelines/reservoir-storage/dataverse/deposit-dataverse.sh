@@ -82,6 +82,7 @@ upload_dir "$root/data/processed" "Data" "data/processed" "$data_restrict"
 upload_dir "$root/src"  "Code" "code" false
 upload_dir "$root/notebooks" "Code" "code" false
 upload_dir "$root/docs" "Documentation" "documentation" false
+upload_dir "$root/data/lookups" "Documentation" "data/lookups" false
 # documentation: individual top-level docs
 for doc in README.md AGENTS.md; do
   [ -f "$root/$doc" ] || continue

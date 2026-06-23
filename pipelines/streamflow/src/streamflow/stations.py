@@ -32,17 +32,27 @@ def usgs_site_list_url(state: str = USGS_STATE_CO, param_cd: str = "00060") -> s
 
 def parse_usgs_sites(rdb_text: str) -> pd.DataFrame:
     """Parse the NWIS site-service RDB (tab-separated, ``#`` comments, a type row
-    under the header) into ``(source, site_id, site_name, usgs_site_no)``."""
+    under the header) into the station-metadata columns. Coordinates/elevation are
+    populated when the RDB was requested with ``siteOutput=expanded`` (``dec_lat_va``,
+    ``dec_long_va``, ``alt_va``); county/POR are filled by the canonical builder
+    (``scripts/build_sites_seed.py``)."""
     lines = [ln for ln in rdb_text.splitlines() if ln and not ln.startswith("#")]
     if len(lines) < 2:
         return pd.DataFrame(columns=["source", "site_id", "site_name", "usgs_site_no"])
     body = "\n".join([lines[0]] + lines[2:])  # drop the RDB type-definition row
     raw = pd.read_csv(io.StringIO(body), sep="\t", dtype=str)
+
+    def col(name):  # tolerate the basic RDB (no expanded columns)
+        return raw[name] if name in raw.columns else ""
+
     out = pd.DataFrame({
         "source": "usgs_nwis",
         "site_id": raw["site_no"],
         "site_name": raw["station_nm"],
         "usgs_site_no": raw["site_no"],
+        "latitude": col("dec_lat_va"),
+        "longitude": col("dec_long_va"),
+        "elevation_ft": col("alt_va"),
     })
     return out
 
@@ -70,29 +80,40 @@ def resolve_dwr_abbrev_url(usgs_site_no: str) -> str:
             f"{urlencode({'format': 'json', 'usgsSiteId': usgs_site_no})}")
 
 
+# Station-metadata schema for the committed seed (data/lookups/sites.csv). The
+# canonical generator is scripts/build_sites_seed.py; these helpers are the
+# "scale to all gages" path and stay on the same columns so they don't drift.
+SEED_COLUMNS = ["source", "site_id", "site_name", "basin", "usgs_site_no",
+                "latitude", "longitude", "elevation_ft", "county", "start_date",
+                "end_date", "notes"]
+
+
 def parse_dwr_stations(payload: dict) -> pd.DataFrame:
-    """Parse a CDSS surfacewaterstations response into
-    ``(source, site_id, site_name, usgs_site_no)`` rows (site_id = abbrev)."""
+    """Parse a CDSS surfacewaterstations response into station-metadata rows
+    (site_id = abbrev), capturing the record's coordinates, county and period of
+    record. The DWR record has no elevation — the builder borrows it from the USGS
+    gage the station re-serves."""
     rows = payload.get("ResultList", []) or []
     recs = [{
         "source": "dwr_cdss",
         "site_id": r.get("abbrev"),
         "site_name": r.get("stationName"),
         "usgs_site_no": r.get("usgsSiteId") or None,
+        "latitude": r.get("latitude"),
+        "longitude": r.get("longitude"),
+        "county": (r.get("county") or "").strip().title() or None,
+        "start_date": (r.get("startDate") or "")[:10] or None,
+        "end_date": (r.get("endDate") or "")[:10] or None,
     } for r in rows if r.get("abbrev")]
-    return pd.DataFrame(recs, columns=["source", "site_id", "site_name", "usgs_site_no"])
+    return pd.DataFrame(recs)
 
 
 def merge_into_seed(frames: list[pd.DataFrame], basin_lookup: dict | None = None) -> pd.DataFrame:
     """Concatenate per-source station frames into the ``sites.csv`` shape, de-duped
-    on ``(source, site_id)``. ``basin_lookup`` optionally maps site_id → basin."""
-    cols = ["source", "site_id", "site_name", "basin", "usgs_site_no", "notes"]
-    df = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(columns=cols)
-    if "basin" not in df.columns:
-        df["basin"] = ""
+    on ``(source, site_id)``. ``basin_lookup`` optionally maps site_id → basin.
+    Missing metadata columns are filled blank so partial parsers still merge."""
+    df = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(columns=SEED_COLUMNS)
     if basin_lookup:
-        df["basin"] = df["site_id"].map(basin_lookup).fillna(df["basin"])
-    if "notes" not in df.columns:
-        df["notes"] = ""
+        df["basin"] = df["site_id"].map(basin_lookup).fillna(df.get("basin", ""))
     df = df.drop_duplicates(["source", "site_id"]).reset_index(drop=True)
-    return df[cols]
+    return df.reindex(columns=SEED_COLUMNS)  # add any missing cols as NaN, fix order
