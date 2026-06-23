@@ -1,19 +1,19 @@
 {
   "verify-needs-followup-sources": {
     "issue": 2,
-    "hash": "4792bb771237666f1733a1610c54b0ec5338a91a1720715fc350bf400de297f3"
+    "hash": "4488f150ba81e8a6a693981efdbeac0b58700295028e5d4b4910cbfe031722af"
   },
   "quarantine-nrel-nlr-claim": {
     "issue": 3,
-    "hash": "ea1c1a2c97641226746c8ef7ba53801f3056b5471cc8934feedaeed7233859dd"
+    "hash": "ddb46e2454db5cdbe54f5352da948d390041a487894d73d8afc9e5644e46130c"
   },
   "add-match-hosts-keywords": {
     "issue": 4,
-    "hash": "3ac9a220a9fd3525811efac8662d529d14d1e50d80f8111b45fc9f72a81b4aa3"
+    "hash": "d68c83dd2e7c0dc7377f80d47454144f1b6bebbcfcbe269c224bfdb06ba781ce"
   },
   "build-l2-pipeline": {
     "issue": 5,
-    "hash": "bdff7e5935b2058d6a1a6c5eeecd5e4b2c065c8398eba8e4764697257b8d9256"
+    "hash": "c01c8bafccfee16cc2b76cf041b94b3f8ac2949bf6fc6adc7ced8a7460da6ea3"
   },
   "liberate-co-water-data": {
     "issue": 7,
@@ -33,5 +33,53 @@
     "issue": 11,
     "hash": "0829f9e6221864598d6b5536fe42b4c077fbd8ee4629d1bb9fc8bb3df53e3bcd",
     "parent": 7
+  },
+  "onboard-team-roles-codeowners": {
+    "issue": 31,
+    "hash": "c86dc73bc52bf316dac2453fa85307731d598289830c7f2dbab6f047d6907aed"
+  },
+  "name-cej-sme-contact": {
+    "issue": 32,
+    "hash": "5040adb07d6996b30e346c0fa3cf456d5aa2ffcafea95ec56d45a9d6b1ea3261"
+  },
+  "secure-fairuse-tos-review": {
+    "issue": 33,
+    "hash": "3c65d407e2bd52454d9bb340e759516d0327d0b1873d66c900ca10510433ae49"
+  },
+  "fill-codebook-calibration": {
+    "issue": 34,
+    "hash": "35c5312b634127b59c57d1f0e5c4c5cce42834de6e3a2d23afcc2941c4960f85"
+  },
+  "validate-llm-detector": {
+    "issue": 35,
+    "hash": "8ff8672f1c6f4a8ff167335a6382261c9118bf24f7734f300d48e9b43ecb4120"
+  },
+  "run-qa-before-dataverse-publish": {
+    "issue": 36,
+    "hash": "2a58571f8476dc2652860e990a7080a817675a84f23e53241b2752ab38faedb6"
+  },
+  "reservoir-real-reconciliation": {
+    "issue": 38,
+    "hash": "cad14f0f0aad21f1451aacc4ad2f4a82d711e5ad692bd1e77acce9240825bfcf"
+  },
+  "reservoir-rise-zeros-bug": {
+    "issue": 39,
+    "hash": "ced9f0d4adc0329d29bd4028f13411fb8c34f09f55aec6dc3d7fd360dc530769"
+  },
+  "reservoir-screen-impossible-values": {
+    "issue": 40,
+    "hash": "0cd52cb95fd9984898765dfb0f16751cfd2591a13863839df5a0020dcb76ac64"
+  },
+  "reservoir-knownissues-and-counts": {
+    "issue": 41,
+    "hash": "a74d369f5061994023cf6e47f15412b52421fe3456e5f76bc8a6d1b043decc10"
+  },
+  "catalog-license-and-schema-drift": {
+    "issue": 42,
+    "hash": "e6616810e64a7fab48726d35f2c455992580821b8bb28bfeb47f21c6ae654a92"
+  },
+  "accessibility-glossary-and-prose": {
+    "issue": 43,
+    "hash": "c4bb27b6446a79a3d60d8b0afb71bc34383151e8baacb4f95004337c48bef8cf"
   }
 }

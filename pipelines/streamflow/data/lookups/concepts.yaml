@@ -1,0 +1,55 @@
+# Concept catalog — cross-source harmonization with caveats.
+#
+# This is NOT a rename map. Each concept declares the canonical name, which source
+# variables map to it, and — most importantly — the CAVEATS bounding the
+# equivalence. A concept with an empty caveats list is suspicious: like a function
+# with no preconditions, it is usually under-specified, not universal.
+# (data-modeling.md#concept-catalogs)
+
+- concept: streamflow.discharge_cfs
+  description: >
+    Daily MEAN streamflow (discharge) at a stream gage, in cubic feet per second.
+  sources:
+    usgs_nwis: { variable: "00060 / statistic 00003", notes: "Daily mean discharge, dv service." }
+    dwr_cdss:  { variable: "Streamflow (surfacewatertsday)", notes: "Daily value; measUnit cfs." }
+  caveats:
+    - "⚠️ THE TWO SOURCES OVERLAP — they are NOT independent for shared gages. DWR
+       surface-water daily frequently RE-SERVES the USGS gage (its `dataSource` is
+       literally `USGS`): the same physical gage appears once under `usgs_nwis`
+       (keyed by site number) and once under `dwr_cdss` (keyed by abbrev), joined by
+       `usgs_site_no` in sites.csv. Do NOT average or sum the two as if independent;
+       de-duplicate to one series per gage for analysis. `reconcile_cross_source`
+       in audit.py quantifies their agreement (should be ~100% on shared dates)."
+    - "REGULATED, NOT NATURALIZED. A gage measures the ACTUAL water passing it —
+       already shaped by upstream diversions, reservoir releases, and transbasin
+       imports/exports (heavy in Colorado). It is NOT 'native'/'naturalized' flow.
+       Do not treat gaged discharge as undepleted hydrology."
+    - "PROVISIONAL vs APPROVED. Recent values are provisional and may be revised.
+       USGS qualifiers: A=approved, P=provisional, e=estimated (carried in qa_flag);
+       DWR carries flagA..flagD. When USGS and DWR disagree on recent dates, a
+       provisional/approved revision lag is the usual cause, not an error."
+    - "DAILY MEAN, specifically. USGS statistic 00003 (mean of the day's readings),
+       not instantaneous, peak (00001), or minimum (00002). DWR surfacewatertsday is
+       likewise a daily value. Annual peak-flow analyses need the USGS peak service,
+       not this dataset."
+    - "RATING-CURVE DERIVED. Discharge is computed from measured stage via a rating
+       that shifts over time (channel change, ice, new control). Long historical
+       series therefore embed rating revisions; treat very old values as good but
+       not more precise than the rating of their era."
+    - "DIFFERENT GAGES, DIFFERENT PERIODS OF RECORD. Each gage is pulled for its full
+       record and clamped to its own coverage (e.g. Cameo back to the 1930s; others
+       discontinued mid-century). See data/audit/coverage-*.md. Absence of a date is
+       'gage not operating / not reporting', not 'zero flow'."
+
+# Declared for extensibility (not populated in this build). Adding gage height is a
+# parser change, not a contract change — the vocabulary already admits it.
+- concept: streamflow.gage_height_ft
+  description: Gage height (stage), height of the water surface above the gage datum, in feet.
+  sources:
+    usgs_nwis: { variable: "00065", notes: "Not pulled in this build." }
+    dwr_cdss:  { variable: "Gage Height", notes: "Not pulled in this build." }
+  caveats:
+    - "GAGE DATUM IS LOCAL AND NOT COMPARABLE ACROSS GAGES. Stage is measured above
+       each gage's own arbitrary datum; it is NOT an elevation and two gages' heights
+       cannot be compared. Stage→discharge is the rating curve, gage-specific."
+    - "Sparser and noisier than discharge; many historical gages report discharge only."

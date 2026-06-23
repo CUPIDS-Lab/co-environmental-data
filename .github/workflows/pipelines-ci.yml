@@ -22,11 +22,13 @@ jobs:
     strategy:
       fail-fast: false          # one pipeline breaking must not hide the others
       matrix:
-        # Add a row per pipeline as the siblings land (streamflow #10, snowpack #11).
+        # Add a row per pipeline as the siblings land (snowpack #11 next).
         # `module` is the importable package name for `python -m <module>.pipeline`.
         include:
           - pipeline: reservoir-storage
             module: reservoir
+          - pipeline: streamflow
+            module: streamflow
     defaults:
       run:
         working-directory: pipelines/${{ matrix.pipeline }}

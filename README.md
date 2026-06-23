@@ -2,7 +2,7 @@
 
 A documented, reproducible catalog of Colorado environmental data sources — and the foundation for a research corpus linking Colorado environmental journalists to the public data they cite.
 
-A CUPIDS Lab data project. Maturity level: **L1** (documented repo). Toolchain: **Python (Datasette · Cloudflare R2 · Quarto · Prefect)**. Sensitivity: **Public — open government/agency metadata**. Openness: **Open (MIT-licensed; open data)**.
+A CUPIDS Lab data project. Maturity level: **L4** (collaborative, responsible & accessible). Toolchain: **Python (Datasette · Cloudflare R2 · Quarto · Prefect)**. Sensitivity: **Public today (open government/agency metadata); conditionally sensitive-human once the news corpus ingests article text + journalist records**. Openness: **Open (MIT-licensed; open data)**.
 
 ## What & why
 
@@ -17,14 +17,17 @@ Colorado's environmental data lives in dozens of federal, state, and local syste
 
 ## Repository layout
 
-This repo follows the CUPIDS Lab data-project conventions. Key locations: `data/raw` holds original, **immutable** source data (never edited in place) — currently the curated source catalog; `data/interim` and `data/processed` hold derived data that can always be regenerated from raw; `DATA-DICTIONARY.md` documents the schema; `context/` holds the project's design memos (methodology, architecture, source-inventory audit, proposals); **`pipelines/<name>/`** holds self-contained data-liberation pipelines, one per liberated dataset. See `ROADMAP.md` for what is planned but not yet built (the corpus pipeline, collaboration, responsible-data, and publication layers).
+This repo follows the CUPIDS Lab data-project conventions. Key locations: `data/raw` holds original, **immutable** source data (never edited in place) — currently the curated source catalog; `data/interim` and `data/processed` hold derived data that can always be regenerated from raw; `DATA-DICTIONARY.md` documents the schema; `context/` holds the project's design memos (methodology, architecture, source-inventory audit, proposals); **`pipelines/<name>/`** holds self-contained data-liberation pipelines, one per liberated dataset; the collaboration and responsible-data layer (`CONTRIBUTING`, `GOVERNANCE`, `ROLES`, `responsible-data-checklist`, and the rest below) governs how people work here and how the data's duties are met; the nested `.skills/` give downstream agents task-specific guidance (data intake, documentation, release). See `ROADMAP.md` for what is planned but not yet built (the corpus pipeline and the L5 open-knowledge publication layer).
 
 ## Pipelines
 
 The Hub hosts self-contained **data-liberation pipelines** under `pipelines/<name>/` — each liberates one dataset into a tidy, documented CSV, ships a Harvard **Dataverse deposit kit** (`dataverse/`), and is wired into the repo's **monthly CI refresh** (`.github/workflows/`). Each is tracked by a roadmap issue.
 
 - **`pipelines/reservoir-storage/`** ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)) — **built.** Liberates Colorado **reservoir storage** (volume, elevation, release) from **CO DWR/CDSS** and **USBR Reclamation RISE** into a tidy, day-resolution CSV with full per-site history (118 major reservoirs + 20 RISE), per-extract provenance, a concept catalog (vertical-datum / capacity caveats), and a reconciliation spot-check. Notebook-driven (`reservoir-pipeline.ipynb`) over a tested `reservoir` package. *Northern Water's hub publishes only boundaries, so its C-BT reservoirs are sourced from RISE.* See its [README](pipelines/reservoir-storage/README.md) and [AGENTS.md](pipelines/reservoir-storage/AGENTS.md).
-- Streamflow ([#10](https://github.com/CUPIDS-Lab/co-environmental-data/issues/10)) and snowpack ([#11](https://github.com/CUPIDS-Lab/co-environmental-data/issues/11)) are the planned sibling pipelines — they inherit the CI + Dataverse pattern.
+- **`pipelines/streamflow/`** ([#10](https://github.com/CUPIDS-Lab/co-environmental-data/issues/10)) — **built.** Liberates Colorado **stream/river flow** (daily mean discharge, cfs) from **USGS NWIS** and **CO DWR/CDSS surface water** into a tidy, day-resolution CSV with full per-gage history (33 curated major-river gages across all 8 basins, each with its DWR mirror), per-extract provenance, a concept catalog, and an automatic **cross-source reconciliation**. Notebook-driven (`streamflow-pipeline.ipynb`) over a tested `streamflow` package. *DWR re-serves many USGS gages (joined via `usgs_site_no`) and often extends them past USGS discontinuation — de-duplicate to one series per gage; the overlap doubles as a built-in accuracy check.* See its [README](pipelines/streamflow/README.md) and [AGENTS.md](pipelines/streamflow/AGENTS.md).
+- Snowpack ([#11](https://github.com/CUPIDS-Lab/co-environmental-data/issues/11)) is the remaining planned sibling pipeline — it inherits the CI + Dataverse pattern.
+
+> **Publication is gated by QA.** Before any pipeline's data is deposited, its output must clear the bulletproofing + responsible-data checklists. The 2026-06-22 audit ([`audits/2026-06-22-qa-audit.md`](audits/2026-06-22-qa-audit.md)) found the reservoir output **not yet publish-ready** — the reconciliation is stubbed and the output carries impossible values — so the first Dataverse deposit (#36) is **blocked** on #38–#40.
 
 ## Getting started
 
@@ -44,7 +47,7 @@ The reproducible pipeline (pinned environment, the `cejcorpus` package, notebook
 
 ## Data access
 
-Processed, non-sensitive data is shared in open formats. See `DATA-DICTIONARY.md` for the schema; a published open-knowledge catalog (Datasette + Quarto site, OKF bundle) is planned — see `ROADMAP.md`. Note: the planned news corpus will introduce copyright (fair-use TDM) and journalist-privacy considerations; those duties are recorded as **blocking** items in `ROADMAP.md` and must be satisfied before any article text or journalist records are ingested.
+Processed, non-sensitive data is shared in open formats under the access tiers in `GOVERNANCE.md`. See `DATA-DICTIONARY.md` for the schema; a published open-knowledge catalog (Datasette + Quarto site, OKF bundle) is planned — see `ROADMAP.md`. Note: the planned news corpus will introduce copyright (fair-use TDM) and journalist-privacy considerations; those duties are now encoded in `GOVERNANCE.md`, `responsible-data-checklist.md`, and `contributed-data-intake.md`, and the **blocking** items in `ROADMAP.md` (#32–#36) must be satisfied before any article text or journalist records are ingested.
 
 ## Documentation
 
@@ -52,6 +55,12 @@ Processed, non-sensitive data is shared in open formats. See `DATA-DICTIONARY.md
 - `decision-log.md` — why key choices were made.
 - `CHANGELOG.md` — what changed and when.
 - `context/` — methodology memo, technical architecture, and the source-inventory discovery audit behind the catalog.
+
+**Collaboration & governance (L3):** `CONTRIBUTING.md` (how to work here) · `CODE_OF_CONDUCT.md` · `ROLES.md` + `.github/CODEOWNERS` (who owns what) · `GOVERNANCE.md` (access tiers, retention, remedy) · `CHARTER.md` (partners, shared definitions, what survives the pilot) · `collaboration-protocol.md` · `contributed-data-intake.md` (the licensed-database manual-export workflow) · `.skills/` (nested agent guidance).
+
+**Responsible data & accessibility (L4):** `INSTALLED-BASE.md` (the values spine as repo requirements) · `data-management-plan.md` · `responsible-data-checklist.md` · `data-bulletproofing-checklist.md` · `data-quality-checklist.md` · `accessibility-checklist.md` · `data-card.md` (dataset transparency summary).
+
+**Quality & onboarding:** `GLOSSARY.md` (acronyms & terms) · `audits/` — point-in-time QA audits of the data deliverables; see [`audits/2026-06-22-qa-audit.md`](audits/2026-06-22-qa-audit.md), which records what currently blocks the first publish.
 
 ## Citation
 

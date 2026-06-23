@@ -39,6 +39,8 @@ jobs:
         include:
           - pipeline: reservoir-storage
             module: reservoir
+          - pipeline: streamflow
+            module: streamflow
     defaults:
       run:
         working-directory: pipelines/${{ matrix.pipeline }}
@@ -55,6 +57,9 @@ jobs:
       - name: Refresh — retrieve → audit → clean → audit/reconcile → publish
         env:
           CDSS_API_KEY: ${{ secrets.CDSS_API_KEY }}   # optional; raises CDSS rate limits
+          # streamflow only: slow the DWR pull so the full-history burst doesn't trip
+          # the CDSS 403 IP throttle when no API key is set (reservoir ignores it).
+          STREAMFLOW_RATE_LIMIT: "2"
         run: uv run python -m ${{ matrix.module }}.pipeline --mode ${{ github.event.inputs.mode || 'live' }} --fresh
 
       - name: Surface the audit summary in the run

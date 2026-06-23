@@ -1,0 +1,42 @@
+[project]
+name = "co-streamflow"
+version = "0.1.0"
+description = "Colorado stream/river flow liberation pipeline (USGS NWIS, CO DWR/CDSS surface water) — issue #10 of the Colorado Environmental Data Hub."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Brian Keegan", email = "accounts@brianckeegan.com" }]
+dependencies = [
+    "pandas>=2.2",
+    "pyarrow>=16",
+    "pandera[pandas]>=0.20",
+    "requests>=2.32",
+    "requests-cache>=1.2",
+    "tenacity>=8.5",
+    "structlog>=24.1",
+    "pyyaml>=6.0",
+    "tabulate>=0.9",
+    # notebook runtime — thin notebooks orchestrate the package
+    "jupyterlab>=4.2",
+    "ipykernel>=6.29",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.2", "ruff>=0.5", "jupytext>=1.16", "nbstripout>=0.8"]
+publish = ["sqlite-utils>=3.36", "datasette>=0.64",   # deferred: Datasette surface (roadmap)
+           "pyDataverse>=0.3"]                         # Dataverse deposit kit (dataverse/)
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/streamflow"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
