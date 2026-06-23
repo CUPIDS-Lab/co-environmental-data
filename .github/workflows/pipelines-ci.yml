@@ -31,6 +31,8 @@ jobs:
             module: streamflow
           - pipeline: snowpack
             module: snowpack
+          - pipeline: climate-stations
+            module: climate_stations
     defaults:
       run:
         working-directory: pipelines/${{ matrix.pipeline }}
