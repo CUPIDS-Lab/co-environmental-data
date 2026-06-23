@@ -2,7 +2,7 @@
 
 **Project:** CU Environmental Data Hub / CUPIDS Clinic × Center for Environmental Journalism
 **Artifact:** Notebook-based pipeline implementing the journalist → article → data-source-citation research design (2014–present)
-**Status:** Architecture proposal. Notebooks and package modules are scaffolded as **stubs**; sections requiring manual configuration, retrieval, or analysis are marked and registered in §13.
+**Status:** Architecture proposal **for the journalist→citation corpus** (`cejcorpus`) — a *not-yet-built* L2 effort, distinct from the four **built** liberation pipelines under `pipelines/` (reservoir-storage, streamflow, snowpack, climate-stations). The corpus notebooks and package modules are scaffolded as **stubs**; sections requiring manual configuration, retrieval, or analysis are marked and registered in §13.
 **Date:** June 17, 2026
 
 ---

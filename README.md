@@ -26,6 +26,7 @@ The Hub hosts self-contained **data-liberation pipelines** under `pipelines/<nam
 - **`pipelines/reservoir-storage/`** ([#9](https://github.com/CUPIDS-Lab/co-environmental-data/issues/9)) — **built.** Liberates Colorado **reservoir storage** (volume, elevation, release) from **CO DWR/CDSS** and **USBR Reclamation RISE** into a tidy, day-resolution CSV with full per-site history (118 major reservoirs + 20 RISE), per-extract provenance, a concept catalog (vertical-datum / capacity caveats), and a reconciliation spot-check. Notebook-driven (`reservoir-pipeline.ipynb`) over a tested `reservoir` package. *Northern Water's hub publishes only boundaries, so its C-BT reservoirs are sourced from RISE.* See its [README](pipelines/reservoir-storage/README.md) and [AGENTS.md](pipelines/reservoir-storage/AGENTS.md).
 - **`pipelines/streamflow/`** ([#10](https://github.com/CUPIDS-Lab/co-environmental-data/issues/10)) — **built.** Liberates Colorado **stream/river flow** (daily mean discharge, cfs) from **USGS NWIS** and **CO DWR/CDSS surface water** into a tidy, day-resolution CSV with full per-gage history (33 curated major-river gages across all 8 basins, each with its DWR mirror), per-extract provenance, a concept catalog, and an automatic **cross-source reconciliation**. Notebook-driven (`streamflow-pipeline.ipynb`) over a tested `streamflow` package. *DWR re-serves many USGS gages (joined via `usgs_site_no`) and often extends them past USGS discontinuation — de-duplicate to one series per gage; the overlap doubles as a built-in accuracy check.* See its [README](pipelines/streamflow/README.md) and [AGENTS.md](pipelines/streamflow/AGENTS.md).
 - **`pipelines/snowpack/`** ([#11](https://github.com/CUPIDS-Lab/co-environmental-data/issues/11)) — **built.** Liberates Colorado **snowpack** (snow water equivalent, snow depth, water-year precip accumulation — inches) from the **NRCS AWDB REST API** across two networks — **SNOTEL** (automated daily, record since ~1980) and **snow courses** (manual semimonthly, many back to the 1930s–40s) — into a tidy, day-resolution CSV with full per-station history (199 stations across every CO basin), per-extract provenance, a concept catalog, the headline **basin percent-of-normal** product, and a SNOTEL↔snow-course **co-location reconciliation**. Notebook-driven (`snowpack-pipeline.ipynb`) over a tested `snowpack` package. *SNOTEL and snow courses are nearby-not-identical sites — complementary (snow courses extend the record before SNOTEL), not duplicate; AWDB needs no API key.* See its [README](pipelines/snowpack/README.md) and [AGENTS.md](pipelines/snowpack/AGENTS.md).
+- **`pipelines/climate-stations/`** ([#44](https://github.com/CUPIDS-Lab/co-environmental-data/issues/44)) — **built.** Liberates Colorado **daily climate-station** observations — temperature (max/mean/min), precipitation, snowfall / snow depth / SWE, pan evaporation, solar radiation, vapor pressure, wind run (**twelve** measurement types) — from the **CO DWR/CDSS** Climate Station Time Series API into a tidy, day-resolution CSV with full per-station history, per-extract provenance, and a concept catalog (units harmonized **per measType**). Notebook-driven (`climate-stations-pipeline.ipynb`) over a tested `climate_stations` package. *One API federates five networks (NOAA COOP/GHCN, CoCoRaHS, NRCS/SNOTEL, CoAgMet, NCWCD); the committed 40-station seed is expandable to the full ~4,962-station catalog; an apiKey is effectively required (anonymous pulls hit a daily-data limit).* See its [README](pipelines/climate-stations/README.md) and [AGENTS.md](pipelines/climate-stations/AGENTS.md).
 
 > **Publication is gated by QA.** Before any pipeline's data is deposited, its output must clear the bulletproofing + responsible-data checklists. The 2026-06-22 audit ([`audits/2026-06-22-qa-audit.md`](audits/2026-06-22-qa-audit.md)) found the reservoir output **not yet publish-ready** — the reconciliation is stubbed and the output carries impossible values — so the first Dataverse deposit (#36) is **blocked** on #38–#40.
 
@@ -36,14 +37,22 @@ git clone https://github.com/CUPIDS-Lab/co-environmental-data.git
 cd co-environmental-data
 ```
 
-The current deliverable is a documented dataset, not yet a runnable pipeline. To explore the catalog:
+Two kinds of deliverable ship today: the **source catalog** and four **liberated datasets** (the pipelines above). To explore the catalog:
 
 ```bash
 # 56 sources, 6 themes, 3 provenance tiers — see DATA-DICTIONARY.md for the schema
 python3 -m json.tool data/raw/colorado_environmental_data_sources.json | less
 ```
 
-The reproducible pipeline (pinned environment, the `cejcorpus` package, notebooks `nb-00`…`nb-09`) is the L2 build — specified in `context/architecture.md` and tracked in `ROADMAP.md`.
+To run a built pipeline (each is self-contained under `pipelines/<name>/`):
+
+```bash
+cd pipelines/snowpack          # or reservoir-storage | streamflow | climate-stations
+uv sync && uv run pytest       # pinned env + offline tests
+uv run python -m snowpack.pipeline --mode demo --fresh   # offline end-to-end; --mode live for the real pull
+```
+
+The journalist→citation **corpus** pipeline (the `cejcorpus` package, notebooks `nb-00`…`nb-09`) is a separate, **not-yet-built** L2 effort — specified in `context/architecture.md` and tracked in `ROADMAP.md`.
 
 ## Data access
 

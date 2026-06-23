@@ -13,7 +13,7 @@ A tidy, documented, reproducible dataset of **Colorado streamflow** — daily me
 
 ## What's in it
 
-Daily **mean** discharge for **33 curated major-river gages** across all eight of Colorado's major basins (Colorado, Gunnison, Dolores/San Miguel, San Juan, White, Yampa/Green, Rio Grande, South Platte, Arkansas), each pulled for its **full period of record** (some back to 1900; some discontinued mid-century).
+Daily **mean** discharge for **33 curated major-river gages** across all nine of Colorado's major basins (Colorado, Gunnison, Dolores/San Miguel, San Juan, White, Yampa/Green, Rio Grande, South Platte, Arkansas), each pulled for its **full period of record** (some back to 1900; some discontinued mid-century).
 
 The committed seed (`data/lookups/sites.csv`) is the full **33 USGS gages + their 33 DWR mirrors** (66 rows), resolved via the CDSS `usgsSiteId` cross-link using the configured API key (`dwr_api.json`; a *keyless* full pull trips the CDSS throttle noted below). Regenerate or refresh it with [`scripts/build_sites_seed.py`](scripts/build_sites_seed.py). The seed is also **expandable** to "all active CO discharge gages" — a station-filter change, not a refactor (see `streamflow.stations`).
 
@@ -30,7 +30,7 @@ This follows the civic data-liberation tradition (Sunlight → PDF Liberation �
 ```bash
 cd pipelines/streamflow
 uv sync                      # create the pinned environment
-uv run pytest                # verify the scaffold (19 tests, offline)
+uv run pytest                # verify the scaffold (21 tests, offline)
 uv run jupyter lab           # then run notebooks/streamflow-pipeline.ipynb top to bottom
 ```
 

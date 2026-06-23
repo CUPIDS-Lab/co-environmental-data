@@ -4,7 +4,7 @@ A people-centered transparency summary of this project's datasets, in the spirit
 
 ## Overview
 
-- **Datasets:** (1) **Colorado Environmental Data Source Catalog** — the shipped dataset, v1 · last updated 2026; (2) **Reservoir Storage** — liberated, day-resolution, in `pipelines/reservoir-storage/`; (3) **Journalist→Citation Corpus** — *planned*, specified in `context/architecture.md`.
+- **Datasets:** (1) **Colorado Environmental Data Source Catalog** — the shipped catalog, v1 · last updated 2026-06-23; (2) **Reservoir Storage**, (3) **Stream/River Flow**, (4) **Snowpack (SWE)**, (5) **Daily Climate Stations** — liberated, day-resolution, tidy-long datasets in `pipelines/`; (6) **Journalist→Citation Corpus** — *planned*, specified in `context/architecture.md`.
 - **Summary:** a curated, independently verifiable catalog of ~56 authoritative Colorado environmental data sources, plus tidy liberated datasets built from it — the foundation for measuring how Colorado environmental journalism depends on public data.
 - **Sensitivity:** public today (open government/agency metadata); conditionally sensitive-human once the corpus ingests article text + journalist records. **Openness:** open. **License:** MIT.
 - **Maintainer:** Brian Keegan · accounts@brianckeegan.com · CUPIDS Lab.
@@ -20,7 +20,7 @@ The catalog was hand-compiled from authoritative federal, state, and local sourc
 
 ## Composition
 
-The catalog: ~56 sources across **six themes** (water, fire, wind, minerals, pollution, land use) and **three provenance tiers** (federal, state, local/regional), each flagged for `enclosure` and `erosion` risk — grain is one row per source. The reservoir dataset: one observation per site per day, 118 major reservoirs + 20 RISE sites, with full per-site history, per-extract provenance (`run_id`), and a concept catalog of caveats. See the respective dictionaries for the field-level schema rather than duplicating it here.
+The catalog: ~56 sources across **six themes** (water, fire, wind, minerals, pollution, land use) and **three provenance tiers** (federal, state, local/regional), each flagged for `enclosure` and `erosion` risk — grain is one row per source. The reservoir dataset: one observation per site per day, 118 major reservoirs + 20 RISE sites, with full per-site history, per-extract provenance (`run_id`), and a concept catalog of caveats. The **streamflow**, **snowpack**, and **climate-station** datasets share the same tidy-long grain — one observation per `(source, site, day, variable)`, with per-extract provenance and per-concept caveats (66 gage-series; 199 snow stations; a 40-station climate cross-section). See the respective dictionaries for the field-level schema rather than duplicating it here.
 
 ## Recommended & out-of-scope uses
 
