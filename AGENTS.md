@@ -23,6 +23,15 @@ Read this first. It states the non-negotiables and points you at the right place
 
 The repository is a **documented catalog** plus a growing set of **data-liberation pipelines** under `pipelines/<name>/` (the first — reservoir-storage, #9 — is built and live against the DWR/CDSS and Reclamation RISE APIs, with a monthly CI refresh and a Dataverse deposit kit). Each pipeline is thin notebooks over a tested `src/<pkg>/` package: explore, then package reusable code at the exploration boundary. The journalist→citation **corpus** pipeline (`context/architecture.md`) is still to be built (the `cejcorpus` package, notebooks `nb-00…09`). Pipelines are code (re-runnable), not cleaned snapshots. Pin environments so others — and other agents — can reproduce results. Stamp every row a stage writes with a `run_id`, and archive every cited URL at coding time.
 
+## Working in a shared tree with other agents
+
+Multiple agents and sessions operate on this repo's **single working tree concurrently**. Untracked work-in-progress is vulnerable to another agent's broad `git add`, rebase, or branch switch — on 2026-06-23 a snowpack PR swept another agent's untracked `pipelines/climate-stations/` files into its commit (PR #45, repaired by #46, re-landed correctly via #48). To stay isolated:
+
+- **Build each commit/PR in its own git worktree off freshly-fetched `origin/main`:** `git fetch && git worktree add -b <branch> /tmp/<dir> origin/main`. A branch switch by another agent then can't disturb your work.
+- **Stage explicit paths** (`git add pipelines/<name> path/to/file`) — **never `git add -A` / `git add .`** while the tree is dirty.
+- **`git fetch` and re-verify `origin/main` immediately before merging** — the ground moves; check recent PRs and `git ls-tree origin/main -- <path>`. An audit or a merge run against a stale local checkout will mislead you.
+- **One concern per PR.** Don't bundle a pipeline into a docs/governance PR (the streamflow ↔ #37 lesson).
+
 ## A data-integrity note (read before touching the catalog)
 
 Compilation surfaced spurious search content claiming NREL was renamed "National Laboratory of the Rockies" with a `nlr.gov` domain. **This is unverified and almost certainly false.** Keep `nrel.gov` canonical and do not seed any dictionary or catalog field with `nlr.gov` without confirmation against an official DOE/NREL source. See `context/source-inventory.md` for the full caveat.
