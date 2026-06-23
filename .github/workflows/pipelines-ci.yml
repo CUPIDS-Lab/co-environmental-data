@@ -29,6 +29,19 @@ jobs:
         name: Discover pipelines from pipelines/*/pyproject.toml
         run: bash .github/scripts/discover-pipelines.sh >> "$GITHUB_OUTPUT"
 
+  core:                            # the shared co_pipeline_core library (excluded from the pipeline matrix)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pipelines/_core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev
+      - run: uv run pytest -q
+
   test:
     needs: discover
     runs-on: ubuntu-latest
