@@ -11,7 +11,7 @@ body:
     attributes:
       label: Dataset
       description: Which dataset, file, or table the problem is in, specific enough that a teammate can open the same data you saw.
-      placeholder: data/raw/colorado_environmental_data_sources.json (source "wind-fed-nrel-wtk")
+      placeholder: docs/planning/colorado_environmental_data_sources.json (source "wind-fed-nrel-wtk")
     validations:
       required: true
   - type: textarea

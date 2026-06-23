@@ -3,7 +3,7 @@
 Shared, domain-agnostic core for the Colorado Environmental Data Hub liberation
 pipelines. The per-pipeline packages (`reservoir`, `streamflow`, `snowpack`,
 `climate_stations`) were stamped from each other and had ~49% copy-paste
-duplication (see `retro/2026-06-23-pipeline-deployments-aar.md` §4.1); this package
+duplication (see `audits/after-action/2026-06-23-pipeline-deployments-aar.md` §4.1); this package
 holds the plumbing once.
 
 Each pipeline depends on it via a uv path dependency:

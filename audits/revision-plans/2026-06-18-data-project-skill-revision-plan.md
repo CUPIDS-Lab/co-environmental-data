@@ -11,9 +11,9 @@ subject_skill: data-project
 repository: "CUPIDS-Lab/co-environmental-data"
 author: "Claude (Opus 4.8 · claude-opus-4-8)"
 generated_by: "Claude Code session"
-basis: "Derived from retro/data-project-aar.md — phased, file-level edits for a Claude Code session opened in the skill directory."
+basis: "Derived from audits/after-action/2026-06-18-data-project-aar.md — phased, file-level edits for a Claude Code session opened in the skill directory."
 related:
-  - retro/data-project-aar.md
+  - audits/after-action/2026-06-18-data-project-aar.md
 tags: [plan, revision, data-project, cupids]
 ---
 
@@ -21,7 +21,7 @@ tags: [plan, revision, data-project, cupids]
 
 **Audience:** a Claude Code session opened in the skill directory
 (`~/.claude/skills/data-project/`). **Source of lessons:**
-`retro/data-project-aar.md` (Colorado Environmental Data Hub build, 2026-06).
+`audits/after-action/2026-06-18-data-project-aar.md` (Colorado Environmental Data Hub build, 2026-06).
 
 ## Objective
 

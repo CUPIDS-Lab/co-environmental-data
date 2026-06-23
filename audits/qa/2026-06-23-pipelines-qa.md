@@ -12,10 +12,10 @@ repository: "CUPIDS-Lab/co-environmental-data"
 audited_ref: "origin/main @ post-#54 (shared co_pipeline_core)"
 author: "Claude (Opus 4.8 · claude-opus-4-8)"
 generated_by: "Claude Code session"
-basis: "Extends audits/2026-06-22-qa-audit.md (reservoir) to the three pipelines that landed since; applies the L4 bulletproofing / data-quality / accessibility checklists per pipeline. Closes #56."
+basis: "Extends audits/qa/2026-06-22-qa-audit.md (reservoir) to the three pipelines that landed since; applies the L4 bulletproofing / data-quality / accessibility checklists per pipeline. Closes #56."
 related:
-  - audits/2026-06-22-qa-audit.md
-  - audits/2026-06-23-project-audit.md
+  - audits/qa/2026-06-22-qa-audit.md
+  - audits/qa/2026-06-23-project-audit.md
   - data-bulletproofing-checklist.md
   - data-quality-checklist.md
   - accessibility-checklist.md

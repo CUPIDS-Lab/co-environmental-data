@@ -1,6 +1,6 @@
 # Data quality checklist — Colorado Environmental Data Hub
 
-> **Applied per dataset in the dated QA audits** in [`audits/`](../../audits/): [reservoir (2026-06-22)](../../audits/2026-06-22-qa-audit.md) and [streamflow / snowpack / climate-stations (2026-06-23)](../../audits/2026-06-23-pipelines-qa.md). This file is the standing checklist; each audit is its application to specific data.
+> **Applied per dataset in the dated QA audits** in [`audits/`](../../audits/): [reservoir (2026-06-22)](../../audits/qa/2026-06-22-qa-audit.md) and [streamflow / snowpack / climate-stations (2026-06-23)](../../audits/qa/2026-06-23-pipelines-qa.md). This file is the standing checklist; each audit is its application to specific data.
 
 Scan a new or updated dataset for the common "bad data" problems before you build on it, using this adaptation of the Quartz bad-data taxonomy. The checks are grouped by who is best placed to fix each problem — your source, you, a subject-matter expert, or a programmer — because knowing whose problem it is determines what to do next. Record what you find and how you handled it in the relevant `DATA-DICTIONARY.md` known-issues section so downstream users are not surprised. This is about whether the data can be trusted at all; `data-bulletproofing-checklist.md` is the pre-publication reconciliation that follows.
 

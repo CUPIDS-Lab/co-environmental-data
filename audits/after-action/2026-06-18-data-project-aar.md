@@ -14,8 +14,8 @@ author: "Claude (Opus 4.8 · claude-opus-4-8)"
 generated_by: "Claude Code session"
 basis: "First real-world build of the skill — ~24 merged PRs: L1 scaffold -> GitHub Track mode -> handoff to data-liberation for the reservoir-storage pipeline."
 related:
-  - retro/data-liberation-aar.md
-  - retro/data-project-skill-revision-plan.md
+  - audits/after-action/2026-06-18-data-liberation-aar.md
+  - audits/revision-plans/2026-06-18-data-project-skill-revision-plan.md
 tags: [retrospective, aar, data-project, cupids]
 ---
 
@@ -147,4 +147,4 @@ multi-pipeline/data-liberation handoff and align `src/`↔`scripts/`; then the
 refinements — **(E)** deferred-sensitivity disposition, **(F)** context-rich fast path,
 **(G)** notebook hygiene in the scaffold, **(H)** a novice-legibility pass on template
 instructions. Details, files, and acceptance criteria in
-`retro/data-project-skill-revision-plan.md`.
+`audits/revision-plans/2026-06-18-data-project-skill-revision-plan.md`.

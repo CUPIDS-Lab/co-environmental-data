@@ -9,7 +9,7 @@ Closes #
 Before requesting review, confirm:
 
 - [ ] Branched from `main`; the PR describes the change and *why* it was made.
-- [ ] Nothing under `data/raw/` was edited in place; any derived data is regenerable from raw.
+- [ ] Nothing under a pipeline's `data/original/` (raw cache) or `data/lookups/` (committed seed) was edited in place; any derived data is regenerable from the source APIs.
 - [ ] No secrets or sensitive data in the diff (code, config, or notebook outputs).
 - [ ] Docs updated (`README.md`, `DATA-DICTIONARY.md`, `decision-log.md`, `CHANGELOG.md`) for any user-visible or non-obvious change.
 - [ ] Linked the issue this closes, and checked its definition-of-done.

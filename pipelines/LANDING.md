@@ -5,7 +5,7 @@ working directory to a registered, tested, tracked dataset on `main`. It exists
 because the first four pipelines landed four different ways — one was bundled
 invisibly into a governance PR (#37), one swept another agent's untracked files
 (#45→#46), one registered its CI row before its code and reded `main` (#47→#48). See
-`retro/2026-06-23-pipeline-deployments-aar.md` §4.4–4.5.
+`audits/after-action/2026-06-23-pipeline-deployments-aar.md` §4.4–4.5.
 
 Follow this and a pipeline lands as a single, reviewable, correctly-ordered,
 issue-closing PR.

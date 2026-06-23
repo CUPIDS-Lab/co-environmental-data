@@ -1,11 +1,6 @@
-# Data — raw is immutable and lives outside version control; keep directory structure via .gitkeep
-data/raw/*
-data/interim/*
-data/processed/*
-data/external/*
-!data/**/.gitkeep
-# Exception: the hand-curated source catalog IS the project's tracked source-of-record (small, versioned).
-!data/raw/colorado_environmental_data_sources.json
+# Data lives with each pipeline under pipelines/<name>/data/ (see each pipeline's
+# own .gitignore). There is no top-level data/ tree; the curated source catalog is
+# tracked at docs/planning/colorado_environmental_data_sources.json.
 
 # Large / binary artifacts (use object storage or Git LFS instead)
 *.parquet
