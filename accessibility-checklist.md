@@ -1,5 +1,7 @@
 # Accessibility checklist — Colorado Environmental Data Hub
 
+> **Applied per dataset in the dated QA audits** in [`audits/`](audits/): [reservoir (2026-06-22)](audits/2026-06-22-qa-audit.md) and [streamflow / snowpack / climate-stations (2026-06-23)](audits/2026-06-23-pipelines-qa.md). This file is the standing checklist; each audit is its application to specific data.
+
 Make this project usable by the widest possible range of people — including those using screen readers, those who cannot perceive color differences, and those who are not specialists in the subject. Accessibility is part of being legible to someone with none of the project's context, not a final polish, so apply these as you write and build rather than at the end. The guidance follows the Turing Way's communication recommendations.
 
 **Where this bites.** The Hub's public deliverable today is text (the catalog, the docs, the notebooks), so the document-structure and notebook checks apply **now**. The figure/color/table checks become load-bearing when the planned **Datasette + Quarto public site** and any charts are built — treat this list as the acceptance criteria for that site, tracked in `ROADMAP.md`.
