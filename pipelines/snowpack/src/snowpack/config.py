@@ -12,6 +12,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from co_pipeline_core import config as _core
+
 # ── paths ────────────────────────────────────────────────────────────────────
 PKG_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = PKG_DIR.parent.parent           # pipelines/snowpack/
@@ -29,10 +31,7 @@ CONCEPTS_YAML = LOOKUPS / "concepts.yaml"
 SITES_CSV = LOOKUPS / "sites.csv"
 
 # ── HTTP defaults ────────────────────────────────────────────────────────────
-USER_AGENT = (
-    "co-environmental-data/snowpack (CUPIDS Lab; "
-    "https://github.com/CUPIDS-Lab/co-environmental-data; accounts@brianckeegan.com)"
-)
+USER_AGENT = _core.user_agent("snowpack")
 REQUEST_TIMEOUT = 120        # seconds — a full-POR AWDB station response can be ~1 MB
 # Polite delay between requests + retry budget, both env-overridable. AWDB has not
 # been observed to throttle, but the back-off is cheap insurance for a full-state pull.
@@ -41,11 +40,8 @@ MAX_RETRIES = int(os.environ.get("SNOWPACK_MAX_RETRIES", "5"))
 
 
 def load_sources_config() -> dict:
-    """Read ``data/lookups/sources.yaml`` (endpoint + per-source params)."""
-    import yaml  # local import so `py_compile` works without the dep
-
-    with open(SOURCES_YAML, "r", encoding="utf-8") as fh:
-        return yaml.safe_load(fh)
+    """Read ``data/lookups/sources.yaml`` (endpoints + per-source params)."""
+    return _core.read_sources_yaml(SOURCES_YAML)
 
 
 def get_sources() -> dict:

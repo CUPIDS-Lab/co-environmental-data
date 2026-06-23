@@ -10,6 +10,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from co_pipeline_core import config as _core
+
 # ── paths ────────────────────────────────────────────────────────────────────
 PKG_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = PKG_DIR.parent.parent           # pipelines/reservoir-storage/
@@ -26,10 +28,7 @@ SOURCES_YAML = LOOKUPS / "sources.yaml"
 CONCEPTS_YAML = LOOKUPS / "concepts.yaml"
 
 # ── HTTP defaults ────────────────────────────────────────────────────────────
-USER_AGENT = (
-    "co-environmental-data/reservoir-storage (CUPIDS Lab; "
-    "https://github.com/CUPIDS-Lab/co-environmental-data; accounts@brianckeegan.com)"
-)
+USER_AGENT = _core.user_agent("reservoir-storage")
 REQUEST_TIMEOUT = 60          # seconds
 RATE_LIMIT_SECONDS = 0.5      # polite delay between requests
 MAX_RETRIES = 4
@@ -41,10 +40,7 @@ CDSS_API_KEY = os.environ.get("CDSS_API_KEY", "")
 
 def load_sources_config() -> dict:
     """Read ``data/lookups/sources.yaml`` (endpoints + per-source params)."""
-    import yaml  # local import so `py_compile` works without the dep
-
-    with open(SOURCES_YAML, "r", encoding="utf-8") as fh:
-        return yaml.safe_load(fh)
+    return _core.read_sources_yaml(SOURCES_YAML)
 
 
 def get_sources() -> dict:
