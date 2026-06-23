@@ -1,0 +1,67 @@
+source,site_id,site_name,basin,usgs_site_no,notes
+usgs_nwis,09058000,"COLORADO RIVER NEAR KREMMLING, CO",Colorado,09058000,USGS stream gage
+usgs_nwis,09070500,"COLORADO RIVER NEAR DOTSERO, CO",Colorado,09070500,USGS stream gage
+usgs_nwis,09095500,"COLORADO RIVER NEAR CAMEO, CO.",Colorado,09095500,USGS stream gage
+usgs_nwis,09163500,COLORADO RIVER NEAR COLORADO-UTAH STATE LINE,Colorado,09163500,USGS stream gage
+usgs_nwis,09057500,"BLUE RIVER BELOW GREEN MOUNTAIN RESERVOIR, CO",Colorado,09057500,USGS stream gage
+usgs_nwis,09070000,"EAGLE RIVER BELOW GYPSUM, CO.",Colorado,09070000,USGS stream gage
+usgs_nwis,09085000,"ROARING FORK RIVER AT GLENWOOD SPRINGS, CO.",Colorado,09085000,USGS stream gage
+usgs_nwis,09114500,"GUNNISON RIVER NEAR GUNNISON, CO.",Gunnison,09114500,USGS stream gage
+usgs_nwis,09128000,"GUNNISON RIVER BELOW GUNNISON TUNNEL, CO",Gunnison,09128000,USGS stream gage
+usgs_nwis,09152500,"GUNNISON RIVER NEAR GRAND JUNCTION, CO.",Gunnison,09152500,USGS stream gage
+usgs_nwis,09147500,"UNCOMPAHGRE RIVER AT COLONA, CO",Gunnison,09147500,USGS stream gage
+usgs_nwis,09165000,"DOLORES RIVER BELOW RICO, CO.",Dolores-San Miguel,09165000,USGS stream gage
+usgs_nwis,09169500,"DOLORES RIVER AT BEDROCK, CO",Dolores-San Miguel,09169500,USGS stream gage
+usgs_nwis,09172500,"SAN MIGUEL RIVER NEAR PLACERVILLE, CO",Dolores-San Miguel,09172500,USGS stream gage
+usgs_nwis,09342500,"SAN JUAN RIVER AT PAGOSA SPRINGS, CO",San Juan,09342500,USGS stream gage
+usgs_nwis,09361500,"ANIMAS RIVER AT DURANGO, CO",San Juan,09361500,USGS stream gage
+usgs_nwis,09304500,"WHITE RIVER NEAR MEEKER, CO.",White,09304500,USGS stream gage
+usgs_nwis,09239500,"YAMPA RIVER AT STEAMBOAT SPRINGS, CO",Yampa-Green,09239500,USGS stream gage
+usgs_nwis,09251000,"YAMPA RIVER NEAR MAYBELL, CO",Yampa-Green,09251000,USGS stream gage
+usgs_nwis,09260000,"LITTLE SNAKE RIVER NEAR LILY, CO",Yampa-Green,09260000,USGS stream gage
+usgs_nwis,08220000,"RIO GRANDE NEAR DEL NORTE, CO",Rio Grande,08220000,USGS stream gage
+usgs_nwis,08251500,"RIO GRANDE NEAR LOBATOS, CO",Rio Grande,08251500,USGS stream gage
+usgs_nwis,08246500,"CONEJOS RIVER NEAR MOGOTE, CO.",Rio Grande,08246500,USGS stream gage
+usgs_nwis,06714000,"SOUTH PLATTE RIVER AT DENVER, CO.",South Platte,06714000,USGS stream gage
+usgs_nwis,06754000,"SOUTH PLATTE RIVER NEAR KERSEY, CO",South Platte,06754000,USGS stream gage
+usgs_nwis,06764000,"SOUTH PLATTE RIVER AT JULESBURG, CO",South Platte,06764000,USGS stream gage
+usgs_nwis,06752000,"CACHE LA POUDRE RIV AT MO OF CN, NR FT COLLINS, CO",South Platte,06752000,USGS stream gage
+usgs_nwis,06738000,"BIG THOMPSON RIVER AT MOUTH OF CANYON NR DRAKE, CO",South Platte,06738000,USGS stream gage
+usgs_nwis,07091200,"ARKANSAS RIVER NEAR NATHROP, CO",Arkansas,07091200,USGS stream gage
+usgs_nwis,07094500,"ARKANSAS RIVER AT PARKDALE, CO.",Arkansas,07094500,USGS stream gage
+usgs_nwis,07099970,"ARKANSAS RIVER AT MOFFAT STREET AT PUEBLO, CO",Arkansas,07099970,USGS stream gage
+usgs_nwis,07124000,"ARKANSAS RIVER AT LAS ANIMAS, CO.",Arkansas,07124000,USGS stream gage
+usgs_nwis,07106500,"FOUNTAIN CREEK AT PUEBLO, CO.",Arkansas,07106500,USGS stream gage
+dwr_cdss,COLKRECO,"COLORADO RIVER NEAR KREMMLING, CO",Colorado,09058000,DWR surface-water station; re-serves USGS 09058000
+dwr_cdss,COLDOTCO,"COLORADO RIVER NEAR DOTSERO, CO",Colorado,09070500,DWR surface-water station; re-serves USGS 09070500
+dwr_cdss,COLCAMCO,"COLORADO RIVER NEAR CAMEO, CO.",Colorado,09095500,DWR surface-water station; re-serves USGS 09095500
+dwr_cdss,COLUTACO,COLORADO RIVER NEAR COLORADO-UTAH STATE LINE,Colorado,09163500,DWR surface-water station; re-serves USGS 09163500
+dwr_cdss,BLUGRECO,"BLUE RIVER BELOW GREEN MOUNTAIN RESERVOIR, CO",Colorado,09057500,DWR surface-water station; re-serves USGS 09057500
+dwr_cdss,EAGGYPCO,"EAGLE RIVER BELOW GYPSUM, CO.",Colorado,09070000,DWR surface-water station; re-serves USGS 09070000
+dwr_cdss,ROAGLECO,"ROARING FORK RIVER AT GLENWOOD SPRINGS, CO.",Colorado,09085000,DWR surface-water station; re-serves USGS 09085000
+dwr_cdss,GUNGUNCO,"GUNNISON RIVER NEAR GUNNISON, CO.",Gunnison,09114500,DWR surface-water station; re-serves USGS 09114500
+dwr_cdss,GUNBEPCO,"GUNNISON RIVER BELOW GUNNISON TUNNEL, CO",Gunnison,09128000,DWR surface-water station; re-serves USGS 09128000
+dwr_cdss,GUNGRJCO,"GUNNISON RIVER NEAR GRAND JUNCTION, CO.",Gunnison,09152500,DWR surface-water station; re-serves USGS 09152500
+dwr_cdss,UNCCOLCO,"UNCOMPAHGRE RIVER AT COLONA, CO.",Gunnison,09147500,DWR surface-water station; re-serves USGS 09147500
+dwr_cdss,DOLRICCO,"DOLORES RIVER BELOW RICO, CO.",Dolores-San Miguel,09165000,DWR surface-water station; re-serves USGS 09165000
+dwr_cdss,DOLBEDCO,"DOLORES RIVER AT BEDROCK, CO",Dolores-San Miguel,09169500,DWR surface-water station; re-serves USGS 09169500
+dwr_cdss,SMGPLACO,"SAN MIGUEL RIVER NEAR PLACERVILLE, CO",Dolores-San Miguel,09172500,DWR surface-water station; re-serves USGS 09172500
+dwr_cdss,SANPAGCO,"SAN JUAN RIVER AT PAGOSA SPRINGS, CO",San Juan,09342500,DWR surface-water station; re-serves USGS 09342500
+dwr_cdss,ANIDURCO,"ANIMAS RIVER AT DURANGO, CO",San Juan,09361500,DWR surface-water station; re-serves USGS 09361500
+dwr_cdss,WHIMEECO,"WHITE RIVER NEAR MEEKER, CO.",White,09304500,DWR surface-water station; re-serves USGS 09304500
+dwr_cdss,YAMSTECO,"YAMPA RIVER AT STEAMBOAT SPRINGS, CO",Yampa-Green,09239500,DWR surface-water station; re-serves USGS 09239500
+dwr_cdss,YAMAYBCO,"YAMPA RIVER NEAR MAYBELL, CO",Yampa-Green,09251000,DWR surface-water station; re-serves USGS 09251000
+dwr_cdss,LSRLILCO,"LITTLE SNAKE RIVER NEAR LILY, CO",Yampa-Green,09260000,DWR surface-water station; re-serves USGS 09260000
+dwr_cdss,RIODELCO,"RIO GRANDE NEAR DEL NORTE, CO",Rio Grande,08220000,DWR surface-water station; re-serves USGS 08220000
+dwr_cdss,RIOLOBCO,RIO GRANDE NEAR LOBATOS,Rio Grande,08251500,DWR surface-water station; re-serves USGS 08251500
+dwr_cdss,CONMOGCO,"CONEJOS RIVER NEAR MOGOTE, CO.",Rio Grande,08246500,DWR surface-water station; re-serves USGS 08246500
+dwr_cdss,PLADENCO,SOUTH PLATTE RIVER AT DENVER,South Platte,06714000,DWR surface-water station; re-serves USGS 06714000
+dwr_cdss,PLAKERCO,"SOUTH PLATTE RIVER NEAR KERSEY, CO",South Platte,06754000,DWR surface-water station; re-serves USGS 06754000
+dwr_cdss,PLAJUCCO,SOUTH PLATTE RIVER AT JULESBURG (COMBINED),South Platte,06764000,DWR surface-water station; re-serves USGS 06764000
+dwr_cdss,CLAFTCCO,CACHE LA POUDRE AT CANYON MOUTH NEAR FORT COLLINS,South Platte,06752000,DWR surface-water station; re-serves USGS 06752000
+dwr_cdss,BTCANYCO,BIG THOMPSON RIVER AT MOUTH OF CANYON NEAR DRAKE,South Platte,06738000,DWR surface-water station; re-serves USGS 06738000
+dwr_cdss,ARKNATCO,"ARKANSAS RIVER NEAR NATHROP, CO",Arkansas,07091200,DWR surface-water station; re-serves USGS 07091200
+dwr_cdss,ARKPARCO,"ARKANSAS RIVER AT PARKDALE, CO.",Arkansas,07094500,DWR surface-water station; re-serves USGS 07094500
+dwr_cdss,ARKMOFCO,"ARKANSAS RIVER AT MOFFAT STREET AT PUEBLO, CO",Arkansas,07099970,DWR surface-water station; re-serves USGS 07099970
+dwr_cdss,ARKLASCO,"ARKANSAS RIVER AT LAS ANIMAS, CO.",Arkansas,07124000,DWR surface-water station; re-serves USGS 07124000
+dwr_cdss,FOUPUECO,"FOUNTAIN CREEK AT PUEBLO, CO.",Arkansas,07106500,DWR surface-water station; re-serves USGS 07106500

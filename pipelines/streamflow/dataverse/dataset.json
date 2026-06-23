@@ -1,0 +1,103 @@
+{
+  "datasetVersion": {
+    "license": {
+      "name": "CC BY 4.0",
+      "uri": "http://creativecommons.org/licenses/by/4.0/"
+    },
+    "metadataBlocks": {
+      "citation": {
+        "displayName": "Citation Metadata",
+        "fields": [
+          {
+            "typeName": "title",
+            "typeClass": "primitive",
+            "multiple": false,
+            "value": "Colorado Stream/River Flow"
+          },
+          {
+            "typeName": "alternativeURL",
+            "typeClass": "primitive",
+            "multiple": false,
+            "value": "https://github.com/CUPIDS-Lab/co-environmental-data"
+          },
+          {
+            "typeName": "author",
+            "typeClass": "compound",
+            "multiple": true,
+            "value": [
+              {
+                "authorName": {
+                  "typeName": "authorName",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "Keegan, Brian"
+                },
+                "authorAffiliation": {
+                  "typeName": "authorAffiliation",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "CUPIDS Lab"
+                }
+              }
+            ]
+          },
+          {
+            "typeName": "datasetContact",
+            "typeClass": "compound",
+            "multiple": true,
+            "value": [
+              {
+                "datasetContactName": {
+                  "typeName": "datasetContactName",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "Keegan, Brian"
+                },
+                "datasetContactEmail": {
+                  "typeName": "datasetContactEmail",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "accounts@brianckeegan.com"
+                }
+              }
+            ]
+          },
+          {
+            "typeName": "dsDescription",
+            "typeClass": "compound",
+            "multiple": true,
+            "value": [
+              {
+                "dsDescriptionValue": {
+                  "typeName": "dsDescriptionValue",
+                  "typeClass": "primitive",
+                  "multiple": false,
+                  "value": "A tidy, documented, reproducible dataset of Colorado stream/river flow (daily mean discharge, cubic feet per second) at major-river gages, liberated from two public sources (USGS NWIS and Colorado DWR/CDSS surface water) into a single long-format CSV: one row per (source, site_id, datetime, variable). Each gage carries its full period of record (many to the early 1900s). Part of the Colorado Environmental Data Hub (CUPIDS Lab); implements issue #10. Note that the two sources OVERLAP — DWR re-serves many USGS gages (joinable via usgs_site_no) — and must be de-duplicated to one series per gage for analysis; the overlap doubles as a built-in cross-source accuracy check. Each extract carries per-source provenance (source URL, retrieval time, SHA-256, license). Regenerated and re-audited monthly from the source APIs; see the repository for the re-runnable pipeline."
+                }
+              }
+            ]
+          },
+          {
+            "typeName": "subject",
+            "typeClass": "controlledVocabulary",
+            "multiple": true,
+            "value": ["Earth and Environmental Sciences"]
+          },
+          {
+            "typeName": "keyword",
+            "typeClass": "compound",
+            "multiple": true,
+            "value": [
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "Colorado" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "streamflow" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "discharge" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "rivers" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "water resources" } },
+              { "keywordValue": { "typeName": "keywordValue", "typeClass": "primitive", "multiple": false, "value": "hydrology" } }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

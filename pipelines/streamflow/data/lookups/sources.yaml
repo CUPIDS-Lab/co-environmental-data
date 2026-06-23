@@ -1,0 +1,47 @@
+# Non-secret per-source configuration for the streamflow pipeline.
+# Edited by hand; read by streamflow.config.load_sources_config().
+# Secrets (the optional CDSS API key) come from the environment / .env, never here.
+#
+# ✅ CONFIRMED markers were verified against the live APIs on 2026-06-22 (see
+#    docs/survey-notes.md). The request machinery and these specific endpoints /
+#    parameter codes both returned data; re-confirm on any future contract change.
+
+usgs_nwis:
+  base_url: "https://waterservices.usgs.gov/nwis"
+  dv_endpoint: "dv/"                 # ✅ daily-values service
+  parameters:                        # canonical variable -> USGS parameter code  # ✅ confirmed
+    discharge_cfs: "00060"           # Discharge, cubic feet per second
+  stat_cd: "00003"                   # ✅ 00003 = daily MEAN statistic
+  start_date: "1900-01-01"           # early bound for FULL history; NWIS clamps to each gage's POR
+  end_date: ""                       # empty = today
+  notes: >
+    ✅ CONFIRMED live (2026-06): GET dv/?format=json&sites=<no>&parameterCd=00060&
+    statCd=00003&startDT=<ymd>&endDT=<ymd>. Response is WaterML-as-JSON:
+    value.timeSeries[].{sourceInfo.siteName, sourceInfo.siteCode[0].value,
+    variable.unit.unitCode, values[0].value[]={value,dateTime,qualifiers}}.
+    qualifiers carry approval state (A=approved, P=provisional, e=estimated).
+    A no-data site returns an empty timeSeries list (not an error). No API key needed.
+    Single response per site (NOT paginated) — full POR (e.g. Cameo back to 1933)
+    comes in one (large) JSON, so the dv pull is one request per gage.
+
+dwr_cdss:
+  base_url: "https://dwr.state.co.us/Rest/GET/api/v2"
+  timeseries_endpoint: "surfacewater/surfacewatertsday/"   # ✅ confirmed live
+  meas_type: "Streamflow"            # ✅ measType value is "Streamflow" (NOT "DISCHRG")
+  parameters:                        # canonical variable -> CDSS measType
+    discharge_cfs: "Streamflow"
+  start_date: "01/01/1900"           # MM/DD/YYYY; CDSS clamps to each station's POR
+  end_date: ""                       # empty = today
+  page_size: 50000                   # daily POR (<~46k rows for 1900–today) fits one page
+  notes: >
+    ✅ CONFIRMED live (2026-06): GET surfacewater/surfacewatertsday/?format=json&
+    abbrev=<ABBR>&measType=Streamflow&min-measDate=MM/DD/YYYY&max-measDate=MM/DD/YYYY.
+    GOTCHAS vs the reservoir telemetry endpoint: (1) date keys are min-measDate /
+    max-measDate (startDate -> "not a valid URL query key"); (2) value field is
+    `value` (NOT measValue); (3) measType is "Streamflow" (DISCHRG -> zero records).
+    Row fields: {stationNum, abbrev, usgsSiteId, measType, measDate, value,
+    flagA..flagD, dataSource, measUnit:"cfs"}. ⚠️ OVERLAP: dataSource is frequently
+    "USGS" — DWR RE-SERVES the USGS gage. The same physical gage therefore appears
+    in BOTH sources (join on usgs_site_no in sites.csv); do not treat the two rows
+    as independent measurements. A "zero records" body (HTTP 404/200) means no data
+    for that query, handled as no-data. apiKey raises rate limits.
