@@ -4,7 +4,9 @@ This sidebar is a flat, text-labeled list of the wiki's main pages, kept simple 
 
 - [Home](Home)
 - [How we track work](Home#how-we-track-work)
-- [Roadmap](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/ROADMAP.md)
-- [Next steps](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/NEXT-STEPS.md)
-- [Data dictionary](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/DATA-DICTIONARY.md)
-- [Project management](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/PROJECT-MANAGEMENT.md)
+- [Roadmap](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/docs/planning/ROADMAP.md)
+- [Next steps](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/docs/planning/NEXT-STEPS.md)
+- [Data dictionary](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/docs/reference/DATA-DICTIONARY.md)
+- [Project management](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/docs/planning/PROJECT-MANAGEMENT.md)
+- [Governance](https://github.com/CUPIDS-Lab/co-environmental-data/blob/main/docs/governance/GOVERNANCE.md)
+- [All docs/](https://github.com/CUPIDS-Lab/co-environmental-data/tree/main/docs)

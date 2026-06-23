@@ -4,5 +4,5 @@ contact_links:
     url: ../../blob/HEAD/AGENTS.md
     about: Read AGENTS.md first — the non-negotiables (immutable raw data, open formats, the NREL data-integrity note) and how we work before opening anything here.
   - name: How we track work
-    url: ../../blob/HEAD/PROJECT-MANAGEMENT.md
+    url: ../../blob/HEAD/docs/planning/PROJECT-MANAGEMENT.md
     about: See PROJECT-MANAGEMENT.md for how this project turns roadmap tasks into issues, milestones, and a Project board.

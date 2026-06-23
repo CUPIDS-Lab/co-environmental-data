@@ -15,7 +15,7 @@
 
 # Data lives with the data engineer: the immutable source catalog, schema.
 /data/                      @brianckeegan
-/DATA-DICTIONARY.md         @brianckeegan   # -> subject-matter expert
+/docs/reference/DATA-DICTIONARY.md   @brianckeegan   # -> subject-matter expert
 
 # Liberation pipelines are the engineer's + developer's shared ground.
 /pipelines/                 @brianckeegan   # -> data-engineer + software-developer
@@ -25,20 +25,20 @@
 
 # Governance, charter, roles set the project's terms: project manager owns them,
 # with legal as a second reviewer on the terms that bind partners + privacy.
-/GOVERNANCE.md              @brianckeegan   # -> project-manager + legal
-/CHARTER.md                 @brianckeegan   # -> project-manager
-/ROLES.md                   @brianckeegan   # -> project-manager
-/collaboration-protocol.md  @brianckeegan   # -> project-manager
-/contributed-data-intake.md @brianckeegan   # -> data-engineer + legal
+/docs/governance/GOVERNANCE.md              @brianckeegan   # -> project-manager + legal
+/docs/governance/CHARTER.md                 @brianckeegan   # -> project-manager
+/docs/governance/ROLES.md                   @brianckeegan   # -> project-manager
+/docs/governance/collaboration-protocol.md  @brianckeegan   # -> project-manager
+/docs/governance/contributed-data-intake.md @brianckeegan   # -> data-engineer + legal
 
 # Responsible-data, DMP, and the QA checklists gate sensitive + published work.
-/responsible-data-checklist.md   @brianckeegan   # -> project-manager + legal
-/data-management-plan.md         @brianckeegan   # -> project-manager
-/INSTALLED-BASE.md               @brianckeegan   # -> project-manager
-/data-bulletproofing-checklist.md @brianckeegan  # -> data-engineer + statistics
-/data-quality-checklist.md       @brianckeegan   # -> data-engineer
-/accessibility-checklist.md      @brianckeegan   # -> communicators
-/data-card.md                    @brianckeegan   # -> subject-matter expert
+/docs/responsible-data/responsible-data-checklist.md    @brianckeegan   # -> project-manager + legal
+/docs/responsible-data/data-management-plan.md          @brianckeegan   # -> project-manager
+/docs/responsible-data/INSTALLED-BASE.md                @brianckeegan   # -> project-manager
+/docs/responsible-data/data-bulletproofing-checklist.md @brianckeegan   # -> data-engineer + statistics
+/docs/responsible-data/data-quality-checklist.md        @brianckeegan   # -> data-engineer
+/docs/responsible-data/accessibility-checklist.md       @brianckeegan   # -> communicators
+/docs/responsible-data/data-card.md                     @brianckeegan   # -> subject-matter expert
 
 # CI, automation, and the nested guidance skills affect everyone's
 # reproducibility -> the software developer keeps them in sync.

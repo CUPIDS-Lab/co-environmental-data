@@ -1,6 +1,6 @@
 # Data bulletproofing checklist — Colorado Environmental Data Hub
 
-> **Applied per dataset in the dated QA audits** in [`audits/`](audits/): [reservoir (2026-06-22)](audits/2026-06-22-qa-audit.md) and [streamflow / snowpack / climate-stations (2026-06-23)](audits/2026-06-23-pipelines-qa.md). This file is the standing checklist; each audit is its application to specific data.
+> **Applied per dataset in the dated QA audits** in [`audits/`](../../audits/): [reservoir (2026-06-22)](../../audits/2026-06-22-qa-audit.md) and [streamflow / snowpack / climate-stations (2026-06-23)](../../audits/2026-06-23-pipelines-qa.md). This file is the standing checklist; each audit is its application to specific data.
 
 Run this before any number leaves the building. Bulletproofing is the pre-publication QA that makes a dataset defensible: you reconcile the data against the source's own published totals, recompute the key figures a second way, and have someone else replicate the result. Surprising findings get double-checked *before* they get shipped, not after a correction. Keep a data notebook recording every procedure you run here (this complements `decision-log.md` and the pipeline).
 
