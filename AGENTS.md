@@ -31,6 +31,7 @@ Multiple agents and sessions operate on this repo's **single working tree concur
 - **Stage explicit paths** (`git add pipelines/<name> path/to/file`) — **never `git add -A` / `git add .`** while the tree is dirty.
 - **`git fetch` and re-verify `origin/main` immediately before merging** — the ground moves; check recent PRs and `git ls-tree origin/main -- <path>`. An audit or a merge run against a stale local checkout will mislead you.
 - **One concern per PR.** Don't bundle a pipeline into a docs/governance PR (the streamflow ↔ #37 lesson).
+- **Landing a whole pipeline?** Follow the ordered runbook + registration checklist in [`pipelines/LANDING.md`](pipelines/LANDING.md) so it lands as one reviewable, correctly-ordered, issue-closing PR.
 
 ## A data-integrity note (read before touching the catalog)
 
