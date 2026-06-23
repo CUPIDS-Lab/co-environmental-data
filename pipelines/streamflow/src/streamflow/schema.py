@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import pandas as pd
 
+from co_pipeline_core import schema as _coreschema
+
 try:  # pandera is an install-time dep; keep import survivable for `py_compile`
     import pandera.pandas as pa
     from pandera.typing.pandas import Series
@@ -84,33 +86,8 @@ else:  # pragma: no cover
 
 
 def normalize_long(df: pd.DataFrame) -> pd.DataFrame:
-    """Coerce a parser's output to the canonical schema, then validate.
-
-    Parsers may carry intermediate columns; this drops them, reorders to
-    ``LONG_COLUMNS``, fills the unit from the variable when absent, and validates.
-    """
-    missing = [c for c in LONG_COLUMNS
-               if c not in df.columns and c not in ("unit", "concept", "qa_flag", "site_name")]
-    if missing:
-        raise ValueError(f"normalize_long: missing required columns: {missing}")
-    out = df.copy()
-    if "unit" not in out.columns:
-        out["unit"] = out["variable"].map(VARIABLES)
-    for optional in ("site_name", "qa_flag", "concept"):
-        if optional not in out.columns:
-            out[optional] = pd.NA
-    out = out[LONG_COLUMNS].copy()
-    # Day resolution is the grain. Floor to midnight so heterogeneous source
-    # timestamps serialize uniformly; the UTC date is preserved. A gage can carry
-    # MORE THAN ONE reading for a day — most importantly when the SAME physical gage
-    # is pulled from both sources (DWR re-serves USGS), or on a same-day revision.
-    # Collapse to the latest reading per (source, site, day, variable) so the day key
-    # is unique within a source; cross-source rows stay distinct (source is in the key).
-    _ts = pd.to_datetime(out["datetime"], utc=True).dt.tz_localize(None)
-    out["datetime"] = _ts.dt.normalize()
-    out = (out.assign(_ts=_ts)
-              .sort_values("_ts")
-              .drop_duplicates(["source", "site_id", "datetime", "variable"], keep="last")
-              .drop(columns="_ts")
-              .reset_index(drop=True))
-    return validate(out)
+    """Coerce a parser's output to the canonical schema, then validate (shared
+    machinery in ``co_pipeline_core.schema``)."""
+    return _coreschema.normalize_long(
+        df, long_columns=LONG_COLUMNS, variables=VARIABLES, validate=validate,
+        id_col="site_id", name_col="site_name", datetime_mode="utc_floor")

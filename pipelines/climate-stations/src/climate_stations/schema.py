@@ -29,6 +29,8 @@ from __future__ import annotations
 
 import pandas as pd
 
+from co_pipeline_core import schema as _coreschema
+
 try:  # pandera is an install-time dep; keep import survivable for `py_compile`
     import pandera.pandas as pa
     from pandera.typing.pandas import Series
@@ -121,36 +123,8 @@ else:  # pragma: no cover
 
 
 def normalize_long(df: pd.DataFrame) -> pd.DataFrame:
-    """Coerce a parser's output to the canonical schema, then validate.
-
-    Drops intermediate columns, reorders to ``LONG_COLUMNS``, fills the unit from
-    the variable when absent, floors timestamps to the day, and collapses any
-    duplicate ``(source, site_id, day, variable)`` to the latest reading so the day
-    key is unique within a source.
-    """
-    missing = [c for c in LONG_COLUMNS
-               if c not in df.columns and c not in ("unit", "concept", "qa_flag", "site_name")]
-    if missing:
-        raise ValueError(f"normalize_long: missing required columns: {missing}")
-    out = df.copy()
-    if "unit" not in out.columns:
-        out["unit"] = out["variable"].map(VARIABLES)
-    for optional in ("site_name", "qa_flag", "concept"):
-        if optional not in out.columns:
-            out[optional] = pd.NA
-    out = out[LONG_COLUMNS].copy()
-    # Day resolution is the grain. CDSS ``measDate`` is midnight LOCAL with a tz
-    # offset (-06:00 MDT / -07:00 MST); the observation belongs to its LOCAL calendar
-    # date. Floor by taking that local date as reported — converting to UTC first
-    # would roll an evening reading into the next day. Order by the full UTC timestamp
-    # so that, on a same-day revision, the latest reading is the one kept (the day key
-    # is then unique within a source).
-    _ord = pd.to_datetime(out["datetime"], utc=True)                       # ordering key
-    out["datetime"] = pd.to_datetime(out["datetime"].astype(str).str[:10],  # local date
-                                     errors="coerce")
-    out = (out.assign(_ord=_ord)
-              .sort_values("_ord")
-              .drop_duplicates(["source", "site_id", "datetime", "variable"], keep="last")
-              .drop(columns="_ord")
-              .reset_index(drop=True))
-    return validate(out)
+    """Coerce a parser's output to the canonical schema, then validate (shared
+    machinery in ``co_pipeline_core.schema``)."""
+    return _coreschema.normalize_long(
+        df, long_columns=LONG_COLUMNS, variables=VARIABLES, validate=validate,
+        id_col="site_id", name_col="site_name", datetime_mode="local_date")
