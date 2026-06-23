@@ -3,44 +3,10 @@
 # color (6-digit hex, no leading '#'), description (what the label asserts).
 # Edit here and re-run the seed script to reconcile labels in the repo.
 
-- name: priority:high
-  color: b60205
-  description: Pick this up before lower-priority work.
-- name: priority:med
-  color: d93f0b
-  description: Normal priority; schedule after high-priority items.
-- name: priority:low
-  color: fbca04
-  description: Nice to have; do when capacity allows.
-
-- name: size:s
-  color: c2e0c6
-  description: Small effort estimate (hours).
-- name: size:m
-  color: 7ac142
-  description: Medium effort estimate (a day or a few).
-- name: size:l
-  color: 1d7637
-  description: Large effort estimate (multiple days); consider breaking into sub-issues.
-
-- name: level:L0
-  color: ededed
-  description: Belongs to escalation level L0 (sane repo skeleton).
-- name: level:L1
-  color: d4d4f5
-  description: Belongs to escalation level L1 (documented repo).
-- name: level:L2
-  color: b8b8ef
-  description: Belongs to escalation level L2 (reproducible pipeline).
-- name: level:L3
-  color: 9c9ce8
-  description: Belongs to escalation level L3 (collaboration and governance).
-- name: level:L4
-  color: 7e7ee0
-  description: Belongs to escalation level L4 (responsible & accessible).
-- name: level:L5
-  color: 5a5ad6
-  description: Belongs to escalation level L5 (governed, FAIR, published OKF bundle).
+# NOTE: priority, size, and level are NOT labels — they are GitHub Project
+# single-select FIELDS (Priority / Size / Level), set per issue by seed-github.sh
+# (project_upsert_item). They were retired as labels on 2026-06-23 to cut the
+# per-issue chip clutter; see PROJECT-MANAGEMENT.md. Do not re-add them here.
 
 - name: type:data
   color: 0e8a16

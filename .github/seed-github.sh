@@ -130,7 +130,8 @@ seed_milestone() {
 # is only applied when OWNER_DEFAULT is non-empty, so the script never clobbers the
 # intentionally-unassigned good-first-issues.
 seed_issue() {
-  local task_id="$1" title="$2" labels="$3" body="$4" milestone="${5:-$MILESTONE_TITLE}"
+  local task_id="$1" title="$2" labels="$3" body="$4" milestone="${5:-$MILESTONE_TITLE}" \
+        priority="${6:-}" size="${7:-}" level="${8:-}"
   [[ "$CAN_ISSUES" == "1" ]] || { note "Skipping issue '$title' (issues unavailable)."; return 0; }
 
   local marker="<!-- data-project:task=$task_id -->"
@@ -152,6 +153,7 @@ seed_issue() {
              --json number --jq '.[0].number' 2>/dev/null || true)"
   fi
 
+  local created=0
   if [[ -n "$num" && "$num" != "null" ]]; then
     note "Updating issue #$num for task '$task_id'."
     run gh issue edit "$num" --repo "$REPO_SLUG" --title "$title" --body "$full_body" \
@@ -162,13 +164,14 @@ seed_issue() {
     run gh issue create --repo "$REPO_SLUG" --title "$title" --body "$full_body" \
         --label "$labels" "${assignee_create[@]+"${assignee_create[@]}"}" --milestone "$milestone" \
         || { note "Could not create issue for '$task_id' (permission?); continuing."; return 0; }
+    created=1
     if [[ "$DRY_RUN" != "1" ]]; then
       num="$(gh issue list --repo "$REPO_SLUG" --state all --search "$marker in:body" \
                --json number --jq '.[0].number' 2>/dev/null || true)"
     fi
   fi
   record_sync "$task_id" "$num" "$hash"
-  project_upsert_item "$task_id" "$num" "$labels"
+  project_upsert_item "$task_id" "$num" "$priority" "$size" "$level" "$created"
 }
 
 # ----- Manifest: task-id -> issue/item + content hash ------------------------
@@ -183,8 +186,16 @@ record_sync() {
      "$SYNC_FILE" > "$tmp" && mv "$tmp" "$SYNC_FILE"
 }
 
-# ----- Project (best effort): add item + set fields --------------------------
+# ----- Project (best effort): add item + set planning FIELDS ------------------
+# Priority / Size / Level / Status are GitHub Project single-select *fields*, not
+# labels. (They were mirrored as labels until 2026-06-23, when the labels were
+# retired to cut chip clutter -- see PROJECT-MANAGEMENT.md.) Setting a field needs
+# GraphQL node ids, so we resolve the project id + field/option ids once and edit
+# each item by id (the older `--field NAME --value VAL` form is not valid and
+# silently no-ops).
 PROJECT_NUMBER=""
+PROJECT_ID=""
+PROJECT_FIELDS_JSON=""
 project_locate() {
   [[ "$CAN_PROJECT" == "1" ]] || return 0
   [[ -n "$PROJECT_NUMBER" ]] && return 0
@@ -198,30 +209,43 @@ project_locate() {
     [[ "$DRY_RUN" != "1" ]] && PROJECT_NUMBER="$(gh project list --owner "$owner" --format json \
         --jq ".projects[] | select(.title==\"$PROJECT_TITLE\") | .number" 2>/dev/null || true)"
   fi
+  PROJECT_ID="$(gh project view "$PROJECT_NUMBER" --owner "$owner" --format json --jq '.id' 2>/dev/null || true)"
+  PROJECT_FIELDS_JSON="$(gh project field-list "$PROJECT_NUMBER" --owner "$owner" --format json 2>/dev/null || echo '{}')"
 }
-project_upsert_item() {
-  local task_id="$1" num="$2" labels="$3"
+
+# Set one single-select field on an item by option name; no-op if unresolved.
+project_set_select() { # item_id field_name option_name
+  local iid="$1" fname="$2" oname="$3" fid oid
+  [[ -n "$oname" && -n "$iid" && -n "$PROJECT_ID" ]] || return 0
+  fid="$(printf '%s' "$PROJECT_FIELDS_JSON" | jq -r --arg n "$fname" '.fields[]?|select(.name==$n)|.id' 2>/dev/null | head -n1)"
+  oid="$(printf '%s' "$PROJECT_FIELDS_JSON" | jq -r --arg f "$fname" --arg o "$oname" \
+          '.fields[]?|select(.name==$f)|.options[]?|select(.name==$o)|.id' 2>/dev/null | head -n1)"
+  [[ -n "$fid" && -n "$oid" ]] || { note "  Project field '$fname'='$oname' not resolvable; skipping."; return 0; }
+  run gh project item-edit --id "$iid" --project-id "$PROJECT_ID" --field-id "$fid" --single-select-option-id "$oid" \
+      >/dev/null 2>&1 || true
+}
+
+project_upsert_item() { # task_id num priority size level created
+  local task_id="$1" num="$2" priority="${3:-}" size="${4:-}" level="${5:-}" created="${6:-0}"
   [[ "$CAN_PROJECT" == "1" ]] || return 0
   [[ -n "$num" && "$num" != "null" ]] || return 0
   project_locate
   [[ "$CAN_PROJECT" == "1" && -n "$PROJECT_NUMBER" ]] || return 0
   local owner="${REPO_SLUG%%/*}"
   local url="https://github.com/$REPO_SLUG/issues/$num"
-  note "Adding issue #$num to Project '$PROJECT_TITLE' and setting fields from labels."
+  note "Adding issue #$num to Project '$PROJECT_TITLE' and setting Priority/Size/Level."
   run gh project item-add "$PROJECT_NUMBER" --owner "$owner" --url "$url" \
       || note "Could not add #$num to the Project; continuing."
-  local pri size lvl
-  pri="$(grep -oE 'priority:(high|med|low)' <<<"$labels" | head -n1 | cut -d: -f2 || true)"
-  size="$(grep -oE 'size:(s|m|l)' <<<"$labels" | head -n1 | cut -d: -f2 || true)"
-  lvl="$(grep -oE 'level:L[0-5]' <<<"$labels" | head -n1 | cut -d: -f2 || true)"
-  [[ -n "$pri"  ]] && run gh project item-edit --owner "$owner" --project-number "$PROJECT_NUMBER" \
-      --url "$url" --field Priority --value "$pri"  || true
-  [[ -n "$size" ]] && run gh project item-edit --owner "$owner" --project-number "$PROJECT_NUMBER" \
-      --url "$url" --field Size --value "$size"      || true
-  [[ -n "$lvl"  ]] && run gh project item-edit --owner "$owner" --project-number "$PROJECT_NUMBER" \
-      --url "$url" --field Level --value "L$lvl"      || true
-  run gh project item-edit --owner "$owner" --project-number "$PROJECT_NUMBER" \
-      --url "$url" --field Status --value "Todo"      || true
+  if [[ "$DRY_RUN" == "1" ]]; then return 0; fi
+  local iid
+  iid="$(gh project item-list "$PROJECT_NUMBER" --owner "$owner" --format json \
+           --jq ".items[]|select(.content.number==$num)|.id" 2>/dev/null | head -n1)"
+  [[ -n "$iid" ]] || { note "  could not resolve board item id for #$num; planning fields left unset."; return 0; }
+  project_set_select "$iid" "Priority" "$priority"
+  project_set_select "$iid" "Size"     "$size"
+  project_set_select "$iid" "Level"    "$level"
+  # Set Status only on a freshly-created issue, so re-syncs never reset the team's board column.
+  if [[ "$created" == "1" ]]; then project_set_select "$iid" "Status" "Todo"; fi
 }
 project_status_update() {
   [[ "$CAN_PROJECT" == "1" && -n "$PROJECT_NUMBER" ]] || return 0
@@ -307,13 +331,13 @@ Likely breaks into sub-issues per notebook/module. Depends on the match_hosts ta
 BODY
 
   seed_issue "verify-needs-followup-sources" "Verify the 9 \`needs_followup\` sources in the catalog" \
-    "type:data,blocking,level:L1,priority:high,size:m,good-first-issue" "$B_VERIFY"
+    "type:data,blocking,good-first-issue" "$B_VERIFY" "$MILESTONE_TITLE" "High" "M" "L1"
   seed_issue "quarantine-nrel-nlr-claim" "Confirm NREL canonical domain; quarantine the spurious \`nlr.gov\` claim" \
-    "type:data,blocking,level:L1,priority:high,size:s,good-first-issue" "$B_NREL"
+    "type:data,blocking,good-first-issue" "$B_NREL" "$MILESTONE_TITLE" "High" "S" "L1"
   seed_issue "add-match-hosts-keywords" "Add \`match_hosts\` / \`match_keywords\` to the source catalog" \
-    "type:data,blocking,level:L2,priority:high,size:m" "$B_MATCH"
+    "type:data,blocking" "$B_MATCH" "$MILESTONE_TITLE" "High" "M" "L2"
   seed_issue "build-l2-pipeline" "Build the L2 reproducible pipeline (cejcorpus stubs)" \
-    "type:pipeline,level:L2,priority:med,size:l" "$B_PIPE"
+    "type:pipeline" "$B_PIPE" "$MILESTONE_TITLE" "Medium" "L" "L2"
 
   # --- L3/L4 batch (the collaboration + responsible-data climb, 2026-06-22) ---
   local B_ONBOARD B_CEJ B_LEGAL B_CODEBOOK B_LLM B_QA
@@ -385,17 +409,17 @@ Reservoir storage (#9) is built; the remaining step is the first human-reviewed 
 BODY
 
   seed_issue "onboard-team-roles-codeowners" "Onboard the undergraduate team into ROLES + CODEOWNERS" \
-    "type:governance,level:L3,priority:high,size:m" "$B_ONBOARD" "$MILESTONE_L3L4"
+    "type:governance" "$B_ONBOARD" "$MILESTONE_L3L4" "High" "M" "L3"
   seed_issue "name-cej-sme-contact" "Name the CEJ subject-matter contact (collaboration-protocol)" \
-    "type:governance,blocking,level:L3,priority:high,size:s" "$B_CEJ" "$MILESTONE_L3L4"
+    "type:governance,blocking" "$B_CEJ" "$MILESTONE_L3L4" "High" "S" "L3"
   seed_issue "secure-fairuse-tos-review" "Secure a fair-use / licensed-DB ToS review (CU Libraries / Counsel)" \
-    "type:governance,blocking,level:L3,priority:high,size:m" "$B_LEGAL" "$MILESTONE_L3L4"
+    "type:governance,blocking" "$B_LEGAL" "$MILESTONE_L3L4" "High" "M" "L3"
   seed_issue "fill-codebook-calibration" "Fill the codebook + run inter-coder calibration (alpha >= 0.80)" \
-    "type:governance,blocking,level:L4,priority:high,size:l" "$B_CODEBOOK" "$MILESTONE_L3L4"
+    "type:governance,blocking" "$B_CODEBOOK" "$MILESTONE_L3L4" "High" "L" "L4"
   seed_issue "validate-llm-detector" "Validate the LLM citation detector (precision >= 0.90; quote-span)" \
-    "type:pipeline,blocking,level:L4,priority:med,size:m" "$B_LLM" "$MILESTONE_L3L4"
+    "type:pipeline,blocking" "$B_LLM" "$MILESTONE_L3L4" "Medium" "M" "L4"
   seed_issue "run-qa-before-dataverse-publish" "Run the QA gates before the first reservoir Dataverse publish" \
-    "type:data,blocking,level:L4,priority:high,size:s" "$B_QA" "$MILESTONE_L3L4"
+    "type:data,blocking" "$B_QA" "$MILESTONE_L3L4" "High" "S" "L4"
 
   # --- QA-audit batch (findings from audits/2026-06-22-qa-audit.md) ---
   local B_RECON B_RISE B_VALUES B_KNOWN B_CATLIC B_A11Y
@@ -469,17 +493,17 @@ Applies-now items are doc-only; the figure/color items track to the L5 publicati
 BODY
 
   seed_issue "reservoir-real-reconciliation" "Reservoir: run a real reconciliation before publish (it is stubbed)" \
-    "type:data,blocking,level:L4,priority:high,size:m" "$B_RECON" "$MILESTONE_L3L4"
+    "type:data,blocking" "$B_RECON" "$MILESTONE_L3L4" "High" "M" "L4"
   seed_issue "reservoir-rise-zeros-bug" "Reservoir: fix RISE zeros-vs-missing parser bug" \
-    "type:pipeline,blocking,level:L4,priority:high,size:s" "$B_RISE" "$MILESTONE_L3L4"
+    "type:pipeline,blocking" "$B_RISE" "$MILESTONE_L3L4" "High" "S" "L4"
   seed_issue "reservoir-screen-impossible-values" "Reservoir: screen impossible elevation/release values" \
-    "type:pipeline,blocking,level:L4,priority:high,size:m" "$B_VALUES" "$MILESTONE_L3L4"
+    "type:pipeline,blocking" "$B_VALUES" "$MILESTONE_L3L4" "High" "M" "L4"
   seed_issue "reservoir-knownissues-and-counts" "Reservoir: qa_flag fix + record-count doc + known-issues section" \
-    "type:data,level:L4,priority:med,size:m" "$B_KNOWN" "$MILESTONE_L3L4"
+    "type:data" "$B_KNOWN" "$MILESTONE_L3L4" "Medium" "M" "L4"
   seed_issue "catalog-license-and-schema-drift" "Catalog: normalize licenses + reconcile links.download schema drift" \
-    "type:data,level:L2,priority:med,size:m" "$B_CATLIC" "$MILESTONE_TITLE"
+    "type:data" "$B_CATLIC" "$MILESTONE_TITLE" "Medium" "M" "L2"
   seed_issue "accessibility-glossary-and-prose" "Accessibility: define acronyms/glossary + inclusive-meeting prose" \
-    "type:docs,level:L4,priority:med,size:s" "$B_A11Y" "$MILESTONE_L3L4"
+    "type:docs" "$B_A11Y" "$MILESTONE_L3L4" "Medium" "S" "L4"
   # --- end per-task calls ---
 
   project_status_update

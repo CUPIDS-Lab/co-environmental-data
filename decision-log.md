@@ -2,6 +2,13 @@
 
 A running, dated record of design and data decisions and *why* they were made — the provenance of the project's choices, legible to people who join later. Add an entry whenever you make a non-obvious choice (a filtering rule, a definition, a tool, a tradeoff). Newest first.
 
+## 2026-06-23 — Cut label clutter: priority / size / level become Project fields
+
+- **Context:** issues carried 4–6 label chips (a typical one: priority + size + level + type + blocking), which overwhelms a human scanning the list. priority/size/level were *also* GitHub Project single-select fields, so the planning metadata was double-encoded — and the board's Priority/Size/Level fields were in fact **empty**, because the sync set them with an invalid `gh` syntax that silently no-op'd.
+- **Decision:** keep only **`type:*`, `blocking`, `good-first-issue`, `help-wanted`** as labels; move **priority, size, level** into the Project **fields** of the same name; delete GitHub's nine unused default labels (incl. the space-duplicates `good first issue` / `help wanted`). 28 labels → **8**; ~5 chips/issue → **2**. Populated the fields for all 20 board items from the existing labels first, then deleted the labels. Reworked `seed-github.sh` to set fields by GraphQL node id (`project_set_select`) from explicit per-task values, and to set `Status=Todo` only on issue *creation* so re-syncs never reset a moved card. Pruned `labels.yml`; updated `PROJECT-MANAGEMENT.md`.
+- **Why:** a label should answer "what kind of thing is this," not carry planning dimensions the board already sorts by — duplication invites drift and buries the signal. Fixing the silently-broken field sync was a prerequisite (the board can now actually group by Priority/Size/Level).
+- **Consequences:** `ROADMAP.md`'s Priority/Size/Level columns stay the human source of truth; the sync projects them onto the Project fields. Do not re-add priority/size/level as labels (noted in `labels.yml`). Re-running `seed-github.sh` stays idempotent and keeps the fields populated.
+
 ## 2026-06-22 — QA audit of current deliverables (bulletproofing / quality / accessibility)
 
 - **Context:** with the L4 checklists in place, audited the actual deliverables — the source catalog, the built reservoir-storage pipeline, repo-wide accessibility, and the untracked streamflow engine — against `data-bulletproofing-checklist.md`, `data-quality-checklist.md`, and `accessibility-checklist.md`. Recorded in `audits/2026-06-22-qa-audit.md`.

@@ -10,14 +10,14 @@ The tracked batches are the *actionable-now* slices of the roadmap: (1) harden t
 
 ## Label taxonomy
 
-Labels exist so you can slice the work the way a question demands — by level, by urgency, by effort, by kind, or by what is stuck — without reading every issue. Apply them consistently; a label nobody trusts is worse than no label, because it invites filtering on stale data.
+Labels are kept deliberately few so an issue's chips read at a glance. **Planning metadata the board sorts by — priority, size, and level — lives in Project _fields_, not labels** (see "The board" below); labels carry only *what kind of work* it is plus a couple of at-a-glance flags. A label nobody trusts is worse than no label, so apply these consistently and resist re-adding planning dimensions as labels.
 
-- `level:*` (`level:L0` … `level:L5`) — which maturity rung the task belongs to, mirroring the level milestone so you can filter the ladder.
-- `priority:*` (`priority:high`, `priority:med`, `priority:low`) — how soon it matters, so the team pulls the right work next rather than the most recently filed.
-- `size:*` (`size:s`, `size:m`, `size:l`) — rough effort, so a week can be planned against real capacity instead of issue count.
 - `type:*` (`type:data`, `type:docs`, `type:pipeline`, `type:governance`, `type:infra`) — the kind of work, so a specialist can find the issues that need their skills.
 - `blocking` — this task gates a real action (ingesting article text, publishing, or climbing a level); a `blocking` issue must be closed, or its risk explicitly accepted, before the project does the thing it guards, and before climbing.
-- `good-first-issue` — well-scoped and approachable; the two unassigned data-quality tasks are flagged this way for incoming undergraduate contributors.
+- `good-first-issue` — well-scoped and approachable; the unassigned data-quality tasks are flagged this way for incoming undergraduate contributors.
+- `help-wanted` — maintainers are actively seeking help on this.
+
+> **Priority, Size, and Level are Project fields, not labels** (retired as labels on 2026-06-23 to cut per-issue chip clutter — an issue went from ~5 chips to ~2). The board sorts and groups by them; `seed-github.sh` sets them per issue from the `ROADMAP.md` Priority/Size/Level columns. GitHub's unused default labels (`bug`, `enhancement`, `question`, `duplicate`, …) were removed at the same time in favor of this taxonomy. The full label set is now just the eight above (`type:*` ×5 + `blocking` + `good-first-issue` + `help-wanted`).
 
 ## Source of truth and idempotent sync
 
@@ -25,13 +25,15 @@ The `ROADMAP.md` checklist is the source of truth, and GitHub is a projection of
 
 ## The board (standardized setup)
 
-The `Colorado Environmental Data Hub` Project configures these custom fields, because tracking each value in exactly one place — and letting the Project sync the rest from the issues — is what stops metadata drift:
+The `Colorado Environmental Data Hub` Project configures these custom fields, because tracking each value in exactly one place — and not duplicating it as a label — is what stops metadata drift and keeps the issue list legible:
 
-- **Status** (Todo / In progress / Done) — the source of the board columns.
-- **Priority** (High / Medium / Low) — set from each issue's `priority:*` label.
-- **Size** (S / M / L) — set from the `size:*` label.
-- **Level** (L0–L5) — set from the `level:*` label; lets the board group by escalation level.
+- **Status** (Todo / In progress / Done) — the source of the board columns. The sync sets it to Todo on a *newly created* issue only, so re-syncs never reset a card you've moved.
+- **Priority** (High / Medium / Low) — set per issue by `seed-github.sh` from the ROADMAP Priority column.
+- **Size** (S / M / L) — set per issue by the sync from the ROADMAP Size column.
+- **Level** (L0–L5) — set per issue by the sync; lets the board group by escalation rung (the milestone gives the coarser L1-L2 / L3-L4 batches).
 - **Iteration** — week-by-week cadence for planning, once the team works in iterations.
+
+Setting a single-select field needs the Project/field/option GraphQL node ids (the `gh project item-edit --field NAME --value VAL` shorthand silently no-ops), so the sync resolves them once and edits each item by id; see `project_set_select` in `seed-github.sh`.
 
 Three saved views cover the common reads: **Board by Status** (day-to-day flow), **Table by Level** (planning a level's scope, bulk edits), and **Roadmap** (timeline over target dates). Enable the built-in workflows — auto-add matching repo issues, set Status→Done when an issue closes, and auto-archive — so the board maintains itself. Assignees, labels, milestone, and linked PRs are **not** duplicated as custom fields; Projects syncs those from the issue automatically. Once the layout is right, save it as an **org template** ("Make template" → "Use this template") so the next CUPIDS engagement starts standardized.
 
