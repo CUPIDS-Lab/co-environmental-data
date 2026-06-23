@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Brian Keegan", email = "accounts@brianckeegan.com" }]
 dependencies = [
+    "co-pipeline-core",          # shared plumbing — path dep (see tool.uv.sources)
     "pandas>=2.2",
     "pyarrow>=16",
     "pandera[pandas]>=0.20",
@@ -34,9 +35,12 @@ build-backend = "hatchling.build"
 packages = ["src/climate_stations"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["src", "../_core/src"]
 testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
 src = ["src"]
+
+[tool.uv.sources]
+co-pipeline-core = { path = "../_core", editable = true }
