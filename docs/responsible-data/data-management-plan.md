@@ -6,7 +6,7 @@ How this project handles its data across its life: what we hold, where it lives,
 
 The Hub holds three kinds of data, at different stages of maturity:
 
-- **The source catalog** (present): one curated JSON file, `data/raw/colorado_environmental_data_sources.json` — ~56 authoritative Colorado environmental data sources across six themes and three provenance tiers, hand-compiled, with `enclosure`/`erosion`/`verification_status` flags. Small, version-controlled, immutable. License: the catalog itself is MIT/open; it *describes* third-party sources, each with its own terms.
+- **The source catalog** (present): one curated JSON file, `docs/planning/colorado_environmental_data_sources.json` — ~56 authoritative Colorado environmental data sources across six themes and three provenance tiers, hand-compiled, with `enclosure`/`erosion`/`verification_status` flags. Small, version-controlled, immutable. License: the catalog itself is MIT/open; it *describes* third-party sources, each with its own terms.
 - **Liberated datasets** (four present): tidy CSVs produced by `pipelines/<name>/` from public agency APIs — reservoir storage (CO DWR/CDSS + USBR Reclamation RISE), stream/river flow (USGS NWIS + CO DWR/CDSS), snowpack/SWE (NRCS SNOTEL + snow courses via AWDB), and daily climate stations (CO DWR/CDSS, twelve measTypes across five networks) are all built (day-resolution, per-site, full history). Unit of observation: one observation per site per day. Sources are reachable and re-releasable, so the pipeline regenerates results rather than depending on a frozen snapshot.
 - **The news corpus** (future, specified in `context/architecture.md`): article metadata, short excerpts, and archived links for Colorado environmental reporting 2014–present, plus a journalist → article → data-source citation graph. Text-and-tabular. This is the stage that introduces copyright and journalist-privacy duties.
 
@@ -17,7 +17,7 @@ Detailed per-field provenance lives in the relevant `DATA-DICTIONARY.md`, not he
 - **Catalog + code + docs:** committed to git (`CUPIDS-Lab/co-environmental-data`); GitHub is the source of record, with every contributor's clone a redundant copy.
 - **Liberated datasets:** regenerable from the source APIs by the **monthly CI refresh** (a full rebuild that self-heals upstream revisions); the canonical archived copy is the **Harvard Dataverse** deposit (citable DOI).
 - **Raw article HTML + Wayback snapshots (future):** Cloudflare R2, retained immutably so any label can be reconstructed; restricted tier.
-- **Backup cadence & responsibility:** git history + the monthly Dataverse draft are the backup; the project manager is responsible. Derived data under `data/interim/` and `data/processed/` is treated as regenerable output, never a source of truth.
+- **Backup cadence & responsibility:** git history + the monthly Dataverse draft are the backup; the project manager is responsible. Each pipeline's derived data (its own `data/processed/`) is treated as regenerable output, never a source of truth.
 
 ## Metadata & documentation standards
 

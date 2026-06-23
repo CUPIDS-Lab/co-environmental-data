@@ -7,7 +7,7 @@
 Keep the set of channels deliberately small, because every channel is a surface you must secure, deduplicate, and document. The two channels:
 
 - **Open-web retrieval (automated, allowed):** Media Cloud API, GDELT DOC API, outlet sitemaps, and the Wayback CDX API. Automated retrieval here **respects `robots.txt` and each outlet's terms of service**; it captures metadata + short excerpts + archived links, not republished full text.
-- **Licensed-database export (manual only, never automated):** an operator with a CU entitlement searches Nexis Uni / NewsBank / ProQuest / Factiva **within license terms**, exports results by hand, and drops the files into a **quarantine directory** (`data/original/library/` in the corpus pipeline, per `context/architecture.md` nb-02) — *not* directly into any tracked `data/raw/`. Automated scraping of these databases is prohibited by their ToS and must never be added to the pipeline.
+- **Licensed-database export (manual only, never automated):** an operator with a CU entitlement searches Nexis Uni / NewsBank / ProQuest / Factiva **within license terms**, exports results by hand, and drops the files into a **quarantine directory** (`data/original/library/` in the corpus pipeline, per `context/architecture.md` nb-02) — *not* directly into any tracked pipeline data directory. Automated scraping of these databases is prohibited by their ToS and must never be added to the pipeline.
 
 Nothing is treated as source data until it has cleared dedup and verification below.
 

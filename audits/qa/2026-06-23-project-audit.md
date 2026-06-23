@@ -12,11 +12,11 @@ repository: "CUPIDS-Lab/co-environmental-data"
 audited_ref: "origin/main @ fffd55e (re-verified with git fetch; NOT the local checkout)"
 author: "Claude (Opus 4.8 · claude-opus-4-8)"
 generated_by: "Claude Code session (3 read-only audit agents, reconciled against origin/main)"
-basis: "Successor to audits/2026-06-22-qa-audit.md, run after streamflow/snowpack/climate-stations landed."
+basis: "Successor to audits/qa/2026-06-22-qa-audit.md, run after streamflow/snowpack/climate-stations landed."
 related:
-  - audits/2026-06-22-qa-audit.md
-  - retro/2026-06-23-pipeline-deployments-aar.md
-  - retro/2026-06-23-project-revision-plan.md
+  - audits/qa/2026-06-22-qa-audit.md
+  - audits/after-action/2026-06-23-pipeline-deployments-aar.md
+  - audits/revision-plans/2026-06-23-project-revision-plan.md
 tags: [audit, accuracy, utilization, project-management, cupids]
 ---
 
@@ -50,7 +50,7 @@ Severity legend: **HIGH** (misleads a reader or risks data/credential loss) · *
 
 ## B. Under-utilized / at-risk artifacts
 
-- **B1 [HIGH] All four L4 checklists are empty templates.** `data-bulletproofing-checklist.md`, `data-quality-checklist.md`, `responsible-data-checklist.md`, `accessibility-checklist.md` contain **zero `[x]`**. The only executed QA is `audits/2026-06-22-qa-audit.md` (reservoir only). streamflow & snowpack ship an *automatic cross-source reconciliation* — their strongest QA artifact — that no audit or checklist records.
+- **B1 [HIGH] All four L4 checklists are empty templates.** `data-bulletproofing-checklist.md`, `data-quality-checklist.md`, `responsible-data-checklist.md`, `accessibility-checklist.md` contain **zero `[x]`**. The only executed QA is `audits/qa/2026-06-22-qa-audit.md` (reservoir only). streamflow & snowpack ship an *automatic cross-source reconciliation* — their strongest QA artifact — that no audit or checklist records.
 - **B2 [HIGH] climate-stations landed code without its registration tail.** On `origin/main`: **no `pipelines/climate-stations/dataverse/` kit** (the only pipeline missing one), **absent from `monthly-data-refresh.yml`** (still 3 rows → no scheduled refresh), and **unregistered in every repo doc**. Issue #44 is closed, so this remaining work is invisible.
 - **B3 [MED] Only one audit for four pipelines.** snowpack and climate-stations have never been audited; the audit doc's own instruction ("re-run and date a new file after material data changes") has three unmet triggers.
 - **B4 [MED] Local working-tree hygiene risk.** The local checkout still holds pre-#48 climate-stations WIP plus a **~290 MB `.requests-cache.sqlite`** and a **`dwr_api.json` credential** as untracked files. `#48` correctly excluded them, but in a shared tree a broad `git add` could still sweep the key/cache (the §4.2 failure mode). *(Repo on `origin/main` is clean; this is a checkout-hygiene item.)*
@@ -75,4 +75,4 @@ Severity legend: **HIGH** (misleads a reader or risks data/credential loss) · *
 7. **[MED]** Resolve local checkout hygiene (protect the key/cache; sync to origin/main). — B4
 8. **[LOW]** Fix streamflow 19↔21 tests and "eight/nine" basins; declutter `context/`. — A4, B5
 
-The phased plan, with file-level edits and acceptance criteria, is in `retro/2026-06-23-project-revision-plan.md`.
+The phased plan, with file-level edits and acceptance criteria, is in `audits/revision-plans/2026-06-23-project-revision-plan.md`.

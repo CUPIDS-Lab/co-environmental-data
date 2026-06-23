@@ -14,12 +14,12 @@ author: "Claude (Opus 4.8 · claude-opus-4-8)"
 generated_by: "Claude Code session"
 basis: "Forensic review of PRs #37/#45/#46/#47/#48/#49 and the four pipeline trees on origin/main (fffd55e), 2026-06-23. Extends the 2026-06-19 reservoir-storage AARs."
 related:
-  - retro/data-liberation-aar.md
-  - retro/data-project-aar.md
-  - retro/data-project-skill-revision-plan.md
-  - audits/2026-06-23-project-audit.md
-  - retro/2026-06-23-project-revision-plan.md
-  - retro/2026-06-23-data-project-skill-revision-plan.md
+  - audits/after-action/2026-06-18-data-liberation-aar.md
+  - audits/after-action/2026-06-18-data-project-aar.md
+  - audits/revision-plans/2026-06-18-data-project-skill-revision-plan.md
+  - audits/qa/2026-06-23-project-audit.md
+  - audits/revision-plans/2026-06-23-project-revision-plan.md
+  - audits/revision-plans/2026-06-23-data-project-skill-revision-plan.md
 tags: [retrospective, aar, data-liberation, data-project, multi-pipeline, cupids]
 ---
 
@@ -27,7 +27,7 @@ tags: [retrospective, aar, data-liberation, data-project, multi-pipeline, cupids
 
 **Project:** Colorado Environmental Data Hub (`CUPIDS-Lab/co-environmental-data`)
 **Window:** 2026-06-23 — three liberation pipelines landed on `main` in one day (≈01:17–12:04 UTC), through four *different* deployment paths, partly by concurrent agents sharing one working tree.
-**Predecessors:** the 2026-06-19 reservoir-storage AARs (`retro/data-liberation-aar.md`, `retro/data-project-aar.md`). This report covers what happened *after* the first pipeline — the move from one pipeline to four.
+**Predecessors:** the 2026-06-19 reservoir-storage AARs (`audits/after-action/2026-06-18-data-liberation-aar.md`, `audits/after-action/2026-06-18-data-project-aar.md`). This report covers what happened *after* the first pipeline — the move from one pipeline to four.
 
 ---
 
@@ -103,4 +103,4 @@ While preparing this report, read-only audit agents ran against a working tree *
 4. **Make repo-doc registration a checklist/generator** (a "registering a pipeline touches these N files" projection), and **reconcile the repo's "three/four" undercount now**. *(project plan, Phases 2 & 4)*
 5. **Tie issue closure to landing**; reconcile #9/#10/#11/#44 to one rule. *(project plan, Phase 5)*
 
-File-level edits, acceptance criteria, and sequencing are in `retro/2026-06-23-project-revision-plan.md` (the repo) and `retro/2026-06-23-data-project-skill-revision-plan.md` (the skill). The point-in-time evidence is in `audits/2026-06-23-project-audit.md`.
+File-level edits, acceptance criteria, and sequencing are in `audits/revision-plans/2026-06-23-project-revision-plan.md` (the repo) and `audits/revision-plans/2026-06-23-data-project-skill-revision-plan.md` (the skill). The point-in-time evidence is in `audits/qa/2026-06-23-project-audit.md`.

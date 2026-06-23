@@ -4,7 +4,7 @@ version: "2.0"
 status: draft
 created: 2026-06-23
 updated: 2026-06-23
-supersedes: retro/data-project-skill-revision-plan.md  # v1.0 (2026-06-19), substantially implemented
+supersedes: audits/revision-plans/2026-06-18-data-project-skill-revision-plan.md  # v1.0 (2026-06-19), substantially implemented
 # Provenance
 title: "Revision plan v2 — data-project skill (post multi-pipeline phase)"
 doc_type: revision-plan
@@ -15,9 +15,9 @@ author: "Claude (Opus 4.8 · claude-opus-4-8)"
 generated_by: "Claude Code session"
 basis: "Status-check of v1 phases A–I against the shipped skill + new frictions from the 4-pipeline, multi-agent phase (PRs #37/#45/#46/#47/#48)."
 related:
-  - retro/data-project-skill-revision-plan.md
-  - retro/2026-06-23-pipeline-deployments-aar.md
-  - audits/2026-06-23-project-audit.md
+  - audits/revision-plans/2026-06-18-data-project-skill-revision-plan.md
+  - audits/after-action/2026-06-23-pipeline-deployments-aar.md
+  - audits/qa/2026-06-23-project-audit.md
 tags: [plan, revision, data-project, skill, multi-pipeline, cupids]
 ---
 

@@ -6,7 +6,7 @@ Documentation is half the work: a dataset without this file is a private spreads
 
 ## Dataset: `colorado_environmental_data_sources` (the source catalog)
 
-- **File:** `data/raw/colorado_environmental_data_sources.json` (immutable source-of-record; a copy also lives in `context/` as part of the design bundle).
+- **File:** `docs/planning/colorado_environmental_data_sources.json` — the single canonical, version-controlled source-of-record, kept alongside the planning docs as a curated input for current and future pipelines.
 - **Grain (unit of observation):** one record per **data source** (an authoritative system/portal that publishes Colorado environmental data). `source_count = 56`.
 - **Source / provenance:** hand-compiled discovery audit by the CUPIDS Lab / CEJ team, **compiled 2026-06-17**. Each source was located and characterized from agency websites; the narrative behind it (with citations and risk analysis) is in `context/source-inventory.md`. `schema_version = 1.0`.
 - **Input license:** the catalog itself is released under this repo's MIT License / open data. Each *source's* own license is recorded per-record in the `license` field (several are "verify" — unstated upstream).

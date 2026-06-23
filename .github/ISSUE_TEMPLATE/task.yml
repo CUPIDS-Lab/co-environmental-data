@@ -77,6 +77,6 @@ body:
     attributes:
       label: Links
       description: References that ground the task — a roadmap row, a source dataset, a prior PR, or a decision-log entry — so a reviewer can follow the trail without asking.
-      placeholder: ROADMAP.md row 1; data/raw/colorado_environmental_data_sources.json; context/architecture.md
+      placeholder: ROADMAP.md row 1; docs/planning/colorado_environmental_data_sources.json; context/architecture.md
     validations:
       required: false

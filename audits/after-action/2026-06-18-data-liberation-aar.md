@@ -14,7 +14,7 @@ author: "Claude (Opus 4.8 · claude-opus-4-8)"
 generated_by: "Claude Code session"
 basis: "First real-world build of the skill — ~14 PRs scaffolding and hardening the reservoir-storage pipeline (3 live API sources, full-history retrieval, dedup, publish-to-CSV)."
 related:
-  - retro/data-project-aar.md
+  - audits/after-action/2026-06-18-data-project-aar.md
 tags: [retrospective, aar, data-liberation, cupids]
 ---
 
@@ -188,5 +188,5 @@ Net: ~14 merged PRs after the initial scaffold, mostly **live-API debugging**.
   scaffolded operator instructions (reconcile, bulletproofing checklist).
 
 A companion **Claude Code revision plan** (parallel to
-`retro/data-project-skill-revision-plan.md`) can turn these into phased, file-level
+`audits/revision-plans/2026-06-18-data-project-skill-revision-plan.md`) can turn these into phased, file-level
 edits with acceptance criteria — say the word and I'll write it.

@@ -26,7 +26,7 @@ Write commit messages that explain the reasoning behind a change, not just the m
 
 ## The pipeline is the shared artifact
 
-The thing this project shares is the **re-runnable, text-based pipeline**, not a cleaned snapshot of the data. When an upstream source re-releases, sharing only the cleaned output guarantees redoing the work every vintage; sharing the pipeline means the next person regenerates the result — which is exactly how the **monthly CI refresh** works (a full rebuild that self-heals upstream revisions). Keep pipeline definitions legible to the subject-matter experts who need to read them, not only to developers, and treat any derived data under `data/interim/` or `data/processed/` (and a pipeline's own outputs) as reproducible output rather than a source of truth.
+The thing this project shares is the **re-runnable, text-based pipeline**, not a cleaned snapshot of the data. When an upstream source re-releases, sharing only the cleaned output guarantees redoing the work every vintage; sharing the pipeline means the next person regenerates the result — which is exactly how the **monthly CI refresh** works (a full rebuild that self-heals upstream revisions). Keep pipeline definitions legible to the subject-matter experts who need to read them, not only to developers, and treat each pipeline's derived data (its own `data/processed/`) as reproducible output rather than a source of truth.
 
 ## Notebooks are thin; logic lives in the package
 
@@ -45,7 +45,7 @@ A data portal is poor at connecting people, so the burden of making this project
 Before requesting review, confirm:
 
 - [ ] Branched from `main` with a kind-prefixed name; the PR describes the change and *why* it was made.
-- [ ] Derived data is regenerable from `data/raw/` (or the pipeline's source APIs); nothing under `data/raw/` was edited in place.
+- [ ] Derived data is regenerable from the pipeline's source APIs; nothing under a pipeline's `data/original/` (raw cache) or `data/lookups/` (committed seed) was edited in place.
 - [ ] Reusable logic lives in `src/<pkg>/`; notebooks stay thin with outputs stripped.
 - [ ] No secrets or sensitive data in the diff (code, config, or notebook outputs); no licensed-database content committed.
 - [ ] `uv.lock` updated if dependencies changed; `uv run pytest` passes in a clean `uv sync` environment.

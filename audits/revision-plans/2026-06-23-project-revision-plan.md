@@ -11,11 +11,11 @@ project: "Colorado Environmental Data Hub"
 repository: "CUPIDS-Lab/co-environmental-data"
 author: "Claude (Opus 4.8 · claude-opus-4-8)"
 generated_by: "Claude Code session"
-basis: "Derived from audits/2026-06-23-project-audit.md and retro/2026-06-23-pipeline-deployments-aar.md."
+basis: "Derived from audits/qa/2026-06-23-project-audit.md and audits/after-action/2026-06-23-pipeline-deployments-aar.md."
 related:
-  - audits/2026-06-23-project-audit.md
-  - retro/2026-06-23-pipeline-deployments-aar.md
-  - retro/2026-06-23-data-project-skill-revision-plan.md
+  - audits/qa/2026-06-23-project-audit.md
+  - audits/after-action/2026-06-23-pipeline-deployments-aar.md
+  - audits/revision-plans/2026-06-23-data-project-skill-revision-plan.md
 tags: [plan, revision, project, refactor, ci, cupids]
 ---
 
