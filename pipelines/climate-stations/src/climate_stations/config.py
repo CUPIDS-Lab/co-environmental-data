@@ -7,9 +7,10 @@ git-ignored ``dwr_api.json`` and is never committed.
 """
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
+
+from co_pipeline_core import config as _core
 
 # ── paths ────────────────────────────────────────────────────────────────────
 PKG_DIR = Path(__file__).resolve().parent
@@ -28,10 +29,7 @@ CONCEPTS_YAML = LOOKUPS / "concepts.yaml"
 STATIONS_CSV = LOOKUPS / "stations.csv"
 
 # ── HTTP defaults ────────────────────────────────────────────────────────────
-USER_AGENT = (
-    "co-environmental-data/climate-stations (CUPIDS Lab; "
-    "https://github.com/CUPIDS-Lab/co-environmental-data; accounts@brianckeegan.com)"
-)
+USER_AGENT = _core.user_agent("climate-stations")
 REQUEST_TIMEOUT = 120        # seconds — a full-POR daily response can be multi-MB
 # Polite delay between requests + retry budget. Both are env-overridable because CDSS
 # throttles a sustained burst of large full-history requests — raise CLIMATE_RATE_LIMIT
@@ -44,32 +42,12 @@ MAX_RETRIES = int(os.environ.get("CLIMATE_MAX_RETRIES", "5"))
 # "Error: Exceeded Daily Data Limit"). Resolution order: $CDSS_API_KEY, else a
 # git-ignored ``dwr_api.json`` (pipeline root, then repo root) holding
 # ``{"CDSS_API_KEY": "..."}``.
-def _load_cdss_api_key() -> str:
-    env = os.environ.get("CDSS_API_KEY", "")
-    if env:
-        return env
-    for candidate in (PROJECT_DIR / "dwr_api.json", PROJECT_DIR.parent.parent / "dwr_api.json"):
-        try:
-            if candidate.exists():
-                data = json.loads(candidate.read_text())
-                key = (data.get("CDSS_API_KEY") or data.get("api_key")
-                       or data.get("apiKey") or data.get("key") or "")
-                if key:
-                    return key
-        except Exception:
-            pass  # malformed key file is non-fatal — fall through to keyless
-    return ""
-
-
-CDSS_API_KEY = _load_cdss_api_key()
+CDSS_API_KEY = _core.load_cdss_api_key(PROJECT_DIR)
 
 
 def load_sources_config() -> dict:
     """Read ``data/lookups/sources.yaml`` (endpoints + per-source params)."""
-    import yaml  # local import so `py_compile` works without the dep
-
-    with open(SOURCES_YAML, "r", encoding="utf-8") as fh:
-        return yaml.safe_load(fh)
+    return _core.read_sources_yaml(SOURCES_YAML)
 
 
 def get_sources() -> dict:
