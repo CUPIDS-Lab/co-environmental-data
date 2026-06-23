@@ -17,7 +17,8 @@ set -euo pipefail
 
 # ----- Configuration (filled by the scaffolder) -----------------------------
 REPO_SLUG="CUPIDS-Lab/co-environmental-data"      # owner/repo
-MILESTONE_TITLE="L1-L2: catalog hardening & pipeline" # one milestone per work batch
+MILESTONE_TITLE="L1-L2: catalog hardening & pipeline"        # first work batch (L1/L2)
+MILESTONE_L3L4="L3-L4: collaboration & responsible-data"     # second work batch (L3/L4 climb)
 PROJECT_TITLE="Colorado Environmental Data Hub"   # the standardized Project (see PROJECT-MANAGEMENT.md)
 OWNER_DEFAULT=""                                   # default assignee; empty = leave assignment to GitHub
                                                    # (the PI owns #4/#5; the good-first-issues stay open)
@@ -107,15 +108,16 @@ seed_labels() {
 
 # ----- Milestone: create if absent -------------------------------------------
 seed_milestone() {
+  local title="$1"
   [[ "$CAN_ISSUES" == "1" ]] || { note "Skipping milestone (issues unavailable)."; return 0; }
-  printf '== Milestone: %s ==\n' "$MILESTONE_TITLE" >&2
+  printf '== Milestone: %s ==\n' "$title" >&2
   local existing
   existing="$(gh api "repos/$REPO_SLUG/milestones?state=all" \
-                --jq ".[] | select(.title==\"$MILESTONE_TITLE\") | .number" 2>/dev/null || true)"
+                --jq ".[] | select(.title==\"$title\") | .number" 2>/dev/null || true)"
   if [[ -n "$existing" ]]; then
-    note "Milestone '$MILESTONE_TITLE' already exists (#$existing); leaving as is."
+    note "Milestone '$title' already exists (#$existing); leaving as is."
   else
-    run gh api -X POST "repos/$REPO_SLUG/milestones" -f "title=$MILESTONE_TITLE" \
+    run gh api -X POST "repos/$REPO_SLUG/milestones" -f "title=$title" \
         || note "Could not create milestone (permission?); continuing without it."
   fi
 }
@@ -128,7 +130,7 @@ seed_milestone() {
 # is only applied when OWNER_DEFAULT is non-empty, so the script never clobbers the
 # intentionally-unassigned good-first-issues.
 seed_issue() {
-  local task_id="$1" title="$2" labels="$3" body="$4"
+  local task_id="$1" title="$2" labels="$3" body="$4" milestone="${5:-$MILESTONE_TITLE}"
   [[ "$CAN_ISSUES" == "1" ]] || { note "Skipping issue '$title' (issues unavailable)."; return 0; }
 
   local marker="<!-- data-project:task=$task_id -->"
@@ -153,12 +155,12 @@ seed_issue() {
   if [[ -n "$num" && "$num" != "null" ]]; then
     note "Updating issue #$num for task '$task_id'."
     run gh issue edit "$num" --repo "$REPO_SLUG" --title "$title" --body "$full_body" \
-        --add-label "$labels" "${assignee_edit[@]+"${assignee_edit[@]}"}" --milestone "$MILESTONE_TITLE" \
+        --add-label "$labels" "${assignee_edit[@]+"${assignee_edit[@]}"}" --milestone "$milestone" \
         || note "Could not fully update #$num (permission?); continuing."
   else
     note "Creating issue for task '$task_id'."
     run gh issue create --repo "$REPO_SLUG" --title "$title" --body "$full_body" \
-        --label "$labels" "${assignee_create[@]+"${assignee_create[@]}"}" --milestone "$MILESTONE_TITLE" \
+        --label "$labels" "${assignee_create[@]+"${assignee_create[@]}"}" --milestone "$milestone" \
         || { note "Could not create issue for '$task_id' (permission?); continuing."; return 0; }
     if [[ "$DRY_RUN" != "1" ]]; then
       num="$(gh issue list --repo "$REPO_SLUG" --state all --search "$marker in:body" \
@@ -250,12 +252,13 @@ seed_wiki() {
 main() {
   preflight
   seed_labels
-  seed_milestone
+  seed_milestone "$MILESTONE_TITLE"
+  seed_milestone "$MILESTONE_L3L4"
 
   # --- Per-task issue create-or-update calls (mirror ROADMAP.md; full DoD lives there + in the issue) ---
   local B_VERIFY B_NREL B_MATCH B_PIPE
 
-  B_VERIFY="$(cat <<'BODY'
+  IFS= read -r -d '' B_VERIFY <<'BODY' || true
 9 of the 56 sources in `data/raw/colorado_environmental_data_sources.json` carry `verification_status: needs_followup` — URLs/licenses/hubs not confirmed in the June 2026 audit. Filter on `verification_status == "verified"` for anything load-bearing until resolved.
 
 ### Definition of done
@@ -267,8 +270,7 @@ main() {
 
 **Why blocking:** these sources can't be relied on (or seeded into the citation dictionary) until verified.
 BODY
-)"
-  B_NREL="$(cat <<'BODY'
+  IFS= read -r -d '' B_NREL <<'BODY' || true
 Compilation surfaced search content claiming NREL was renamed "National Laboratory of the Rockies" with domain `nlr.gov`. Unverified and almost certainly false (`data_integrity_caveat`).
 
 ### Definition of done
@@ -279,8 +281,7 @@ Compilation surfaced search content claiming NREL was renamed "National Laborato
 
 **Why blocking:** a poisoned domain must never enter the Stage-A URL-match dictionary.
 BODY
-)"
-  B_MATCH="$(cat <<'BODY'
+  IFS= read -r -d '' B_MATCH <<'BODY' || true
 The Stage-A URL matcher and the prose keyword detector need two fields the catalog lacks: `match_hosts` and `match_keywords` (see `context/architecture.md` §6, nb-04).
 
 ### Definition of done
@@ -292,8 +293,7 @@ The Stage-A URL matcher and the prose keyword detector need two fields the catal
 
 **Why blocking:** Stage-A citation detection can't run without these fields.
 BODY
-)"
-  B_PIPE="$(cat <<'BODY'
+  IFS= read -r -d '' B_PIPE <<'BODY' || true
 Stand up the reproducible-pipeline layer specified in `context/architecture.md`: the journalist→article→citation pipeline as an importable package + thin notebooks, scaffolded as stubs.
 
 ### Definition of done
@@ -305,7 +305,6 @@ Stand up the reproducible-pipeline layer specified in `context/architecture.md`:
 
 Likely breaks into sub-issues per notebook/module. Depends on the match_hosts task for the dictionary stage.
 BODY
-)"
 
   seed_issue "verify-needs-followup-sources" "Verify the 9 \`needs_followup\` sources in the catalog" \
     "type:data,blocking,level:L1,priority:high,size:m,good-first-issue" "$B_VERIFY"
@@ -315,6 +314,88 @@ BODY
     "type:data,blocking,level:L2,priority:high,size:m" "$B_MATCH"
   seed_issue "build-l2-pipeline" "Build the L2 reproducible pipeline (cejcorpus stubs)" \
     "type:pipeline,level:L2,priority:med,size:l" "$B_PIPE"
+
+  # --- L3/L4 batch (the collaboration + responsible-data climb, 2026-06-22) ---
+  local B_ONBOARD B_CEJ B_LEGAL B_CODEBOOK B_LLM B_QA
+
+  IFS= read -r -d '' B_ONBOARD <<'BODY' || true
+The L3 climb scaffolded `ROLES.md` and `.github/CODEOWNERS` with the PI holding every hat and `@brianckeegan` as the placeholder owner of every path. Onboard the undergraduate research team into those roles.
+
+### Definition of done
+- [ ] Each core role in `ROLES.md` is owned by a named person, or its gap is named in the GAP-CHECK with interim coverage + a plan
+- [ ] `.github/CODEOWNERS` placeholders replaced with real team handles where a path gains a new owner
+- [ ] New contributors have read `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`
+- [ ] Each student has run `uv sync` in a pipeline and `uv run pytest` passes for them
+
+Not blocking, but this is what the L3 scaffolds exist to enable.
+BODY
+  IFS= read -r -d '' B_CEJ <<'BODY' || true
+`collaboration-protocol.md` and `ROLES.md` leave the CEJ subject-matter contact unnamed. Name a committed Center for Environmental Journalism contact who will adjudicate codebook questions.
+
+### Definition of done
+- [ ] A named CEJ contact recorded in `collaboration-protocol.md` (Coordinator section)
+- [ ] That contact has reviewed the "environmental journalist" / `coverage_tier` definitions
+- [ ] The communication cadence (per-semester check-in + ad-hoc adjudication) is agreed
+
+**Why blocking:** citation coding cannot begin without a subject-matter authority to resolve definition disputes (`ROLES.md` GAP-CHECK).
+BODY
+  IFS= read -r -d '' B_LEGAL <<'BODY' || true
+The fair-use/TDM posture and the licensed-database terms in `data-management-plan.md` §Compliance are documented but not reviewed by counsel.
+
+### Definition of done
+- [ ] CU Libraries / University Counsel has reviewed the non-consumptive-research fair-use posture (metadata + excerpts + archived links, never republished full text)
+- [ ] The manual-export-only handling of Nexis Uni / NewsBank / ProQuest / Factiva is confirmed within license terms
+- [ ] Any required changes folded into `data-management-plan.md`, `GOVERNANCE.md`, and `contributed-data-intake.md`
+- [ ] Sign-off recorded in `decision-log.md`
+
+**Why blocking:** gates ingesting any article text or licensed-database export.
+BODY
+  IFS= read -r -d '' B_CODEBOOK <<'BODY' || true
+The corpus needs a versioned codebook and an inter-coder reliability process before any human coding (`context/methodology.md` §4.2).
+
+### Definition of done
+- [ ] Written definitions for every `citation_type` (6 values) and `coverage_tier`, with inclusion/exclusion criteria and >=2 worked examples each, versioned in the repo
+- [ ] ~10% double-coding plan defined; calibration set prepared
+- [ ] Each coder clears the Krippendorff alpha >= 0.80 threshold on a calibration batch before solo coding
+- [ ] Adjudication process (third-coder / consensus; log resolution; update codebook) documented
+
+**Why blocking:** coding cannot scale without a codebook and a cleared reliability threshold (`responsible-data-checklist.md`).
+BODY
+  IFS= read -r -d '' B_LLM <<'BODY' || true
+The LLM-based citation detector must be validated against a hand-coded gold standard before its labels are treated as authoritative (`context/methodology.md` §4.5).
+
+### Definition of done
+- [ ] Precision/recall reported vs. a gold standard
+- [ ] A verbatim quote span required for every LLM-asserted citation; quotes not found in source text are programmatically rejected
+- [ ] Closed-set constraint (only catalog sources) enforced
+- [ ] LLM labels promoted unreviewed only above the pre-registered precision threshold (>= 0.90); otherwise kept as human-review candidates
+
+**Why blocking:** promoting unvalidated LLM labels as authoritative would make findings indefensible.
+BODY
+  IFS= read -r -d '' B_QA <<'BODY' || true
+Reservoir storage (#9) is built; the remaining step is the first human-reviewed Harvard Dataverse publish. Run the L4 QA gates first.
+
+### Definition of done
+- [ ] `data-bulletproofing-checklist.md` complete (reconcile vs. agency totals; recompute; independent replicate)
+- [ ] `data-quality-checklist.md` reviewed for the reservoir dataset
+- [ ] First Dataverse deposit reviewed by a person and published (v1.0); DOI recorded in the pipeline README + `README.md`
+- [ ] Monthly refresh confirmed to target the existing dataset as a new version (one DOI)
+
+**Why blocking:** a DOI is permanent — nothing is published before the QA gates pass (`.skills/release-and-share`).
+BODY
+
+  seed_issue "onboard-team-roles-codeowners" "Onboard the undergraduate team into ROLES + CODEOWNERS" \
+    "type:governance,level:L3,priority:high,size:m" "$B_ONBOARD" "$MILESTONE_L3L4"
+  seed_issue "name-cej-sme-contact" "Name the CEJ subject-matter contact (collaboration-protocol)" \
+    "type:governance,blocking,level:L3,priority:high,size:s" "$B_CEJ" "$MILESTONE_L3L4"
+  seed_issue "secure-fairuse-tos-review" "Secure a fair-use / licensed-DB ToS review (CU Libraries / Counsel)" \
+    "type:governance,blocking,level:L3,priority:high,size:m" "$B_LEGAL" "$MILESTONE_L3L4"
+  seed_issue "fill-codebook-calibration" "Fill the codebook + run inter-coder calibration (alpha >= 0.80)" \
+    "type:governance,blocking,level:L4,priority:high,size:l" "$B_CODEBOOK" "$MILESTONE_L3L4"
+  seed_issue "validate-llm-detector" "Validate the LLM citation detector (precision >= 0.90; quote-span)" \
+    "type:pipeline,blocking,level:L4,priority:med,size:m" "$B_LLM" "$MILESTONE_L3L4"
+  seed_issue "run-qa-before-dataverse-publish" "Run the QA gates before the first reservoir Dataverse publish" \
+    "type:data,blocking,level:L4,priority:high,size:s" "$B_QA" "$MILESTONE_L3L4"
   # --- end per-task calls ---
 
   project_status_update

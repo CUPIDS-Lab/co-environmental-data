@@ -1,0 +1,46 @@
+# CODEOWNERS — Colorado Environmental Data Hub
+#
+# Maps repository paths to the roles responsible for reviewing them, so review
+# responsibility is legible and every part of the project has an owner. GitHub
+# requests a review from the listed owners when a PR touches a matching path.
+#
+# Today the project is single-maintainer, so @brianckeegan owns everything; the
+# inline comments record which ROLES.md role *should* take each path over as the
+# undergraduate team and CEJ partnership are onboarded. Replace @brianckeegan
+# with team handles (e.g. @CUPIDS-Lab/data-engineers) once those teams exist.
+# Later entries win, so order is general -> specific.
+
+# Default owner: the project manager catches anything not matched below.
+*                           @brianckeegan
+
+# Data lives with the data engineer: the immutable source catalog, schema.
+/data/                      @brianckeegan
+/DATA-DICTIONARY.md         @brianckeegan   # -> subject-matter expert
+
+# Liberation pipelines are the engineer's + developer's shared ground.
+/pipelines/                 @brianckeegan   # -> data-engineer + software-developer
+
+# Design memos carry the research methodology: SME / methodology owner.
+/context/                   @brianckeegan   # -> subject-matter expert
+
+# Governance, charter, roles set the project's terms: project manager owns them,
+# with legal as a second reviewer on the terms that bind partners + privacy.
+/GOVERNANCE.md              @brianckeegan   # -> project-manager + legal
+/CHARTER.md                 @brianckeegan   # -> project-manager
+/ROLES.md                   @brianckeegan   # -> project-manager
+/collaboration-protocol.md  @brianckeegan   # -> project-manager
+/contributed-data-intake.md @brianckeegan   # -> data-engineer + legal
+
+# Responsible-data, DMP, and the QA checklists gate sensitive + published work.
+/responsible-data-checklist.md   @brianckeegan   # -> project-manager + legal
+/data-management-plan.md         @brianckeegan   # -> project-manager
+/INSTALLED-BASE.md               @brianckeegan   # -> project-manager
+/data-bulletproofing-checklist.md @brianckeegan  # -> data-engineer + statistics
+/data-quality-checklist.md       @brianckeegan   # -> data-engineer
+/accessibility-checklist.md      @brianckeegan   # -> communicators
+/data-card.md                    @brianckeegan   # -> subject-matter expert
+
+# CI, automation, and the nested guidance skills affect everyone's
+# reproducibility -> the software developer keeps them in sync.
+/.github/                   @brianckeegan   # -> software-developer
+/.skills/                   @brianckeegan   # -> software-developer

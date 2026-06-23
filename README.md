@@ -2,7 +2,7 @@
 
 A documented, reproducible catalog of Colorado environmental data sources — and the foundation for a research corpus linking Colorado environmental journalists to the public data they cite.
 
-A CUPIDS Lab data project. Maturity level: **L1** (documented repo). Toolchain: **Python (Datasette · Cloudflare R2 · Quarto · Prefect)**. Sensitivity: **Public — open government/agency metadata**. Openness: **Open (MIT-licensed; open data)**.
+A CUPIDS Lab data project. Maturity level: **L4** (collaborative, responsible & accessible). Toolchain: **Python (Datasette · Cloudflare R2 · Quarto · Prefect)**. Sensitivity: **Public today (open government/agency metadata); conditionally sensitive-human once the news corpus ingests article text + journalist records**. Openness: **Open (MIT-licensed; open data)**.
 
 ## What & why
 
@@ -17,7 +17,7 @@ Colorado's environmental data lives in dozens of federal, state, and local syste
 
 ## Repository layout
 
-This repo follows the CUPIDS Lab data-project conventions. Key locations: `data/raw` holds original, **immutable** source data (never edited in place) — currently the curated source catalog; `data/interim` and `data/processed` hold derived data that can always be regenerated from raw; `DATA-DICTIONARY.md` documents the schema; `context/` holds the project's design memos (methodology, architecture, source-inventory audit, proposals); **`pipelines/<name>/`** holds self-contained data-liberation pipelines, one per liberated dataset. See `ROADMAP.md` for what is planned but not yet built (the corpus pipeline, collaboration, responsible-data, and publication layers).
+This repo follows the CUPIDS Lab data-project conventions. Key locations: `data/raw` holds original, **immutable** source data (never edited in place) — currently the curated source catalog; `data/interim` and `data/processed` hold derived data that can always be regenerated from raw; `DATA-DICTIONARY.md` documents the schema; `context/` holds the project's design memos (methodology, architecture, source-inventory audit, proposals); **`pipelines/<name>/`** holds self-contained data-liberation pipelines, one per liberated dataset; the collaboration and responsible-data layer (`CONTRIBUTING`, `GOVERNANCE`, `ROLES`, `responsible-data-checklist`, and the rest below) governs how people work here and how the data's duties are met; the nested `.skills/` give downstream agents task-specific guidance (data intake, documentation, release). See `ROADMAP.md` for what is planned but not yet built (the corpus pipeline and the L5 open-knowledge publication layer).
 
 ## Pipelines
 
@@ -44,7 +44,7 @@ The reproducible pipeline (pinned environment, the `cejcorpus` package, notebook
 
 ## Data access
 
-Processed, non-sensitive data is shared in open formats. See `DATA-DICTIONARY.md` for the schema; a published open-knowledge catalog (Datasette + Quarto site, OKF bundle) is planned — see `ROADMAP.md`. Note: the planned news corpus will introduce copyright (fair-use TDM) and journalist-privacy considerations; those duties are recorded as **blocking** items in `ROADMAP.md` and must be satisfied before any article text or journalist records are ingested.
+Processed, non-sensitive data is shared in open formats under the access tiers in `GOVERNANCE.md`. See `DATA-DICTIONARY.md` for the schema; a published open-knowledge catalog (Datasette + Quarto site, OKF bundle) is planned — see `ROADMAP.md`. Note: the planned news corpus will introduce copyright (fair-use TDM) and journalist-privacy considerations; those duties are now encoded in `GOVERNANCE.md`, `responsible-data-checklist.md`, and `contributed-data-intake.md`, and the **blocking** items in `ROADMAP.md` (#32–#36) must be satisfied before any article text or journalist records are ingested.
 
 ## Documentation
 
@@ -52,6 +52,10 @@ Processed, non-sensitive data is shared in open formats. See `DATA-DICTIONARY.md
 - `decision-log.md` — why key choices were made.
 - `CHANGELOG.md` — what changed and when.
 - `context/` — methodology memo, technical architecture, and the source-inventory discovery audit behind the catalog.
+
+**Collaboration & governance (L3):** `CONTRIBUTING.md` (how to work here) · `CODE_OF_CONDUCT.md` · `ROLES.md` + `.github/CODEOWNERS` (who owns what) · `GOVERNANCE.md` (access tiers, retention, remedy) · `CHARTER.md` (partners, shared definitions, what survives the pilot) · `collaboration-protocol.md` · `contributed-data-intake.md` (the licensed-database manual-export workflow) · `.skills/` (nested agent guidance).
+
+**Responsible data & accessibility (L4):** `INSTALLED-BASE.md` (the values spine as repo requirements) · `data-management-plan.md` · `responsible-data-checklist.md` · `data-bulletproofing-checklist.md` · `data-quality-checklist.md` · `accessibility-checklist.md` · `data-card.md` (dataset transparency summary).
 
 ## Citation
 
