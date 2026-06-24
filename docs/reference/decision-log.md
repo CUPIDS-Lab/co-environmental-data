@@ -2,6 +2,13 @@
 
 A running, dated record of design and data decisions and *why* they were made — the provenance of the project's choices, legible to people who join later. Add an entry whenever you make a non-obvious choice (a filtering rule, a definition, a tool, a tradeoff). Newest first.
 
+## 2026-06-23 — Quarantine the spurious NREL "nlr.gov" rebrand claim (#3)
+
+- **Context:** during catalog compilation, search content claimed NREL had been renamed "National Laboratory of the Rockies (NLR)" at `nlr.gov` with `developer.nrel.gov` retired. This is spurious — NREL (the DOE National Renewable Energy Laboratory, Golden CO) uses `nrel.gov`, which the catalog already records as the source's canonical host.
+- **Decision:** treat `nlr.gov` as a poisoned domain and keep it out of the catalog and any derived dictionary. Confirmed `nlr.gov` appears in **zero** link fields (only in caveat/quarantine prose); updated the top-level `data_integrity_caveat` and the NREL source's `verification_note` to record the resolution. A live re-fetch of `nrel.gov` was not possible from the build environment (the host wasn't resolvable here), so a maintainer's final live click-through before the Stage-A URL dictionary (#4) is built is left as a one-line residual.
+- **Why:** the Stage-A URL matcher keys on canonical hosts; a single poisoned domain would mislabel citations permanently. Containing it now — before the dictionary exists — is the cheap, safe time.
+- **Consequences:** `nrel.gov` stands as the canonical NREL domain; closes #3. The broader NREL WIND Toolkit URL/license re-verification stays under #2 (`needs_followup`).
+
 ## 2026-06-23 — Relocate the source catalog to `docs/planning/`; merge `retro/` into `audits/`; retire the top-level `data/` scaffold
 
 - **Context:** the repo was scaffolded with a generic top-level `data/{raw,interim,processed,external}` tree, but every real dataset lives under `pipelines/<name>/data/{original,processed,audit,lookups}` (different names entirely). The only thing top-level `data/` ever held was the curated catalog `colorado_environmental_data_sources.json` — itself **byte-identical** to a copy kept in `context/` — so the scaffold was empty, misleading, and double-stored the one asset. Separately, project records were split across two directories (`audits/` and `retro/`) with inconsistent front-matter (the 2026-06-22 audit had none).

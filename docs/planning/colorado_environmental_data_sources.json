@@ -40,7 +40,7 @@
     "erosion_flag": "Is data at risk of disappearing/degrading (federal defunding/removal, link rot, migration, obsolescence, soft funding)? (yes|no|partial)",
     "verification_status": "verified | needs_followup"
   },
-  "data_integrity_caveat": "Search content during compilation claimed NREL was renamed 'National Laboratory of the Rockies (NLR)' at nlr.gov with developer.nrel.gov retired May 29, 2026. This appears spurious/unverified and should NOT be trusted. Verify the live NREL domain (nrel.gov / developer.nrel.gov) before use.",
+  "data_integrity_caveat": "RESOLVED 2026-06-23 (#3): a compilation-time search claim that NREL was renamed 'National Laboratory of the Rockies (NLR)' at nlr.gov (with developer.nrel.gov retired) is spurious and has been QUARANTINED — 'nlr.gov' appears nowhere in this catalog's links or any derived data (verified by grep). nrel.gov is NREL's established canonical domain (the DOE National Renewable Energy Laboratory, Golden CO) and is the only NREL host used here. Before the Stage-A URL-match dictionary (#4) is built, a maintainer should do a final live click-through of nrel.gov; nlr.gov must never be seeded.",
   "source_count": 56,
   "sources": [
     {
@@ -780,7 +780,7 @@
         "note": "DOE/NREL funding dependence. SEE DATA-INTEGRITY CAVEAT: unverified search content claimed NREL was renamed 'National Laboratory of the Rockies (NLR)' at nlr.gov with developer.nrel.gov 'retired May 29, 2026' - this appears spurious; verify the live NREL domain before citing."
       },
       "verification_status": "needs_followup",
-      "verification_note": "Verify NREL domain; disregard unconfirmed 'NLR/nlr.gov' rebrand claim."
+      "verification_note": "nlr.gov 'NLR' rebrand confirmed spurious and absent from the catalog (#3, 2026-06-23); nrel.gov canonical. Remaining WTK URL/license re-verify tracked under #2."
     },
     {
       "id": "wind-fed-eia",
